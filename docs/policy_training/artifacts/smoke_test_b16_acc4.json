@@ -1,0 +1,141 @@
+{
+ "tinydp_args": [
+  "--dataset-cfg.is-sim-data",
+  "--model-cfg.policy-cfg.pred-right-only",
+  "--trainer-cfg.num-workers",
+  "4",
+  "--shared-cfg.batch-size",
+  "16",
+  "--trainer-cfg.accum-iter",
+  "4",
+  "--logging-cfg.output-dir",
+  "/home/stanley/Stanley_ws/r2r2r_policy_runs/smoke/smoke_b16_acc4_w4/tinydp_out"
+ ],
+ "cuda_visible_devices": "0",
+ "checks": {
+  "train_val_files_disjoint": {
+   "ok": true
+  },
+  "dataset_uses_given_statistics": {
+   "ok": true
+  },
+  "observation_shape": {
+   "ok": true,
+   "detail": [
+    16,
+    4,
+    2,
+    3,
+    448,
+    448
+   ]
+  },
+  "proprio_shape": {
+   "ok": true,
+   "detail": [
+    16,
+    4,
+    20
+   ]
+  },
+  "action_shape": {
+   "ok": true,
+   "detail": [
+    16,
+    4,
+    16,
+    20
+   ]
+  },
+  "batch_finite": {
+   "ok": true
+  },
+  "scaled_actions_in_unit_box": {
+   "ok": true,
+   "detail": 1.0
+  },
+  "action_dim": {
+   "ok": true,
+   "detail": 10
+  },
+  "train_loss_finite": {
+   "ok": true,
+   "detail": 1.6621065139770508
+  },
+  "grad_norm_finite": {
+   "ok": true,
+   "detail": 15.49135971069336
+  },
+  "parameters_updated": {
+   "ok": true,
+   "detail": "254/254 tensors changed"
+  },
+  "parameters_finite": {
+   "ok": true
+  },
+  "val_loss_finite": {
+   "ok": true,
+   "detail": 1.6871576309204102
+  },
+  "inference_shape": {
+   "ok": true,
+   "detail": [
+    2,
+    16,
+    10
+   ]
+  },
+  "inference_finite": {
+   "ok": true
+  }
+ },
+ "device": "NVIDIA GeForce RTX 4090",
+ "visible_device_count": 1,
+ "dataset_init_s": 0.7,
+ "n_train_files": 1461,
+ "n_val_files": 182,
+ "n_train_items": 707124,
+ "n_val_items": 88088,
+ "train_batches_per_epoch": 11048,
+ "val_batches_per_epoch": 1376,
+ "first_train_batch_s": 0.0,
+ "train_batch_shapes": {
+  "action": [
+   16,
+   4,
+   16,
+   20
+  ],
+  "proprio": [
+   16,
+   4,
+   20
+  ],
+  "observation": [
+   16,
+   4,
+   2,
+   3,
+   448,
+   448
+  ]
+ },
+ "right_gripper_target_fraction_closed": 0.7216796875,
+ "model": "DiffusionPolicy(action_dim=10, obs_horizon=4, action_horizon=16, diffusion_model_type=unet)",
+ "n_parameters": 148892490,
+ "accum_iter": 4,
+ "effective_batch_size": 64,
+ "train_step_s": 1.28,
+ "train_micro_losses": [
+  1.604460597038269,
+  1.6452858448028564,
+  1.7137058973312378,
+  1.6849737167358398
+ ],
+ "train_loss": 1.6621065139770508,
+ "grad_norm_before_clip": 15.49135971069336,
+ "peak_gpu_mem_GiB_train_step": 14.29,
+ "val_loss": 1.6871576309204102,
+ "peak_gpu_mem_GiB_total": 14.29,
+ "all_ok": true
+}

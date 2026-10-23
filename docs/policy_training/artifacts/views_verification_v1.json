@@ -1,0 +1,46 @@
+{
+ "val": {
+  "root": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/val",
+  "n": 182,
+  "problems": [],
+  "n_problems": 0
+ },
+ "test": {
+  "root": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/test",
+  "n": 182,
+  "problems": [],
+  "n_problems": 0
+ },
+ "train_n0100": {
+  "root": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n0100",
+  "n": 100,
+  "problems": [],
+  "n_problems": 0
+ },
+ "train_n1000": {
+  "root": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n1000",
+  "n": 1000,
+  "problems": [],
+  "n_problems": 0
+ },
+ "train_n1461": {
+  "root": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n1461",
+  "n": 1461,
+  "problems": [],
+  "n_problems": 0
+ },
+ "train_n0150": {
+  "root": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n0150",
+  "n": 150,
+  "problems": [],
+  "n_problems": 0
+ },
+ "train_n0050": {
+  "root": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n0050",
+  "n": 50,
+  "problems": [],
+  "n_problems": 0
+ },
+ "source_fingerprint_unchanged": true,
+ "source_fingerprint": "dd23bd44ce626485a9f3ec8f78ce3c75cfeadb90785efdcf456c8f997c2f2bcd"
+}
