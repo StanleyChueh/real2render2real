@@ -42,3 +42,10 @@ def test_installs_manifest_dataset_and_records_provenance(roots, monkeypatch):
     assert os.environ["WANDB_MODE"] == "disabled"
     prov = json.load(open(tmp / "out" / "r2r2r_provenance.json"))
     assert prov["tinydp_args"] == args and len(prov["train_py_sha256"]) == 64
+
+
+def test_legacy_launcher_requires_explicit_flag(roots, monkeypatch):
+    tmp, ours = roots
+    monkeypatch.setattr(train_tinydp.runpy, "run_path", lambda *a, **k: pytest.fail("must not start training"))
+    with pytest.raises(SystemExit, match="legacy v1 launcher"):
+        train_tinydp.main(ours + ["--", "--dataset-cfg.is-sim-data", "--logging-cfg.output-dir", str(tmp / "out")])

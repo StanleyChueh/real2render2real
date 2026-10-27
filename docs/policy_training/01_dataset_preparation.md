@@ -110,7 +110,7 @@ With TinyDP defaults (`subsample_steps=2`, `seq_length=4`, `num_pred_steps=16`, 
 
 - One item for row `j` gives image frame `j` from both cameras (`camera_1`, `camera_0` order), proprio = EE pose of row `j` (+ uniform noise), and action = absolute EE poses + gripper at rows `j+2, j+4, …, j+32`.
 - A training sample is 4 consecutive items `j, j+2, j+4, j+6` of one episode. The loss uses only the action chunk of the **last** observation step (rows `j+8 … j+38`).
-- Valid `j`: 0…126 per 161-step episode (121 windows × 4 = 484 items per episode). The last action row used is 158; rows 159–160 are never targets.
+- Valid **item** starts `j`: 0…126 per 161-step episode; valid **window** starts `w`: 0…120, with items `w, w+2, w+4, w+6` (121 windows × 4 = 484 items per episode). The last action row used is 120 + 6 + 32 = 158; rows 159–160 are never targets. *(Notation clarified 2026-10-27, audit N1.)*
 - Proprio noise (`proprio_noise=0.003`: ±3 mm on xyz and ±0.003 rad on Euler angles) is applied in **both** train and val datasets, because TinyDP does not condition it on the split.
 
 ### 5.2 HDF5 row order (CODEX_AUDIT M5)

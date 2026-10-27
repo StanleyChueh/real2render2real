@@ -1,5 +1,7 @@
 # 03 — Pre-training checks
 
+> **Update (2026-10-27):** the readiness verdict in §5 was superseded by the audit ([CODEX_PRETRAIN_AUDIT.md](CODEX_PRETRAIN_AUDIT.md), NO-GO) and its repair ([AUDIT_REPAIR_REPORT.md](AUDIT_REPAIR_REPORT.md), [LIFECYCLE_TEST_RESULTS.md](LIFECYCLE_TEST_RESULTS.md)). The smoke test below exercised the legacy released loop and is historical evidence only.
+
 Date: 2026-10-23 · Env `.venv-tinydp` (01 §1) · GPU 0 only (`CUDA_VISIBLE_DEVICES=0`).
 
 ## 1. Deterministic tests (`policy_training/tests`, 37 tests, all passing)

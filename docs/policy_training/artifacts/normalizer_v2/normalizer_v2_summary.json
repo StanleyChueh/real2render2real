@@ -1,0 +1,320 @@
+{
+ "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+ "subsets": {
+  "n0050": {
+   "file": "docs/policy_training/artifacts/normalizer_v2/action_statistics_v2_train_n0050.json",
+   "sha256": "f9c0bad124d1fb2bdeb633fda594867e427ce7b9cecf3190b28ef96a4b65ebf4",
+   "v2_train_coverage_right": {
+    "rows_out_of_bounds": 0,
+    "rows_checked": 7850,
+    "max_abs_normalized": 1.0
+   },
+   "v1_train_coverage_right": {
+    "rows_out_of_bounds": 8,
+    "rows_checked": 7850,
+    "max_abs_normalized": 1.0288462187116358
+   },
+   "v2_minus_v1_min": [
+    -5.364418029785156e-05,
+    0.0,
+    0.0,
+    -8.788732376885378e-05,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.00015092269769276245,
+    0.0,
+    -0.00355374813079834,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.017157164961542737,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "v2_minus_v1_max": [
+    0.0,
+    3.102421760559082e-05,
+    0.0,
+    0.0,
+    0.0001240925165637008,
+    0.0,
+    0.00013742093461610594,
+    0.0,
+    0.0,
+    0.0,
+    0.00039565563201904297,
+    0.00030778348445892334,
+    0.0,
+    0.0,
+    0.0,
+    0.0022610774101019526,
+    0.0005858552868366895,
+    0.0,
+    4.7718089517645446e-05,
+    0.0
+   ],
+   "val_targets_outside_v2_train_bounds_right": {
+    "rows_out_of_bounds": 83,
+    "rows_checked": 28574,
+    "max_abs_normalized": 1.4756322143294458
+   }
+  },
+  "n0100": {
+   "file": "docs/policy_training/artifacts/normalizer_v2/action_statistics_v2_train_n0100.json",
+   "sha256": "3faa63fc6568ef56b3927c546b7fab6d9dc8d2973e2efd987bc8df8c2b00bf03",
+   "v2_train_coverage_right": {
+    "rows_out_of_bounds": 0,
+    "rows_checked": 15700,
+    "max_abs_normalized": 1.0
+   },
+   "v1_train_coverage_right": {
+    "rows_out_of_bounds": 8,
+    "rows_checked": 15700,
+    "max_abs_normalized": 1.0807001295046446
+   },
+   "v2_minus_v1_min": [
+    -5.364418029785156e-05,
+    -0.0001271665096282959,
+    0.0,
+    -8.788732376885378e-05,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -3.8640812595469587e-07,
+    0.0,
+    -0.00355374813079834,
+    0.0,
+    0.0,
+    -0.01255941646277381,
+    -0.001015320716584056,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "v2_minus_v1_max": [
+    0.0,
+    0.0,
+    2.115964889526367e-06,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.00039565563201904297,
+    0.00030778348445892334,
+    0.0,
+    0.0,
+    0.0,
+    0.0022610774101019526,
+    0.0005858552868366895,
+    0.0,
+    4.7718089517645446e-05,
+    0.0
+   ],
+   "val_targets_outside_v2_train_bounds_right": {
+    "rows_out_of_bounds": 65,
+    "rows_checked": 28574,
+    "max_abs_normalized": 1.1525107352695207
+   }
+  },
+  "n0150": {
+   "file": "docs/policy_training/artifacts/normalizer_v2/action_statistics_v2_train_n0150.json",
+   "sha256": "029449f6eeb3d4798878af176e608cbbd33e2b8616fdf40afce8202215603b7c",
+   "v2_train_coverage_right": {
+    "rows_out_of_bounds": 0,
+    "rows_checked": 23550,
+    "max_abs_normalized": 1.0
+   },
+   "v1_train_coverage_right": {
+    "rows_out_of_bounds": 10,
+    "rows_checked": 23550,
+    "max_abs_normalized": 1.0807001295046446
+   },
+   "v2_minus_v1_min": [
+    -5.364418029785156e-05,
+    0.0,
+    0.0,
+    -8.788732376885378e-05,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -3.8640812595469587e-07,
+    0.0,
+    -0.00355374813079834,
+    0.0,
+    0.0,
+    -0.01255941646277381,
+    -0.001015320716584056,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "v2_minus_v1_max": [
+    0.0,
+    0.0,
+    2.2351741790771484e-06,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.00039565563201904297,
+    0.0003470778465270996,
+    0.0,
+    0.0,
+    0.005031947927073371,
+    0.0022610774101019526,
+    0.022812135189207716,
+    0.0,
+    4.7718089517645446e-05,
+    0.0
+   ],
+   "val_targets_outside_v2_train_bounds_right": {
+    "rows_out_of_bounds": 56,
+    "rows_checked": 28574,
+    "max_abs_normalized": 1.138902645513625
+   }
+  },
+  "n1000": {
+   "file": "docs/policy_training/artifacts/normalizer_v2/action_statistics_v2_train_n1000.json",
+   "sha256": "840a00e404790bfb35fc8ef0e207b1f0e8ca42cb042a509c5d6c058d4112ceb9",
+   "v2_train_coverage_right": {
+    "rows_out_of_bounds": 0,
+    "rows_checked": 157000,
+    "max_abs_normalized": 1.0
+   },
+   "v1_train_coverage_right": {
+    "rows_out_of_bounds": 11,
+    "rows_checked": 157000,
+    "max_abs_normalized": 1.0619486521031374
+   },
+   "v2_minus_v1_min": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.00355374813079834,
+    -0.0004464685916900635,
+    0.0,
+    0.0,
+    0.0,
+    -0.0013611355090190624,
+    -0.0022829717776509106,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "v2_minus_v1_max": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    8.387506261654451e-05,
+    2.1671566563408184e-05,
+    0.0,
+    8.831173009538063e-08,
+    0.0,
+    0.0,
+    0.0,
+    0.0009823739528656006,
+    0.0,
+    0.03549247397345778,
+    0.004431659182560943,
+    0.02332592343844664,
+    0.010648269887804762,
+    4.7718089517645446e-05,
+    0.0
+   ],
+   "val_targets_outside_v2_train_bounds_right": {
+    "rows_out_of_bounds": 6,
+    "rows_checked": 28574,
+    "max_abs_normalized": 1.0368947302052267
+   }
+  },
+  "n1461": {
+   "file": "docs/policy_training/artifacts/normalizer_v2/action_statistics_v2_train_n1461.json",
+   "sha256": "30fef948c5c2fdc29e666f38e6e0223cc269ece8dbe07390463504d0fe4c5922",
+   "v2_train_coverage_right": {
+    "rows_out_of_bounds": 0,
+    "rows_checked": 229377,
+    "max_abs_normalized": 1.0
+   },
+   "v1_train_coverage_right": {
+    "rows_out_of_bounds": 12,
+    "rows_checked": 229377,
+    "max_abs_normalized": 1.0619486521031374
+   },
+   "v2_minus_v1_min": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -7.1256659532698e-05,
+    0.0,
+    0.0,
+    -1.4529547794073228e-07,
+    0.0,
+    -0.00355374813079834,
+    -0.0004464685916900635,
+    0.0,
+    0.0,
+    0.0,
+    -0.002051612617425258,
+    -0.0022829717776509106,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "v2_minus_v1_max": [
+    0.0,
+    3.039836883544922e-05,
+    0.0,
+    0.0,
+    0.0,
+    8.387506261654451e-05,
+    0.0,
+    0.0,
+    8.831173009538063e-08,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.2063761001268603e-06,
+    0.03549247397345778,
+    0.004431659182560943,
+    0.010709455862124129,
+    0.010648269887804762,
+    4.7718089517645446e-05,
+    0.0
+   ],
+   "val_targets_outside_v2_train_bounds_right": {
+    "rows_out_of_bounds": 3,
+    "rows_checked": 28574,
+    "max_abs_normalized": 1.0368947302052267
+   }
+  }
+ }
+}

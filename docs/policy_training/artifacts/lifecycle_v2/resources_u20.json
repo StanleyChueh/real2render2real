@@ -1,0 +1,113 @@
+{
+ "u20_A": {
+  "exit_code": 0,
+  "wall_s": 491.6,
+  "updates_this_session": 20,
+  "final_update": 20,
+  "elapsed_s": 480.26,
+  "data_wait_s": 14.27,
+  "optimizer_steps_skipped": 0,
+  "finished": true,
+  "peak_gpu_mem_allocated_GiB": 15.42,
+  "gpu0_peak_MiB": 22077,
+  "gpu0_util_mean_pct": 31.2,
+  "gpu1_peak_MiB": 348,
+  "gpu1_min_MiB": 277,
+  "host_used_MiB_baseline": 5710,
+  "host_used_MiB_peak": 14336,
+  "main_process_max_rss_GiB": 8.46,
+  "traceback_in_stdout": false
+ },
+ "u20_B1_stop10": {
+  "exit_code": 0,
+  "wall_s": 66.4,
+  "updates_this_session": 10,
+  "final_update": 10,
+  "elapsed_s": 55.18,
+  "data_wait_s": 8.88,
+  "optimizer_steps_skipped": 0,
+  "finished": false,
+  "peak_gpu_mem_allocated_GiB": 15.42,
+  "gpu0_peak_MiB": 21863,
+  "gpu0_util_mean_pct": 31.4,
+  "gpu1_peak_MiB": 348,
+  "gpu1_min_MiB": 348,
+  "host_used_MiB_baseline": 6255,
+  "host_used_MiB_peak": 13745,
+  "main_process_max_rss_GiB": 7.79,
+  "traceback_in_stdout": false
+ },
+ "u20_B2_resume": {
+  "exit_code": 0,
+  "wall_s": 459.8,
+  "updates_this_session": 10,
+  "final_update": 20,
+  "elapsed_s": 447.68,
+  "data_wait_s": 8.99,
+  "optimizer_steps_skipped": 0,
+  "finished": true,
+  "peak_gpu_mem_allocated_GiB": 15.43,
+  "gpu0_peak_MiB": 21763,
+  "gpu0_util_mean_pct": 30.3,
+  "gpu1_peak_MiB": 348,
+  "gpu1_min_MiB": 277,
+  "host_used_MiB_baseline": 6273,
+  "host_used_MiB_peak": 15691,
+  "main_process_max_rss_GiB": 9.14,
+  "traceback_in_stdout": false
+ },
+ "u20_A_timing": {
+  "update_s_mean_excl_first": 1.437,
+  "update_s_min": 0.8796,
+  "update_s_max": 2.0434,
+  "data_wait_s_mean_excl_first": 0.616,
+  "first_update_s": 5.4921,
+  "events": [
+   {
+    "type": "val_subset",
+    "update": 5,
+    "seconds": 17.23
+   },
+   {
+    "type": "val_subset",
+    "update": 10,
+    "seconds": 17.33
+   },
+   {
+    "type": "export",
+    "update": 10,
+    "seconds": 0.51
+   },
+   {
+    "type": "checkpoint",
+    "update": 10,
+    "seconds": 1.33
+   },
+   {
+    "type": "val_subset",
+    "update": 15,
+    "seconds": 17.07
+   },
+   {
+    "type": "val_subset",
+    "update": 20,
+    "seconds": 17.21
+   },
+   {
+    "type": "val_full",
+    "update": 20,
+    "seconds": 375.06
+   },
+   {
+    "type": "export",
+    "update": 20,
+    "seconds": 0.52
+   },
+   {
+    "type": "checkpoint",
+    "update": 20,
+    "seconds": 1.2
+   }
+  ]
+ }
+}

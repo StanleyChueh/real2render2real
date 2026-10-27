@@ -1,5 +1,7 @@
 # 02 — TinyDP training protocol (proposed; NOT launched)
 
+> **Superseded (2026-10-27)** by [VALIDATED_TRAINING_PROTOCOL.md](VALIDATED_TRAINING_PROTOCOL.md) after the [pre-training audit](CODEX_PRETRAIN_AUDIT.md) and its [repair](AUDIT_REPAIR_REPORT.md). Kept unchanged below as the historical proposal, except for one correction: the "Sampler shuffling" row is wrong. `MultiEpochsDataLoader` calls `set_epoch` every epoch, so batch order changes per epoch (only batch composition is fixed); see AUDIT_REPAIR_REPORT §1.
+
 Status: **prepared for independent audit.** No full training run has been started. Single GPU (GPU 0) only. WandB disabled. No uploads.
 
 ## 1. Entry point

@@ -1,0 +1,59 @@
+{
+ "protocol_version": "r2r2r-dp-protocol-v2",
+ "name": "lifecycle_u100_v2",
+ "purpose": "Bounded lifecycle test of baseline_v2 (100 optimizer updates); identical data/model/optimizer, shortened schedule. Not a training result.",
+ "data": {
+  "manifest": "docs/policy_training/artifacts/manifest_v1.json",
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "views_root": "~/Stanley_ws/r2r2r_policy_runs/dataset_v1/views",
+  "eval_split": "val",
+  "normalizer": "v2",
+  "statistics_dir": "docs/policy_training/artifacts/normalizer_v2",
+  "timing_variant": "released_pairing"
+ },
+ "tinydp": {
+  "dataset_cfg.is_sim_data": true,
+  "dataset_cfg.scale_action": true,
+  "dataset_cfg.proprio_noise": 0.003,
+  "dataset_cfg.subsample_steps": 2,
+  "model_cfg.policy_cfg.pred_right_only": true,
+  "model_cfg.policy_cfg.down_dims": [
+   256,
+   256,
+   512,
+   1024
+  ],
+  "model_cfg.policy_cfg.num_train_diffusion_steps": 100,
+  "model_cfg.policy_cfg.num_inference_diffusion_steps": 100,
+  "model_cfg.policy_cfg.gripper_loss_w": 5.0,
+  "shared_cfg.batch_size": 16,
+  "shared_cfg.seq_length": 4,
+  "shared_cfg.num_pred_steps": 16,
+  "shared_cfg.num_cameras": 2,
+  "shared_cfg.image_size": 448,
+  "shared_cfg.use_delta_action": false,
+  "shared_cfg.seed": 0,
+  "optimizer_cfg.lr": 0.0002,
+  "optimizer_cfg.weight_decay": 0.09,
+  "trainer_cfg.num_workers": 4,
+  "trainer_cfg.pin_memory": true
+ },
+ "schedule": {
+  "accum_micro_batches": 4,
+  "total_updates": 100,
+  "warmup_updates": 5,
+  "lr_schedule": "cosine",
+  "ema_decay_per_update": 0.9999,
+  "grad_clip": 1.0,
+  "amp_dtype": "bfloat16",
+  "sampler_seed": 42,
+  "log_every_updates": 1,
+  "val_every_updates": 25,
+  "val_subset_window_stride": 60,
+  "val_seed": 1234,
+  "full_val_every_updates": 100,
+  "full_ckpt_every_updates": 50,
+  "keep_full_checkpoints": 3,
+  "inference_export_every_updates": 50
+ }
+}

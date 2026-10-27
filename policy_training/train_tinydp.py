@@ -1,4 +1,10 @@
-"""Run TinyDP's unmodified script/train.py on manifest views.
+"""LEGACY (v1) launcher: run TinyDP's unmodified script/train.py on manifest views.
+
+SUPERSEDED by train_r2r2r_dp.py (protocol v2). The released epoch loop this launches has the audit's M2/M3
+defects (scheduler/EMA advance per micro-batch, dropped accumulation tails, unfaithful resume), it
+does not run the M4 launch checks, and its output is not usable by the M5 inference adapter. Running it
+therefore requires --legacy-v1-released-loop as the first argument; keep it only for compatibility runs
+that are explicitly labelled as such.
 
     CUDA_VISIBLE_DEVICES=0 python policy_training/train_tinydp.py \
         --train-root VIEWS/train_subsets/n1461 --eval-root VIEWS/splits/val \
@@ -85,7 +91,17 @@ def prepare(argv):
     return tinydp_args
 
 
-if __name__ == "__main__":
-    tinydp_args = prepare(sys.argv[1:])
+LEGACY_FLAG = "--legacy-v1-released-loop"
+
+
+def main(argv):
+    if not argv or argv[0] != LEGACY_FLAG:
+        sys.exit(f"train_tinydp.py is the legacy v1 launcher (audit M2-M5). Use policy_training/train_r2r2r_dp.py, "
+                 f"or pass {LEGACY_FLAG} first for an explicitly labelled released-loop compatibility run.")
+    tinydp_args = prepare(argv[1:])
     sys.argv = [TRAIN_PY, *tinydp_args]
     runpy.run_path(TRAIN_PY, run_name="__main__")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

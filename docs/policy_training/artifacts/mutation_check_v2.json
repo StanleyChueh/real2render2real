@@ -1,0 +1,169 @@
+{
+ "control": {
+  "control_exit": 0,
+  "summary": "27 passed, 483 warnings in 29.53s",
+  "tests": [
+   "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "tests/test_driver.py::test_item_seeding_is_keyed_and_leaves_caller_rng_untouched",
+   "tests/test_driver.py::test_update_semantics",
+   "tests/test_inference.py",
+   "tests/test_launch_checks.py::test_absolute_statistics_with_delta_actions_rejected",
+   "tests/test_launch_checks.py::test_mutated_sidecar_rejected",
+   "tests/test_launch_checks.py::test_nonempty_output_dir_rejected",
+   "tests/test_launch_checks.py::test_protocol_rejections",
+   "tests/test_launch_checks.py::test_tampered_statistics_rejected",
+   "tests/test_launch_checks.py::test_train_eval_overlap_rejected",
+   "tests/test_launch_checks.py::test_wrong_subset_statistics_rejected",
+   "tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered"
+  ]
+ },
+ "mutations": [
+  {
+   "mutation": "M1 even-row-only normalizer",
+   "test": "tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 6 warnings in 1.77s"
+  },
+  {
+   "mutation": "M2 scheduler per micro-batch",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.48s"
+  },
+  {
+   "mutation": "M2 EMA per micro-batch",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.88s"
+  },
+  {
+   "mutation": "M2 loss logged divided by accum",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.44s"
+  },
+  {
+   "mutation": "M2 drop partial accumulation at epoch end",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.51s"
+  },
+  {
+   "mutation": "M2 no set_epoch",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.57s"
+  },
+  {
+   "mutation": "M3 scheduler state not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 20.32s"
+  },
+  {
+   "mutation": "M3 EMA not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 20.73s"
+  },
+  {
+   "mutation": "M3 RNG not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 20.70s"
+  },
+  {
+   "mutation": "M3 data position not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 20.71s"
+  },
+  {
+   "mutation": "M3 item seeding clobbers training RNG",
+   "test": "tests/test_driver.py::test_item_seeding_is_keyed_and_leaves_caller_rng_untouched",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 2.28s"
+  },
+  {
+   "mutation": "M4 no root overlap check",
+   "test": "tests/test_launch_checks.py::test_train_eval_overlap_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.77s"
+  },
+  {
+   "mutation": "M4 no sidecar hash check",
+   "test": "tests/test_launch_checks.py::test_mutated_sidecar_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 80 warnings in 1.81s"
+  },
+  {
+   "mutation": "M4 no statistics provenance check",
+   "test": "tests/test_launch_checks.py::test_wrong_subset_statistics_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.71s"
+  },
+  {
+   "mutation": "M4 no numeric statistics recomputation",
+   "test": "tests/test_launch_checks.py::test_tampered_statistics_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.72s"
+  },
+  {
+   "mutation": "M4 accept delta actions",
+   "test": "tests/test_launch_checks.py::test_absolute_statistics_with_delta_actions_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.70s"
+  },
+  {
+   "mutation": "M4 accept arbitrary TinyDP overrides",
+   "test": "tests/test_launch_checks.py::test_protocol_rejections",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 1 passed, 78 warnings in 1.69s"
+  },
+  {
+   "mutation": "M4 output dir reuse",
+   "test": "tests/test_launch_checks.py::test_nonempty_output_dir_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.71s"
+  },
+  {
+   "mutation": "M5 inference uses raw weights by default",
+   "test": "tests/test_inference.py",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 5.01s"
+  },
+  {
+   "mutation": "M5 statistics not embedded in checkpoint",
+   "test": "tests/test_inference.py",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 4.86s"
+  },
+  {
+   "mutation": "M5 denormalise with left-arm statistics",
+   "test": "tests/test_inference.py",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 4.98s"
+  }
+ ]
+}

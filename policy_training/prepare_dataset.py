@@ -139,6 +139,45 @@ def cmd_stats(a):
     print(json.dumps(summary, indent=1))
 
 
+def cmd_stats_v2(a):
+    """Audit M1: v2 train-only bounds over every loader-returned target; v1 files are only read."""
+    from r2r2r_dp import normalizer_v2 as nv
+    m = mf.load_manifest(a.manifest)
+    msha = nv.file_sha256(a.manifest)
+    os.makedirs(a.out_dir, exist_ok=True)
+    s, L, P = STATS_KW["subsample_steps"], 4, STATS_KW["num_pred_steps"]
+    val_h5s = nv.view_episode_h5s(os.path.join(a.views_root, "splits", "val"))
+    summary = {"manifest_sha256": msha, "subsets": {}}
+    for n in sorted(m["train_subsets"], key=int):
+        tag = f"n{int(n):04d}"
+        root = os.path.join(a.views_root, "train_subsets", tag)
+        out = os.path.join(a.out_dir, f"action_statistics_v2_train_{tag}.json")
+        if os.path.exists(out):
+            _fail(f"{out} exists")
+        st = nv.build_statistics(root, tag, m["train_subsets"][n], msha, s, L, P)
+        h5s = nv.view_episode_h5s(root)
+        cov2 = nv.coverage(h5s, st, s, L, P)
+        if cov2["rows_out_of_bounds"]:
+            _fail(f"{tag}: v2 bounds do not cover the training targets: {cov2}")
+        v1 = json.load(open(os.path.join(a.v1_dir, f"action_statistics_train_{tag}.json")))
+        with open(out, "w") as f:
+            json.dump(st, f, indent=1)
+            f.write("\n")
+        lo1, hi1 = np.array(v1["min_action"]), np.array(v1["max_action"])
+        summary["subsets"][tag] = {
+            "file": os.path.relpath(out), "sha256": nv.file_sha256(out),
+            "v2_train_coverage_right": cov2, "v1_train_coverage_right": nv.coverage(h5s, v1, s, L, P),
+            "v2_minus_v1_min": (np.array(st["min_action"]) - lo1).tolist(),
+            "v2_minus_v1_max": (np.array(st["max_action"]) - hi1).tolist(),
+            "val_targets_outside_v2_train_bounds_right": nv.coverage(val_h5s, st, s, L, P),
+        }
+    with open(os.path.join(a.out_dir, "normalizer_v2_summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+        f.write("\n")
+    print(json.dumps({k: {kk: vv for kk, vv in v.items() if "coverage" in kk or kk.startswith("val")}
+                      for k, v in summary["subsets"].items()}, indent=1))
+
+
 def _profile(ep_dir):
     arr = load_episode_arrays(ep_dir)
     p = analysis.joint_jump_profile(arr["joint_angles"], arr["ee_poses"])
@@ -228,9 +267,10 @@ def main():
     p = sp.add_parser("trial"); p.add_argument("--manifest", required=True); p.add_argument("--n", type=int, required=True); p.add_argument("--out", required=True)
     p = sp.add_parser("views"); p.add_argument("--manifest", required=True); p.add_argument("--out-root", required=True)
     p = sp.add_parser("stats"); p.add_argument("--manifest", required=True); p.add_argument("--views-root", required=True); p.add_argument("--out-dir", required=True)
+    p = sp.add_parser("stats-v2"); p.add_argument("--manifest", required=True); p.add_argument("--views-root", required=True); p.add_argument("--v1-dir", required=True); p.add_argument("--out-dir", required=True)
     p = sp.add_parser("analyze"); p.add_argument("--manifest", required=True); p.add_argument("--views-root", required=True); p.add_argument("--out", required=True)
     a = ap.parse_args()
-    {"manifest": cmd_manifest, "trial": cmd_trial, "views": cmd_views, "stats": cmd_stats, "analyze": cmd_analyze}[a.cmd](a)
+    {"manifest": cmd_manifest, "trial": cmd_trial, "views": cmd_views, "stats": cmd_stats, "stats-v2": cmd_stats_v2, "analyze": cmd_analyze}[a.cmd](a)
 
 
 if __name__ == "__main__":
