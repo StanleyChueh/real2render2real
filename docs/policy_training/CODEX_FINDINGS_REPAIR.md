@@ -57,13 +57,24 @@ M6 is untouched by design. The released image/state pairing (`timing_variant: re
 
 `policy_training/tools/mutation_check.py` copies `policy_training/`, applies one exact string replacement and runs the targeted test. It covers the 21 original M1–M5 mutations (two strings updated to the edited source) and 27 new F1–F8 mutations, each undoing one repair: for example "skipped GradScaler step counted as an update", "no bound on consecutive skips", "statistics config not compared", "frame bytes not verified", "booleans accepted as integers", "validation not transactional", "EMA key set not checked" and "collinear rot6d accepted". A timeout counts as detected; one is reported separately if it occurs.
 
-Result: see §4 (`artifacts/codex_final_repair/mutation_check_v3.json`).
+Result at `966d459`: control run 117 passed (exit 0); **48 of 48 mutations detected** (21 M1–M5 + 27 F1–F8), 0 timeouts (`artifacts/codex_final_repair/verification_966d459/mutation_check_v3.json`). An earlier full run on the uncommitted tree detected 46 of 48. Two F-mutations removed only one of two overlapping checks, so the test still passed: the F2 sidecar check, which the action-level finite check backs up, and the F7 `micro == accum × attempted` check, which the data-position check backs up. The F2 mutation now disables the shared `require_finite` check. A checkpoint case that only the micro-batch identity can catch (`micro_with_matching_position`) was added. Both were then detected.
 
 ## 4. Verification at the repair commit
 
-Filled in from runs at the commit named in the table (the docs/evidence commit that follows changes no code):
+All runs below are at implementation commit **`966d45980bd7fd2654fd9f79c62c0dd844a181d5`** (clean tree; the commit that follows adds only this table and the evidence files). Evidence: `artifacts/codex_final_repair/verification_966d459/`.
 
-VERIFICATION_TABLE
+| Check | Command | Result |
+|---|---|---|
+| Repository tests (89 original + 105 new) | `CUDA_VISIBLE_DEVICES="" .venv-tinydp/bin/python -m pytest -q -p no:cacheprovider policy_training/tests` | **194 passed**, exit 0 (71.9 s) |
+| Codex independent suite, unchanged (28 cases) | `policy_training/audit/run_codex_final_suite.sh OUT` | **25 passed, 3 failed**, exit 1 (`suite_exit.json`: commit `966d459`, dirty false). The 3 failures are `test_inherited_physical_rotation_conversion_is_valid_or_rejects[nonunit/collinear/zero]`. They test the pinned, unmodifiable TinyDP helper, and their observations equal Codex's (det 36, non-finite, det 0); see §6.1. All 22 other previously failing cases pass. The 6 previously passing cases still pass, including bitwise cross-epoch CPU resume and relocated inference. |
+| Mutation check (48) | `.venv-tinydp/bin/python policy_training/tools/mutation_check.py OUT.json` | 48 / 48 detected (§3) |
+| Preservation and invariants | `.venv-tinydp/bin/python policy_training/verify_repair_invariants.py --base 43ab363… --checkpoint <v3 u20_A> --checkpoint <v3 u20_B> --checkpoint <v2 u100_w4> --out …` | `all_ok: true`, exit 0. Protected paths (`scripts`, `real2render2real`, `dependencies`, `pyproject.toml`, `uv.lock`, `env_data_gen.sh`) are equal to `repro/baseline-datagen` (`334e83d`, unchanged). Submodules are at their pins and TinyDP is clean; the only drift is the pre-existing `trajgen.egg-info`. The v1 statistics and manifest are unchanged vs `43ab363`. Source fingerprint `dd23bd44…2f2bcd`; no view file modified. Launch checks pass for N = 50/100/150/1000/1461. Checkpoint counters: Adam steps = scheduler = update, attempted = update + skipped, micro = 4 × attempted = epoch × bpe + batch (v3 u20 ×2 and legacy v2 u100). |
+| Real-data launch checks, protocol v3 | `.venv-tinydp/bin/python policy_training/tools/launch_check_all.py policy_training/configs/baseline_v3.json …` | All 5 N pass, 6.3–38.4 s; N = 1461 verifies 1,825 episodes / 587,650 frames (`artifacts/launch_checks_baseline_v3.json`) |
+| Released-code M3 counterexample | `.venv-tinydp/bin/python -I policy_training/repro_released_resume.py` | Still reproduces on unchanged TinyDP: epochs `[0..5]` retrained (expected `[5]`), EMA 9 → 3 |
+| Codex evidence preserved | `sha256sum -c` against `artifacts/codex_final_43ab363/SHA256SUMS.original_evidence` | `/tmp/r2r2r-codex-final-evidence` unchanged; repo copies identical; `CODEX_FINAL_AUDIT.md` byte-identical |
+| v2 statistics, manifest and earlier audit | `git diff 43ab363 HEAD -- docs/policy_training/artifacts/{normalizer_v2,manifest_v1.json,action_statistics_train_n*.json} docs/policy_training/CODEX_PRETRAIN_AUDIT.md` | empty |
+
+The repository's `pytest` reports deprecation/user warnings from zarr, NumPy and torch's scheduler-order check; their number grew only because there are more tests. None is new in kind, and none is suppressed. Non-zero exit is ensured for: failed launch checks (`test_launch_failure_exits_nonzero`, subprocess); non-finite loss or validation (exception); skipped-step abort (`SkippedStepError`); and a session ending before its target update (`SystemExit` in `train_r2r2r_dp.py`).
 
 ## 5. Bounded GPU checks (GPU 0 only)
 

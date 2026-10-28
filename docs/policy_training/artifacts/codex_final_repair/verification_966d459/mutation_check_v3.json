@@ -1,0 +1,378 @@
+{
+ "control": {
+  "control_exit": 0,
+  "summary": "117 passed, 1676 warnings in 54.93s",
+  "tests": [
+   "tests/test_codex_final_inputs.py::test_builder_decodes_and_checks_resolution",
+   "tests/test_codex_final_inputs.py::test_corrupt_wrong_size_and_missing_frames_rejected",
+   "tests/test_codex_final_inputs.py::test_inference_rejects_invalid_inputs",
+   "tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected",
+   "tests/test_codex_final_inputs.py::test_manifest_semantics",
+   "tests/test_codex_final_inputs.py::test_nan_sidecar_cannot_be_certified",
+   "tests/test_codex_final_inputs.py::test_nonfinite_output_and_weights_rejected",
+   "tests/test_codex_final_inputs.py::test_normalized_rejects_nonfinite_actions_and_bounds",
+   "tests/test_codex_final_inputs.py::test_protocol_file_is_strict_json",
+   "tests/test_codex_final_inputs.py::test_renamed_view_rejected",
+   "tests/test_codex_final_inputs.py::test_rotation_converter_cases",
+   "tests/test_codex_final_inputs.py::test_statistics_declared_config_enforced",
+   "tests/test_codex_final_inputs.py::test_symlinked_episode_alias_rejected",
+   "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes",
+   "tests/test_codex_final_training.py::test_export_failure_restores_raw_weights",
+   "tests/test_codex_final_training.py::test_nonfinite_and_empty_validation_raise",
+   "tests/test_codex_final_training.py::test_persistent_overflow_aborts_without_counting",
+   "tests/test_codex_final_training.py::test_resume_after_skip_equals_uninterrupted",
+   "tests/test_codex_final_training.py::test_skipped_step_advances_nothing_but_data",
+   "tests/test_codex_final_training.py::test_validation_failure_restores_weights_and_mode",
+   "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "tests/test_driver.py::test_item_seeding_is_keyed_and_leaves_caller_rng_untouched",
+   "tests/test_driver.py::test_update_semantics",
+   "tests/test_inference.py",
+   "tests/test_launch_checks.py::test_absolute_statistics_with_delta_actions_rejected",
+   "tests/test_launch_checks.py::test_mutated_sidecar_rejected",
+   "tests/test_launch_checks.py::test_nonempty_output_dir_rejected",
+   "tests/test_launch_checks.py::test_protocol_rejections",
+   "tests/test_launch_checks.py::test_tampered_statistics_rejected",
+   "tests/test_launch_checks.py::test_train_eval_overlap_rejected",
+   "tests/test_launch_checks.py::test_wrong_subset_statistics_rejected",
+   "tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered"
+  ]
+ },
+ "mutations": [
+  {
+   "mutation": "M1 even-row-only normalizer",
+   "test": "tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 6 warnings in 1.70s"
+  },
+  {
+   "mutation": "M2 scheduler per micro-batch",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.99s"
+  },
+  {
+   "mutation": "M2 EMA per micro-batch",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 8.33s"
+  },
+  {
+   "mutation": "M2 loss logged divided by accum",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.59s"
+  },
+  {
+   "mutation": "M2 drop partial accumulation at epoch end",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.56s"
+  },
+  {
+   "mutation": "M2 no set_epoch",
+   "test": "tests/test_driver.py::test_update_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.55s"
+  },
+  {
+   "mutation": "M3 scheduler state not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 20.92s"
+  },
+  {
+   "mutation": "M3 EMA not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 20.43s"
+  },
+  {
+   "mutation": "M3 RNG not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 20.71s"
+  },
+  {
+   "mutation": "M3 data position not restored",
+   "test": "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 81 warnings in 21.03s"
+  },
+  {
+   "mutation": "M3 item seeding clobbers training RNG",
+   "test": "tests/test_driver.py::test_item_seeding_is_keyed_and_leaves_caller_rng_untouched",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 2.36s"
+  },
+  {
+   "mutation": "M4 no root overlap check",
+   "test": "tests/test_launch_checks.py::test_train_eval_overlap_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.96s"
+  },
+  {
+   "mutation": "M4 no sidecar hash check",
+   "test": "tests/test_launch_checks.py::test_mutated_sidecar_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 80 warnings in 1.89s"
+  },
+  {
+   "mutation": "M4 no statistics provenance check",
+   "test": "tests/test_launch_checks.py::test_wrong_subset_statistics_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.82s"
+  },
+  {
+   "mutation": "M4 no numeric statistics recomputation",
+   "test": "tests/test_launch_checks.py::test_tampered_statistics_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.84s"
+  },
+  {
+   "mutation": "M4 accept delta actions",
+   "test": "tests/test_launch_checks.py::test_absolute_statistics_with_delta_actions_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.79s"
+  },
+  {
+   "mutation": "M4 accept arbitrary TinyDP overrides",
+   "test": "tests/test_launch_checks.py::test_protocol_rejections",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 1 passed, 78 warnings in 1.77s"
+  },
+  {
+   "mutation": "M4 output dir reuse",
+   "test": "tests/test_launch_checks.py::test_nonempty_output_dir_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.81s"
+  },
+  {
+   "mutation": "M5 inference uses raw weights by default",
+   "test": "tests/test_inference.py",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 5.32s"
+  },
+  {
+   "mutation": "M5 statistics not embedded in checkpoint",
+   "test": "tests/test_inference.py",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 5.10s"
+  },
+  {
+   "mutation": "M5 denormalise with left-arm statistics",
+   "test": "tests/test_inference.py",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 5.18s"
+  },
+  {
+   "mutation": "F1 skipped GradScaler step counted as an update",
+   "test": "tests/test_codex_final_training.py::test_skipped_step_advances_nothing_but_data",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 8.01s"
+  },
+  {
+   "mutation": "F1 no bound on consecutive skipped steps",
+   "test": "tests/test_codex_final_training.py::test_persistent_overflow_aborts_without_counting",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.00s"
+  },
+  {
+   "mutation": "F1 skip counters not restored on resume",
+   "test": "tests/test_codex_final_training.py::test_resume_after_skip_equals_uninterrupted",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 7.44s"
+  },
+  {
+   "mutation": "F2 normalized() sanitizes non-finite actions",
+   "test": "tests/test_codex_final_inputs.py::test_normalized_rejects_nonfinite_actions_and_bounds",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed in 1.62s"
+  },
+  {
+   "mutation": "F2 statistics built from non-finite sidecars (all finite checks off)",
+   "test": "tests/test_codex_final_inputs.py::test_nan_sidecar_cannot_be_certified",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 80 warnings in 1.86s"
+  },
+  {
+   "mutation": "F3 manifest counts not checked",
+   "test": "tests/test_codex_final_inputs.py::test_manifest_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 2 passed, 78 warnings in 1.77s"
+  },
+  {
+   "mutation": "F3 manifest salt order not checked",
+   "test": "tests/test_codex_final_inputs.py::test_manifest_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 3 passed, 78 warnings in 1.89s"
+  },
+  {
+   "mutation": "F3 manifest version not checked",
+   "test": "tests/test_codex_final_inputs.py::test_manifest_semantics",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.77s"
+  },
+  {
+   "mutation": "F3 view directory names not canonical",
+   "test": "tests/test_codex_final_inputs.py::test_renamed_view_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.82s"
+  },
+  {
+   "mutation": "F3 symlinked episode aliases accepted",
+   "test": "tests/test_codex_final_inputs.py::test_symlinked_episode_alias_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.83s"
+  },
+  {
+   "mutation": "F3 statistics config (layout) not compared",
+   "test": "tests/test_codex_final_inputs.py::test_statistics_declared_config_enforced",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.81s"
+  },
+  {
+   "mutation": "F3 statistics config digest not recomputed",
+   "test": "tests/test_codex_final_inputs.py::test_statistics_declared_config_enforced",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 3 passed, 312 warnings in 2.31s"
+  },
+  {
+   "mutation": "F3 checkpoint sample order not compared",
+   "test": "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 13 passed, 92 warnings in 7.56s"
+  },
+  {
+   "mutation": "F4 frame bytes not verified at launch",
+   "test": "tests/test_codex_final_inputs.py::test_corrupt_wrong_size_and_missing_frames_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.79s"
+  },
+  {
+   "mutation": "F4 builder does not check resolution",
+   "test": "tests/test_codex_final_inputs.py::test_builder_decodes_and_checks_resolution",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.82s"
+  },
+  {
+   "mutation": "F5 negative/zero grad_clip accepted",
+   "test": "tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 2.01s"
+  },
+  {
+   "mutation": "F5 booleans accepted as integers",
+   "test": "tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 5 passed, 78 warnings in 1.81s"
+  },
+  {
+   "mutation": "F5 resolved TinyDP values not validated",
+   "test": "tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 9 passed, 78 warnings in 1.81s"
+  },
+  {
+   "mutation": "F5 NaN literals accepted in protocol files",
+   "test": "tests/test_codex_final_inputs.py::test_protocol_file_is_strict_json",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 78 warnings in 1.78s"
+  },
+  {
+   "mutation": "F6 validation not transactional",
+   "test": "tests/test_codex_final_training.py::test_validation_failure_restores_weights_and_mode",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 3.44s"
+  },
+  {
+   "mutation": "F6 non-finite validation loss accepted",
+   "test": "tests/test_codex_final_training.py::test_nonfinite_and_empty_validation_raise",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 3.40s"
+  },
+  {
+   "mutation": "F6 non-finite EMA export accepted",
+   "test": "tests/test_codex_final_training.py::test_export_failure_restores_raw_weights",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 3.44s"
+  },
+  {
+   "mutation": "F7 EMA key set/shape/finiteness not checked",
+   "test": "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 3.77s"
+  },
+  {
+   "mutation": "F7 counters/data position not checked",
+   "test": "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 8 passed, 87 warnings in 6.20s"
+  },
+  {
+   "mutation": "F8 non-finite inference inputs accepted",
+   "test": "tests/test_codex_final_inputs.py::test_inference_rejects_invalid_inputs",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 4.24s"
+  },
+  {
+   "mutation": "F8 non-finite policy output returned",
+   "test": "tests/test_codex_final_inputs.py::test_nonfinite_output_and_weights_rejected",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 79 warnings in 4.26s"
+  },
+  {
+   "mutation": "F8 collinear rot6d rows accepted",
+   "test": "tests/test_codex_final_inputs.py::test_rotation_converter_cases",
+   "pytest_exit": 1,
+   "detected": true,
+   "summary": "1 failed, 1 warning in 1.62s"
+  }
+ ]
+}

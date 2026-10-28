@@ -1,0 +1,1 @@
+{"train_epochs_called": [0, 1, 2, 3, 4, 5], "expected_epochs": [5], "args_start_epoch_after_resume": 5, "saved_checkpoint_keys": ["ema", "epoch", "model", "optimizer"], "saved_ema_w": 3.0, "checkpoint_ema_w": 9.0, "saved_model_w": 3.0}

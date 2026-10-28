@@ -1,0 +1,6 @@
+{
+ "command": "CUDA_VISIBLE_DEVICES=\"\" .venv-tinydp/bin/python -m pytest -q -p no:cacheprovider policy_training/tests",
+ "commit": "966d45980bd7fd2654fd9f79c62c0dd844a181d5",
+ "summary": "194 passed, 3107 warnings in 71.87s (0:01:11)",
+ "exit_code": 0
+}

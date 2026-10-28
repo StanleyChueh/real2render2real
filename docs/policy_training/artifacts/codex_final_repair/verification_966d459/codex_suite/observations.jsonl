@@ -1,0 +1,11 @@
+{"name": "amp_skip", "optimizer_steps": 1, "scheduler_steps": 1, "ema_updates": 1, "successful_updates": 1, "micro_batches": 8, "scaler_scale": 32768.0, "summary": {"updates_this_session": 1, "final_update": 1, "elapsed_s": 0.01, "data_wait_s": 0.0, "skipped_updates_this_session": 1, "attempted_updates_total": 2, "skipped_updates_total": 1, "finished": true}}
+{"name": "accumulation_equivalence", "large_w": 0.7093699989981614, "micro_w": 0.7093699989981614, "large_steps": 1, "micro_steps": 1}
+{"name": "ema_scalar", "ema": 12.5}
+{"name": "normal_validation_rng_isolation", "loss": 1.5453885793685913, "windows": 4}
+{"name": "validation_exception", "raw_weights_restored": true, "training_mode": true}
+{"name": "weighted_validation", "loss": 3.0, "windows": 4, "weights": "ema", "seconds": 0.03}
+{"name": "inference_portability", "shape": [1, 16, 10], "all_external_paths_unavailable": true}
+{"name": "inherited_rotation", "input": [2.0, 0, 0, 0, 3.0, 0], "finite": true, "determinant": 36.0}
+{"name": "inherited_rotation", "input": [1.0, 0, 0, 1.0, 0, 0], "finite": false, "determinant": null}
+{"name": "inherited_rotation", "input": [0.0, 0, 0, 0, 0, 0], "finite": true, "determinant": 0.0}
+{"name": "cross_epoch_cpu_resume", "bitwise_equal": true, "updates": 9, "micro_batches": 36, "data_position": {"epoch": 1, "batch": 6, "batches_per_epoch": 30}}
