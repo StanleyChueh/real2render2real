@@ -1,0 +1,133 @@
+F
+=================================== FAILURES ===================================
+______________ test_inference_rejects_invalid_inputs[nan_proprio] ______________
+
+policy = '/tmp/pytest-of-stanley/pytest-272/cfi_pol0/run/policy_ema_u0000002.pt'
+case = 'nan_proprio'
+
+    @pytest.mark.parametrize("case", ["nan_proprio", "inf_obs", "int_obs", "image_size", "batch0", "steps0", "steps_big",
+                                      "steps_bool", "seed_neg", "numpy"])
+    def test_inference_rejects_invalid_inputs(policy, case):
+        pol = R2R2RPolicy.load(policy)
+        obs, prop = _inputs()
+        kw = {"num_inference_steps": 2}
+        if case == "nan_proprio":
+            prop[0, 0, 0] = float("nan")
+        elif case == "inf_obs":
+            obs[0, 0, 0, 0, 0, 0] = float("inf")
+        elif case == "int_obs":
+            obs = obs.long()
+        elif case == "image_size":
+            obs = torch.zeros(1, 4, 2, 3, 16, 16)
+        elif case == "batch0":
+            obs, prop = obs[:0], prop[:0]
+        elif case == "steps0":
+            kw["num_inference_steps"] = 0
+        elif case == "steps_big":
+            kw["num_inference_steps"] = 101
+        elif case == "steps_bool":
+            kw["num_inference_steps"] = True
+        elif case == "seed_neg":
+            kw["seed"] = -1
+        elif case == "numpy":
+            prop = prop.numpy()
+        with pytest.raises((ValueError, TypeError)):
+>           pol.predict(obs, prop, **kw)
+
+tests/test_codex_final_inputs.py:323: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/utils/_contextlib.py:116: in decorate_context
+    return func(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <r2r2r_dp.inference.R2R2RPolicy object at 0x736e4dfa9960>
+observation = tensor([[[[[[0., 0., 0.,  ..., 0., 0., 0.],
+            [0., 0., 0.,  ..., 0., 0., 0.],
+            [0., 0., 0.,  ...,...0., 0.,  ..., 0., 0., 0.],
+            [0., 0., 0.,  ..., 0., 0., 0.],
+            [0., 0., 0.,  ..., 0., 0., 0.]]]]]])
+proprio = tensor([[[nan, 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., ..., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]]])
+num_inference_steps = 2, seed = None
+
+    @torch.no_grad()
+    def predict(self, observation: torch.Tensor, proprio: torch.Tensor, num_inference_steps: Optional[int] = None,
+                seed: Optional[int] = None) -> Dict[str, torch.Tensor]:
+        B = self._check_inputs(observation, proprio, num_inference_steps, seed)
+        steps = num_inference_steps or self.cfg.model_cfg.policy_cfg.num_inference_diffusion_steps
+        self.model.noise_scheduler.set_timesteps(steps)
+        batch = {"observation": observation.to(self.device).float(), "proprio": proprio.to(self.device).float()}
+        devs = [self.device.index or 0] if self.device.type == "cuda" else []
+        with torch.random.fork_rng(devices=devs, enabled=seed is not None):
+            if seed is not None:
+                torch.manual_seed(seed)
+            z = self.model.forward_inference(batch)
+        if z.shape != (B, self.action_horizon, 10):
+            raise RuntimeError(f"unexpected policy output shape {tuple(z.shape)}")
+        action = self.denormalize(z.double()).float()
+        if not (torch.isfinite(z).all() and torch.isfinite(action).all()):
+>           raise FloatingPointError("policy output is not finite")
+E           FloatingPointError: policy output is not finite
+
+r2r2r_dp/inference.py:133: FloatingPointError
+---------------------------- Captured stdout setup -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "76f734531f4e8e237d46dd1fdecfc94b0abce5a3c0b6a2468352440d5542fb4a",
+ "launch": {
+  "manifest_sha256": "05338bb349fddc74cfa03362a175441d621be461a457ed20d058fa054b528004",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "2eb8d13429f4a50785e50bda7f79b75f7bd95babe7ecadd87c8fdc6511b6c246",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "4e522fa9c94252a221f40fadb10d44a074c4c07927263d3691c9d312abd2dd78",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/pytest-of-stanley/pytest-272/cfi_pol0/views/train_subsets/n0003",
+   "val": "/tmp/pytest-of-stanley/pytest-272/cfi_pol0/views/splits/val",
+   "test": "/tmp/pytest-of-stanley/pytest-272/cfi_pol0/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 2, "final_update": 2, "elapsed_s": 1.32, "data_wait_s": 0.1, "skipped_updates_this_session": 0, "attempted_updates_total": 2, "skipped_updates_total": 0, "finished": true}
+----------------------------- Captured stdout call -----------------------------
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+tests/test_codex_final_inputs.py::test_inference_rejects_invalid_inputs[nan_proprio]
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_inference_rejects_invalid_inputs[nan_proprio]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 79 warnings in 3.74s

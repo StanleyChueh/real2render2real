@@ -1,0 +1,34 @@
+F
+=================================== FAILURES ===================================
+______________________ test_tampered_statistics_rejected _______________________
+
+fresh = {'source': '/tmp/pytest-of-stanley/pytest-242/test_tampered_statistics_rejec0/src', 'manifest': {'version': 1, 'salt':...tistics_rejec0/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-242/test_tampered_statistics_rejec0/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-242/test_tampered_statistics_rejec0')
+
+    def test_tampered_statistics_rejected(fresh, tmp_path):
+        p = os.path.join(fresh["stats_dir"], "action_statistics_v2_train_n0003.json")
+        st = json.load(open(p))
+        st["max_action"][10] += 0.5  # provenance intact, numbers wrong
+        json.dump(st, open(p, "w"))
+>       assert "differ from a recomputation" in _problems(lambda: check_launch(_run(fresh, str(tmp_path / "out"))))
+
+tests/test_launch_checks.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fn = <function test_tampered_statistics_rejected.<locals>.<lambda> at 0x72ef8274bb50>
+
+    def _problems(fn):
+>       with pytest.raises(LaunchError) as e:
+E       Failed: DID NOT RAISE LaunchError
+
+tests/test_launch_checks.py:33: Failed
+=============================== warnings summary ===============================
+tests/test_launch_checks.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_launch_checks.py::test_tampered_statistics_rejected - Faile...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 78 warnings in 1.72s

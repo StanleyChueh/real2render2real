@@ -1,0 +1,35 @@
+F
+=================================== FAILURES ===================================
+_____________ test_corrupt_wrong_size_and_missing_frames_rejected ______________
+
+fresh = {'source': '/tmp/pytest-of-stanley/pytest-261/test_corrupt_wrong_size_and_mi0/fixture/src', 'manifest': {'version': 1,...ixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-261/test_corrupt_wrong_size_and_mi0/fixture/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-261/test_corrupt_wrong_size_and_mi0')
+
+    def test_corrupt_wrong_size_and_missing_frames_rejected(fresh, tmp_path):
+        f = _frame(fresh)
+        good = open(f, "rb").read()
+        open(f, "wb").write(b"not a jpeg")
+>       assert "differ from the image-integrity manifest" in _problems(fresh, tmp_path / "a")
+
+tests/test_codex_final_inputs.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fx = {'source': '/tmp/pytest-of-stanley/pytest-261/test_corrupt_wrong_size_and_mi0/fixture/src', 'manifest': {'version': 1,...ixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-261/test_corrupt_wrong_size_and_mi0/fixture/views', ...}
+out = PosixPath('/tmp/pytest-of-stanley/pytest-261/test_corrupt_wrong_size_and_mi0/a')
+protocol = None
+
+    def _problems(fx, out, protocol=None):
+>       with pytest.raises(LaunchError) as e:
+E       Failed: DID NOT RAISE LaunchError
+
+tests/test_codex_final_inputs.py:41: Failed
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_corrupt_wrong_size_and_missing_frames_rejected
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 78 warnings in 1.70s

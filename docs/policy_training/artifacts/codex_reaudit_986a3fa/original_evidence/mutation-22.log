@@ -1,0 +1,53 @@
+F
+=================================== FAILURES ===================================
+_________________ test_skipped_step_advances_nothing_but_data __________________
+
+fx4 = {'source': '/tmp/pytest-of-stanley/pytest-249/cf40/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_roo...: '/tmp/pytest-of-stanley/pytest-249/cf40/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-249/cf40/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-249/test_skipped_step_advances_not0')
+
+    def test_skipped_step_advances_nothing_but_data(fx4, tmp_path):
+        ref = _trainer(fx4, tmp_path / "ref")
+        ref.train()
+        t = _trainer(fx4, tmp_path / "skip", bad_attempts=(2,))
+        s = t.train()
+        assert s["finished"] and s["final_update"] == 4
+>       assert (t.update, t.attempted_updates, t.skipped_updates, t.optimizer_calls) == (4, 5, 1, 4)
+E       assert (4, 4, 0, 3) == (4, 5, 1, 4)
+E         
+E         At index 1 diff: 4 != 5
+E         Use -v to get more diff
+
+tests/test_codex_final_training.py:48: AssertionError
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+=============================== warnings summary ===============================
+tests/test_codex_final_training.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+tests/test_codex_final_training.py::test_skipped_step_advances_nothing_but_data
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_training.py::test_skipped_step_advances_nothing_but_data
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 79 warnings in 6.24s

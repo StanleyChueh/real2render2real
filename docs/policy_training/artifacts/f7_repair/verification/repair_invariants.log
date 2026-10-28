@@ -1,0 +1,13 @@
+{
+ "protected_paths_equal_baseline_branch": true,
+ "trajgen_worktree_drift": true,
+ "submodules_at_pins": true,
+ "tinydp_worktree_clean": true,
+ "baseline_branch_head": "334e83d4d1be7a4a5e78768cd5344051d4a892fa",
+ "v1_statistics_and_manifest_unchanged": true,
+ "source_fingerprint": true,
+ "views_unmodified": true,
+ "launch_checks_all_sizes": true,
+ "checkpoint_counters": true,
+ "all_ok": true
+}

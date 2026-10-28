@@ -1,0 +1,56 @@
+F
+=================================== FAILURES ===================================
+________________ test_odd_row_spike_v1_out_of_bounds_v2_covered ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-228/test_odd_row_spike_v1_out_of_b0')
+
+    def test_odd_row_spike_v1_out_of_bounds_v2_covered(tmp_path):
+        """Audit appendix counterexample: ee_poses[21, 7] = 2.0 (odd row, right x)."""
+        a = episode_arrays(60)
+        a["ee_poses"][21, 7] = 2.0
+        view = _view(str(tmp_path), a)
+        cfg = tyro.cli(ExperimentConfig, args=["--dataset-cfg.is-sim-data"])
+        os.makedirs(tmp_path / "o1")
+        tb.compute_action_statistics_tinydp(view, cfg.shared_cfg, cfg.dataset_cfg, str(tmp_path / "v1.json"))
+        ds1, _ = _dataset(view, str(tmp_path / "v1.json"), str(tmp_path / "o1"))
+        i = next(i for i, (_, start, _) in enumerate(ds1.start_end) if start == 19)
+        assert ds1[i]["action"][0, 10].item() == pytest.approx(5.0)  # released normalizer: out of [-1, 1]
+    
+        st = nv.build_statistics(view, "n0001", ["run/ep"], "m", 2, 4, 16)
+        json.dump(st, open(tmp_path / "v2.json", "w"))
+        ds2, _ = _dataset(view, str(tmp_path / "v2.json"), str(tmp_path / "o2"))
+>       assert ds2[i]["action"][0, 10].item() == pytest.approx(1.0)
+E       assert 5.0 == 1.0 ± 1.0e-06
+E         
+E         comparison failed
+E         Obtained: 5.0
+E         Expected: 1.0 ± 1.0e-06
+
+tests/test_normalizer_v2.py:70: AssertionError
+----------------------------- Captured stdout call -----------------------------
+Action statistics saved to  /tmp/pytest-of-stanley/pytest-228/test_odd_row_spike_v1_out_of_b0/v1.json
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+----------------------------- Captured stderr call -----------------------------
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00, 604.98it/s]
+=============================== warnings summary ===============================
+tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered
+tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered
+tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered
+tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered
+tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered
+tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 6 warnings in 1.69s

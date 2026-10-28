@@ -1,0 +1,47 @@
+...F
+=================================== FAILURES ===================================
+_______ test_statistics_declared_config_enforced[<lambda>-config_sha256] _______
+
+fresh = {'source': '/tmp/pytest-of-stanley/pytest-259/test_statistics_declared_confi3/fixture/src', 'manifest': {'version': 1,...ixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-259/test_statistics_declared_confi3/fixture/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-259/test_statistics_declared_confi3')
+mutate = <function <lambda> at 0x78022313e560>, match = 'config_sha256'
+
+    @pytest.mark.parametrize("mutate,match", [
+        (lambda st: st["config"].update(layout=list(reversed(st["config"]["layout"]))), "config="),
+        (lambda st: st["config"].update(target_rows="every second row"), "config="),
+        (lambda st: (st["config"].update(layout=list(reversed(st["config"]["layout"]))),
+                     st.update(config_sha256=nv.config_sha256(st["config"]))), "config="),  # consistent digest, wrong layout
+        (lambda st: st.update(config_sha256="0" * 64), "config_sha256"),
+        (lambda st: st["provenance"].update(n_episodes=99), "n_episodes"),
+        (lambda st: st["provenance"].update(n_target_rows=1), "n_target_rows"),
+        (lambda st: st.update(extra=1), "keys must be"),
+    ])
+    def test_statistics_declared_config_enforced(fresh, tmp_path, mutate, match):
+        p = os.path.join(fresh["stats_dir"], "action_statistics_v2_train_n0003.json")
+        st = json.load(open(p))
+        mutate(st)
+        json.dump(st, open(p, "w"))
+>       assert match in _problems(fresh, tmp_path / "o")
+
+tests/test_codex_final_inputs.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fx = {'source': '/tmp/pytest-of-stanley/pytest-259/test_statistics_declared_confi3/fixture/src', 'manifest': {'version': 1,...ixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-259/test_statistics_declared_confi3/fixture/views', ...}
+out = PosixPath('/tmp/pytest-of-stanley/pytest-259/test_statistics_declared_confi3/o')
+protocol = None
+
+    def _problems(fx, out, protocol=None):
+>       with pytest.raises(LaunchError) as e:
+E       Failed: DID NOT RAISE LaunchError
+
+tests/test_codex_final_inputs.py:41: Failed
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 312 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_statistics_declared_config_enforced[<lambda>-config_sha256]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 3 passed, 312 warnings in 2.24s

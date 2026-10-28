@@ -1,0 +1,33 @@
+F
+=================================== FAILURES ===================================
+______________________ test_nonempty_output_dir_rejected _______________________
+
+fx = {'source': '/tmp/pytest-of-stanley/pytest-245/launch0/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_...p/pytest-of-stanley/pytest-245/launch0/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-245/launch0/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-245/test_nonempty_output_dir_rejec0')
+
+    def test_nonempty_output_dir_rejected(fx, tmp_path):
+        out = tmp_path / "out"
+        out.mkdir()
+        (out / "old.txt").write_text("x")
+>       assert "not empty" in _problems(lambda: check_launch(_run(fx, str(out))))
+
+tests/test_launch_checks.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fn = <function test_nonempty_output_dir_rejected.<locals>.<lambda> at 0x72297bb0d120>
+
+    def _problems(fn):
+>       with pytest.raises(LaunchError) as e:
+E       Failed: DID NOT RAISE LaunchError
+
+tests/test_launch_checks.py:33: Failed
+=============================== warnings summary ===============================
+tests/test_launch_checks.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_launch_checks.py::test_nonempty_output_dir_rejected - Faile...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 78 warnings in 1.74s

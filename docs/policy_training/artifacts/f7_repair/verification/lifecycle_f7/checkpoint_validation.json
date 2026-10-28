@@ -1,0 +1,92 @@
+{
+ "run_config": "/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u20_A/run_config.json",
+ "config_sha256": "4e800408d9105fc00a1105591044f97dc755c8382066cb7fd66dcc68b0efcc91",
+ "checkpoints": {
+  "/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u20_A/ckpt_full_u0000010.pt": {
+   "sha256": "93e4d3d313e70458b07e4ed3db836a54897f69abfba31026ba5707b690677f3f",
+   "format": "r2r2r-dp-ckpt-v3",
+   "update": 10,
+   "has_optimizer_history": true,
+   "optimizer_params": 254,
+   "adam_state_entries": 254,
+   "adam_steps": [
+    10
+   ],
+   "problems": [],
+   "load_full": "applied",
+   "param_steps_after_load": [
+    10
+   ],
+   "unchanged": true
+  },
+  "/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u20_A/ckpt_full_u0000020.pt": {
+   "sha256": "64fed62e295025923834ed9e56da545d8b41b7ea2fc1053d755cffa5e7d8db05",
+   "format": "r2r2r-dp-ckpt-v3",
+   "update": 20,
+   "has_optimizer_history": true,
+   "optimizer_params": 254,
+   "adam_state_entries": 254,
+   "adam_steps": [
+    20
+   ],
+   "problems": [],
+   "load_full": "applied",
+   "param_steps_after_load": [
+    20
+   ],
+   "unchanged": true
+  },
+  "/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u20_B/ckpt_full_u0000010.pt": {
+   "sha256": "ccfca2ffcdc20c600e6e3372053cfe94a58f2ffae4576569e78f1183dc50bfd0",
+   "format": "r2r2r-dp-ckpt-v3",
+   "update": 10,
+   "has_optimizer_history": true,
+   "optimizer_params": 254,
+   "adam_state_entries": 254,
+   "adam_steps": [
+    10
+   ],
+   "problems": [],
+   "load_full": "applied",
+   "param_steps_after_load": [
+    10
+   ],
+   "unchanged": true
+  },
+  "/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u20_B/ckpt_full_u0000020.pt": {
+   "sha256": "de2bc6b1505e43f0b5d8253939a4730756f792831f1584c50f9007116b9d818e",
+   "format": "r2r2r-dp-ckpt-v3",
+   "update": 20,
+   "has_optimizer_history": true,
+   "optimizer_params": 254,
+   "adam_state_entries": 254,
+   "adam_steps": [
+    20
+   ],
+   "problems": [],
+   "load_full": "applied",
+   "param_steps_after_load": [
+    20
+   ],
+   "unchanged": true
+  },
+  "/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u20_X_unintended_second_resume_of_B1_copy/ckpt_full_u0000020.pt": {
+   "sha256": "de98d3eeede9301f71b87f9c12b281188e345f306e2e309444aa75fa04f4bb36",
+   "format": "r2r2r-dp-ckpt-v3",
+   "update": 20,
+   "has_optimizer_history": true,
+   "optimizer_params": 254,
+   "adam_state_entries": 254,
+   "adam_steps": [
+    20
+   ],
+   "problems": [],
+   "load_full": "applied",
+   "param_steps_after_load": [
+    20
+   ],
+   "unchanged": true
+  }
+ },
+ "all_ok": true
+}

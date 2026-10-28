@@ -1,0 +1,25 @@
+F
+=================================== FAILURES ===================================
+_______________________ test_train_eval_overlap_rejected _______________________
+
+fx = {'source': '/tmp/pytest-of-stanley/pytest-239/launch0/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_...p/pytest-of-stanley/pytest-239/launch0/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-239/launch0/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-239/test_train_eval_overlap_reject0')
+
+    def test_train_eval_overlap_rejected(fx, tmp_path):
+        run = _run(fx, str(tmp_path / "out"))
+        run["paths"]["eval_root"] = run["paths"]["train_root"]
+>       assert "overlaps" in _problems(lambda: check_launch(run))
+E       AssertionError: assert 'overlaps' in '/tmp/pytest-of-stanley/pytest-239/launch0/views/train_subsets/n0003/ep_train_0000: manifest split train != root split...9aa10505c11ee0ebbeb8370ebced74cfee3a51c529a9212ee4844d82ba1993e in both train and val\nuids shared by train and val: 3'
+E        +  where '/tmp/pytest-of-stanley/pytest-239/launch0/views/train_subsets/n0003/ep_train_0000: manifest split train != root split...9aa10505c11ee0ebbeb8370ebced74cfee3a51c529a9212ee4844d82ba1993e in both train and val\nuids shared by train and val: 3' = _problems(<function test_train_eval_overlap_rejected.<locals>.<lambda> at 0x7dc9a82cb910>)
+
+tests/test_launch_checks.py:47: AssertionError
+=============================== warnings summary ===============================
+tests/test_launch_checks.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_launch_checks.py::test_train_eval_overlap_rejected - Assert...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 78 warnings in 1.80s

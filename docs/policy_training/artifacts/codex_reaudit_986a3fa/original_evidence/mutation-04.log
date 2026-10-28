@@ -1,0 +1,77 @@
+F
+=================================== FAILURES ===================================
+____________________________ test_update_semantics _____________________________
+
+fx9 = {'source': '/tmp/pytest-of-stanley/pytest-231/d90/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_root...h': '/tmp/pytest-of-stanley/pytest-231/d90/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-231/d90/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-231/test_update_semantics0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7bf52ccbea40>
+
+    def test_update_semantics(fx9, tmp_path, monkeypatch):
+        from diffusers.optimization import get_scheduler
+        from tinydp.dataset.image_dataset import VideoSampler
+        t = _trainer(fx9, tmp_path)
+        assert t.batches_per_epoch == 30
+        keys, train_losses, ema_calls = [], [], []
+        orig_get = driver.SeededItems.__getitem__
+        monkeypatch.setattr(driver.SeededItems, "__getitem__", lambda self, k: (keys.append(k), orig_get(self, k))[1])
+        orig_fwd = t.model.forward
+        t.model.forward = lambda b: (lambda l: (train_losses.append(float(l)) if t.model.training else None, l)[1])(orig_fwd(b))
+        orig_ema = t.ema.update
+        t.ema.update = lambda m: (ema_calls.append(1), orig_ema(m))[1]
+        summary = t.train()
+        assert summary["final_update"] == 9 and summary["skipped_updates_total"] == 0
+        assert summary["attempted_updates_total"] == t.attempted_updates == t.optimizer_calls == 9
+        assert t.scheduler.last_epoch == 9 and len(ema_calls) == 9
+        adam_steps = {int(s["step"]) for s in t.optimizer.state.values()}
+        assert adam_steps == {9}
+        assert (t.micro, t.epoch, t.batch_in_epoch) == (36, 1, 6)
+        # micro-batch stream = epoch 0 (set_epoch(0)) batches 0..29, then epoch 1 (set_epoch(1)) batches 0..5
+        ref = VideoSampler(t.ds_train, batch_size=2, sequence_length=4, seed=42)
+        expected = []
+        for e, nb in ((0, 30), (1, 6)):
+            ref.set_epoch(e)
+            expected += [(driver.TRAIN_STREAM, e, i) for b in list(iter(ref))[:nb] for i in b]
+        assert keys[:len(expected)] == expected
+        # LR counted in optimizer updates (warm-up 3 updates, cosine over 9)
+        probe = torch.optim.SGD([torch.nn.Parameter(torch.zeros(1))], lr=2e-4)
+        sch = get_scheduler("cosine", optimizer=probe, num_warmup_steps=3, num_training_steps=9)
+        want = []
+        for _ in range(9):
+            want.append(probe.param_groups[0]["lr"])
+            sch.step()
+        recs = [json.loads(l) for l in open(os.path.join(t.out, "metrics.jsonl"))]
+        tr = [r for r in recs if r["type"] == "train"]
+        assert [r["update"] for r in tr] == list(range(1, 10))
+        assert [r["lr_used"] for r in tr] == pytest.approx(want)
+        # raw (not divided by accum) losses, 4 per update, exactly the model outputs
+>       assert [x for r in tr for x in r["loss_raw_micro"]] == train_losses[:36]
+E       assert [0.3669325411...77630615, ...] == [1.4677301645...91052246, ...]
+E         
+E         At index 0 diff: 0.36693254113197327 != 1.467730164527893
+E         Use -v to get more diff
+
+tests/test_driver.py:134: AssertionError
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+=============================== warnings summary ===============================
+tests/test_driver.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+tests/test_driver.py::test_update_semantics
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_driver.py::test_update_semantics - assert [0.3669325411...7...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 79 warnings in 7.18s

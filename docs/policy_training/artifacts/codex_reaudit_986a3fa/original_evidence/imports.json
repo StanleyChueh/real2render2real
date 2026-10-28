@@ -1,0 +1,6 @@
+{
+  "driver": "/tmp/r2r2r-v3-audit-worktree/policy_training/r2r2r_dp/driver.py",
+  "tinydp": null,
+  "torch": "2.5.1+cu121",
+  "tinydp_model": "/tmp/r2r2r-v3-audit-worktree/dependencies/tinydp/tinydp/policy/model.py"
+}

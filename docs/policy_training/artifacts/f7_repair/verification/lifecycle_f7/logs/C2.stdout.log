@@ -1,0 +1,17 @@
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.377160e+08
+Traceback (most recent call last):
+  File "/home/stanley/Stanley_ws/real2render2real/policy_training/train_r2r2r_dp.py", line 127, in <module>
+    main()
+  File "/home/stanley/Stanley_ws/real2render2real/policy_training/train_r2r2r_dp.py", line 107, in main
+    trainer.load_full(ckpt)
+  File "/home/stanley/Stanley_ws/real2render2real/policy_training/r2r2r_dp/driver.py", line 482, in load_full
+    raise CheckpointError(f"{path}: " + "; ".join(problems))
+r2r2r_dp.driver.CheckpointError: /home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u10_C_corrupt/ckpt_full_u0000010.pt: optimizer: no Adam state for 1 parameters with recorded updates, e.g. ['vision_encoder.bn1.weight (10 recorded updates)']

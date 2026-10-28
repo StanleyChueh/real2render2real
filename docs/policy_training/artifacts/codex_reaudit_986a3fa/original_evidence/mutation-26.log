@@ -1,0 +1,27 @@
+F
+=================================== FAILURES ===================================
+_____________________ test_nan_sidecar_cannot_be_certified _____________________
+
+fresh = {'source': '/tmp/pytest-of-stanley/pytest-252/test_nan_sidecar_cannot_be_cer0/fixture/src', 'manifest': {'version': 1,...ixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-252/test_nan_sidecar_cannot_be_cer0/fixture/views', ...}
+
+    def test_nan_sidecar_cannot_be_certified(fresh):
+        ep = _first_train_episode(fresh)
+        z = os.path.join(ep, "robot_data", "robot_data_proprio.zarr")
+        a = zarr.load(z)
+        a[21, 7] = np.nan
+        zarr.save_array(z, a)
+        root = os.path.dirname(ep)
+>       with pytest.raises(ValueError, match="non-finite"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_codex_final_inputs.py:76: Failed
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 80 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_nan_sidecar_cannot_be_certified
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 80 warnings in 1.76s

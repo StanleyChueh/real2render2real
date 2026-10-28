@@ -1,0 +1,42 @@
+.....F
+=================================== FAILURES ===================================
+_____ test_invalid_protocol_values_rejected[schedule-warmup_updates-False] _____
+
+fx = {'source': '/tmp/pytest-of-stanley/pytest-264/cfi0/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_roo...: '/tmp/pytest-of-stanley/pytest-264/cfi0/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-264/cfi0/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-264/test_invalid_protocol_values_r5')
+section = 'schedule', key = 'warmup_updates', value = False
+
+    @pytest.mark.parametrize("section,key,value", [
+        ("schedule", "grad_clip", -1.0), ("schedule", "grad_clip", 0.0), ("schedule", "grad_clip", float("inf")),
+        ("schedule", "total_updates", True), ("schedule", "accum_micro_batches", 2.0), ("schedule", "warmup_updates", False),
+        ("schedule", "ema_decay_per_update", float("nan")), ("schedule", "val_seed", -1), ("schedule", "sampler_seed", 2 ** 32),
+        ("tinydp", "shared_cfg.batch_size", 2.5), ("tinydp", "shared_cfg.batch_size", 0), ("tinydp", "shared_cfg.batch_size", True),
+        ("tinydp", "optimizer_cfg.lr", float("nan")), ("tinydp", "optimizer_cfg.lr", 0.0), ("tinydp", "optimizer_cfg.lr", -1e-4),
+        ("tinydp", "optimizer_cfg.weight_decay", -0.1), ("tinydp", "dataset_cfg.proprio_noise", float("inf")),
+        ("tinydp", "dataset_cfg.subsample_steps", 0), ("tinydp", "shared_cfg.num_cameras", 3),
+        ("tinydp", "shared_cfg.image_size", 8), ("tinydp", "shared_cfg.seed", 1.5), ("tinydp", "trainer_cfg.num_workers", -1),
+        ("tinydp", "model_cfg.policy_cfg.down_dims", [8, 0]), ("tinydp", "model_cfg.policy_cfg.down_dims", 8),
+        ("tinydp", "model_cfg.policy_cfg.num_inference_diffusion_steps", 1000),
+        ("tinydp", "model_cfg.policy_cfg.gripper_loss_w", -5.0),
+        ("tinydp", "shared_cfg.num_pred_steps", 6),  # with down_dims [8, 16, 32] (set below): 6 % 2**2 != 0
+        ("data", "manifest_sha256", "ABC"),
+    ])
+    def test_invalid_protocol_values_rejected(fx, tmp_path, section, key, value):
+        p = copy.deepcopy(fx["protocol"])
+        if key == "shared_cfg.num_pred_steps":
+            p["tinydp"]["model_cfg.policy_cfg.down_dims"] = [8, 16, 32]  # two halvings need num_pred_steps % 4 == 0
+        p[section][key] = value
+>       with pytest.raises(ProtocolError):
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/test_codex_final_inputs.py:249: Failed
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected[schedule-warmup_updates-False]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 5 passed, 78 warnings in 1.73s

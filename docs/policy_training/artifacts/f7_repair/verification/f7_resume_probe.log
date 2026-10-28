@@ -1,0 +1,272 @@
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "d42cb444cbfcf1957ad23d8b0e96b092f5248e0ecb9c090f0ab97231eb61b6b7",
+ "launch": {
+  "manifest_sha256": "f4a6072224cc38ff845aa7a35b22211cf44df39a939494c12ca91c5e05e62b49",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "b7edafe3da350f2fd83a0c0b1c60712be55b6bd8530d0ec2811116305b1c325a",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "0b67f82941e500220afb79d541f6bd16e14b125f4e7af4e938cf6fa54e540242",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/tmpopj388wx/fx/views/train_subsets/n0003",
+   "val": "/tmp/tmpopj388wx/fx/views/splits/val",
+   "test": "/tmp/tmpopj388wx/fx/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 4, "final_update": 4, "elapsed_s": 2.99, "data_wait_s": 0.21, "skipped_updates_this_session": 0, "attempted_updates_total": 4, "skipped_updates_total": 0, "finished": true}
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "d42cb444cbfcf1957ad23d8b0e96b092f5248e0ecb9c090f0ab97231eb61b6b7",
+ "launch": {
+  "manifest_sha256": "f4a6072224cc38ff845aa7a35b22211cf44df39a939494c12ca91c5e05e62b49",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "b7edafe3da350f2fd83a0c0b1c60712be55b6bd8530d0ec2811116305b1c325a",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "0b67f82941e500220afb79d541f6bd16e14b125f4e7af4e938cf6fa54e540242",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/tmpopj388wx/fx/views/train_subsets/n0003",
+   "val": "/tmp/tmpopj388wx/fx/views/splits/val",
+   "test": "/tmp/tmpopj388wx/fx/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 3, "final_update": 3, "elapsed_s": 2.11, "data_wait_s": 0.17, "skipped_updates_this_session": 0, "attempted_updates_total": 3, "skipped_updates_total": 0, "finished": false}
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "d42cb444cbfcf1957ad23d8b0e96b092f5248e0ecb9c090f0ab97231eb61b6b7",
+ "launch": {
+  "manifest_sha256": "f4a6072224cc38ff845aa7a35b22211cf44df39a939494c12ca91c5e05e62b49",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "b7edafe3da350f2fd83a0c0b1c60712be55b6bd8530d0ec2811116305b1c325a",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "0b67f82941e500220afb79d541f6bd16e14b125f4e7af4e938cf6fa54e540242",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/tmpopj388wx/fx/views/train_subsets/n0003",
+   "val": "/tmp/tmpopj388wx/fx/views/splits/val",
+   "test": "/tmp/tmpopj388wx/fx/views/splits/test"
+  }
+ },
+ "start_update": 3,
+ "start_attempted_updates": 3,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 1, "final_update": 4, "elapsed_s": 1.37, "data_wait_s": 0.05, "skipped_updates_this_session": 0, "attempted_updates_total": 4, "skipped_updates_total": 0, "finished": true}
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+valid {"resume": "completed", "summary": {"final_update": 4, "updates_this_session": 1, "finished": true}, "ckpt_added": ["ckpt_full_u0000004.pt"], "ckpt_removed": ["ckpt_full_u0000002.pt"], "u2_valid_ckpt_unchanged": false, "metrics_unchanged": false, "session_summaries_written": true, "u4_ckpt_problems"
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+missing_adam_state {"resume": "rejected: CheckpointError", "error": "optimizer: no Adam state for 1 parameters with recorded updates, e.g. ['vision_encoder.bn1.weight (3 recorded updates)']", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "session_summaries_written": 
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+missing_all_adam_state {"resume": "rejected: CheckpointError", "error": "optimizer: no Adam state for 160 parameters with recorded updates, e.g. ['vision_encoder.bn1.weight (3 recorded updates)', 'vision_encoder.bn1.bias (3 recorded updates)', 'vision_encoder.layer1.0.bn1.weight (3 recorded updates)']", "ckpt_added": [], 
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+missing_exp_avg {"resume": "rejected: CheckpointError", "error": "optimizer: 1 invalid Adam state entries, e.g. [\"vision_encoder.bn1.weight: keys ['exp_avg_sq', 'step'] != ['exp_avg', 'exp_avg_sq', 'step']\"]", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "sessi
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+missing_exp_avg_sq {"resume": "rejected: CheckpointError", "error": "optimizer: 1 invalid Adam state entries, e.g. [\"vision_encoder.bn1.weight: keys ['exp_avg', 'step'] != ['exp_avg', 'exp_avg_sq', 'step']\"]", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "session_
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+missing_step {"resume": "rejected: CheckpointError", "error": "optimizer: 1 invalid Adam state entries, e.g. [\"vision_encoder.bn1.weight: keys ['exp_avg', 'exp_avg_sq'] != ['exp_avg', 'exp_avg_sq', 'step']\"]", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "se
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+bad_moment_shape {"resume": "rejected: CheckpointError", "error": "optimizer: 1 invalid Adam state entries, e.g. ['vision_encoder.bn1.weight: exp_avg: expected torch.float32 (64,), got (torch.float32, (2, 3))']", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "sessi
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+nan_moment {"resume": "rejected: CheckpointError", "error": "optimizer: 1 invalid Adam state entries, e.g. ['vision_encoder.bn1.weight: exp_avg_sq: non-finite values']", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "session_summaries_written": false}
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+optimizer_nan_lr {"resume": "rejected: CheckpointError", "error": "optimizer group 0: lr nan is not the scheduled 2.9289321881345254e-05 at update 3", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "session_summaries_written": false}
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+scheduler_nan_lr {"resume": "rejected: CheckpointError", "error": "scheduler last lr [nan, nan] is not the scheduled [2.9289321881345254e-05, 2.9289321881345254e-05] at update 3", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "session_summaries_written": false}
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+invalid_rng {"resume": "rejected: CheckpointError", "error": "rng.torch is not a valid state (ValueError: expected uint8 (5056,), got (torch.uint8, (1,)))", "ckpt_added": [], "ckpt_removed": [], "u2_valid_ckpt_unchanged": true, "metrics_unchanged": true, "session_summaries_written": false}
+{
+ "valid": true,
+ "missing_adam_state": true,
+ "missing_all_adam_state": true,
+ "missing_exp_avg": true,
+ "missing_exp_avg_sq": true,
+ "missing_step": true,
+ "bad_moment_shape": true,
+ "nan_moment": true,
+ "optimizer_nan_lr": true,
+ "scheduler_nan_lr": true,
+ "invalid_rng": true
+}

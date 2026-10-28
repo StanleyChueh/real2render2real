@@ -1,0 +1,47 @@
+[
+  {
+    "case": "valid",
+    "preflight_problems": [],
+    "load_accepted": true,
+    "summary": {
+      "updates_this_session": 1,
+      "final_update": 4,
+      "elapsed_s": 1.36,
+      "data_wait_s": 0.06,
+      "skipped_updates_this_session": 0,
+      "attempted_updates_total": 4,
+      "skipped_updates_total": 0,
+      "finished": true
+    },
+    "finite_model": true,
+    "final_checkpoint_problems": []
+  },
+  {
+    "case": "missing_adam_state",
+    "preflight_problems": [
+      "optimizer: no Adam state for 1 parameters with recorded updates, e.g. ['vision_encoder.bn1.weight (3 recorded updates)']"
+    ],
+    "exception": "CheckpointError: /tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/verif/checkpoint-effect/missing_adam_state.pt: optimizer: no Adam state for 1 parameters with recorded updates, e.g. ['vision_encoder.bn1.weight (3 recorded updates)']"
+  },
+  {
+    "case": "bad_moment_shape",
+    "preflight_problems": [
+      "optimizer: 1 invalid Adam state entries, e.g. ['vision_encoder.bn1.weight: exp_avg: expected torch.float32 (64,), got (torch.float32, (2, 3))']"
+    ],
+    "exception": "CheckpointError: /tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/verif/checkpoint-effect/bad_moment_shape.pt: optimizer: 1 invalid Adam state entries, e.g. ['vision_encoder.bn1.weight: exp_avg: expected torch.float32 (64,), got (torch.float32, (2, 3))']"
+  },
+  {
+    "case": "invalid_rng",
+    "preflight_problems": [
+      "rng.torch is not a valid state (ValueError: expected uint8 (5056,), got (torch.uint8, (1,)))"
+    ],
+    "exception": "CheckpointError: /tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/verif/checkpoint-effect/invalid_rng.pt: rng.torch is not a valid state (ValueError: expected uint8 (5056,), got (torch.uint8, (1,)))"
+  },
+  {
+    "case": "nan_lr",
+    "preflight_problems": [
+      "optimizer group 0: lr nan is not the scheduled 2.9289321881345254e-05 at update 3"
+    ],
+    "exception": "CheckpointError: /tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/verif/checkpoint-effect/nan_lr.pt: optimizer group 0: lr nan is not the scheduled 2.9289321881345254e-05 at update 3"
+  }
+]

@@ -1,0 +1,41 @@
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.377160e+08
+{
+ "config_sha256": "4e800408d9105fc00a1105591044f97dc755c8382066cb7fd66dcc68b0efcc91",
+ "launch": {
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "counts": {
+   "train": 50,
+   "val": 182,
+   "test": 182
+  },
+  "train_uids_sha256": "176396f472853a06c51d862800f46352aa1caac0ef375fc985959db563ef7113",
+  "action_statistics_sha256": "f9c0bad124d1fb2bdeb633fda594867e427ce7b9cecf3190b28ef96a4b65ebf4",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 414,
+   "frames_verified": 133308,
+   "seconds": 4.6
+  },
+  "roots_realpath": {
+   "train": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n0050",
+   "val": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/val",
+   "test": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "40d6e761e0e481598c43d3c0f4342ad40aeefe3a92c87da9080ad91591873da0",
+ "batches_per_epoch": 378,
+ "val_subset_batches": 35,
+ "val_full_batches": 1377
+}
+{"updates_this_session": 10, "final_update": 10, "elapsed_s": 56.35, "data_wait_s": 8.87, "skipped_updates_this_session": 0, "attempted_updates_total": 10, "skipped_updates_total": 0, "finished": false, "peak_gpu_mem_allocated_GiB": 15.42}

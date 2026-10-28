@@ -1,0 +1,23 @@
+F
+=================================== FAILURES ===================================
+________________________ test_rotation_converter_cases _________________________
+
+    def test_rotation_converter_cases():
+        from scipy.spatial.transform import Rotation
+        from tinydp.dataset.utils import quat_to_rot_6d
+        assert np.allclose(rot6d_rows_to_matrix([2.0, 0, 0, 0, 3.0, 0]), np.eye(3))  # Codex 'nonunit' case
+        for v in ([1.0, 0, 0, 1.0, 0, 0], [0.0] * 6, [1.0, 0, 0, 2.0, 1e-9, 0], [np.nan, 0, 0, 0, 1, 0], [1e-9, 0, 0, 0, 1, 0]):
+>           with pytest.raises(ValueError):
+E           Failed: DID NOT RAISE ValueError
+
+tests/test_codex_final_inputs.py:359: Failed
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py::test_rotation_converter_cases
+  /tmp/v3mut-uek4yp2x/policy_training/r2r2r_dp/rotation.py:29: RuntimeWarning: invalid value encountered in divide
+    r2 = b_perp / nb
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_rotation_converter_cases - Fail...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1 warning in 1.55s

@@ -1,0 +1,49 @@
+{"i": 0, "name": "CONTROL", "exit": 0, "tail": ["117 passed, 1676 warnings in 46.20s"]}
+{"i": 1, "name": "M1 even-row-only normalizer", "exit": 1, "tail": ["1 failed, 6 warnings in 1.69s"]}
+{"i": 2, "name": "M2 scheduler per micro-batch", "exit": 1, "tail": ["1 failed, 79 warnings in 6.16s"]}
+{"i": 3, "name": "M2 EMA per micro-batch", "exit": 1, "tail": ["1 failed, 79 warnings in 6.48s"]}
+{"i": 4, "name": "M2 loss logged divided by accum", "exit": 1, "tail": ["1 failed, 79 warnings in 7.18s"]}
+{"i": 5, "name": "M2 drop partial accumulation at epoch end", "exit": 1, "tail": ["1 failed, 79 warnings in 6.21s"]}
+{"i": 6, "name": "M2 no set_epoch", "exit": 1, "tail": ["1 failed, 79 warnings in 6.00s"]}
+{"i": 7, "name": "M3 scheduler state not restored", "exit": 1, "tail": ["1 failed, 81 warnings in 20.07s"]}
+{"i": 8, "name": "M3 EMA not restored", "exit": 1, "tail": ["1 failed, 81 warnings in 17.71s"]}
+{"i": 9, "name": "M3 RNG not restored", "exit": 1, "tail": ["1 failed, 81 warnings in 17.64s"]}
+{"i": 10, "name": "M3 data position not restored", "exit": 1, "tail": ["1 failed, 81 warnings in 17.57s"]}
+{"i": 11, "name": "M3 item seeding clobbers training RNG", "exit": 1, "tail": ["1 failed, 79 warnings in 2.25s"]}
+{"i": 12, "name": "M4 no root overlap check", "exit": 1, "tail": ["1 failed, 78 warnings in 1.80s"]}
+{"i": 13, "name": "M4 no sidecar hash check", "exit": 1, "tail": ["1 failed, 80 warnings in 1.80s"]}
+{"i": 14, "name": "M4 no statistics provenance check", "exit": 1, "tail": ["1 failed, 78 warnings in 1.74s"]}
+{"i": 15, "name": "M4 no numeric statistics recomputation", "exit": 1, "tail": ["1 failed, 78 warnings in 1.72s"]}
+{"i": 16, "name": "M4 accept delta actions", "exit": 1, "tail": ["1 failed, 78 warnings in 1.68s"]}
+{"i": 17, "name": "M4 accept arbitrary TinyDP overrides", "exit": 1, "tail": ["1 failed, 1 passed, 78 warnings in 1.69s"]}
+{"i": 18, "name": "M4 output dir reuse", "exit": 1, "tail": ["1 failed, 78 warnings in 1.74s"]}
+{"i": 19, "name": "M5 inference uses raw weights by default", "exit": 1, "tail": ["1 failed, 79 warnings in 4.37s"]}
+{"i": 20, "name": "M5 statistics not embedded in checkpoint", "exit": 1, "tail": ["1 failed, 79 warnings in 4.20s"]}
+{"i": 21, "name": "M5 denormalise with left-arm statistics", "exit": 1, "tail": ["1 failed, 79 warnings in 4.31s"]}
+{"i": 22, "name": "F1 skipped GradScaler step counted as an update", "exit": 1, "tail": ["1 failed, 79 warnings in 6.24s"]}
+{"i": 23, "name": "F1 no bound on consecutive skipped steps", "exit": 1, "tail": ["1 failed, 79 warnings in 5.08s"]}
+{"i": 24, "name": "F1 skip counters not restored on resume", "exit": 1, "tail": ["1 failed, 79 warnings in 5.82s"]}
+{"i": 25, "name": "F2 normalized() sanitizes non-finite actions", "exit": 1, "tail": ["1 failed in 1.53s"]}
+{"i": 26, "name": "F2 statistics built from non-finite sidecars (all finite checks off)", "exit": 1, "tail": ["1 failed, 80 warnings in 1.76s"]}
+{"i": 27, "name": "F3 manifest counts not checked", "exit": 1, "tail": ["1 failed, 2 passed, 78 warnings in 1.70s"]}
+{"i": 28, "name": "F3 manifest salt order not checked", "exit": 1, "tail": ["1 failed, 3 passed, 78 warnings in 1.74s"]}
+{"i": 29, "name": "F3 manifest version not checked", "exit": 1, "tail": ["1 failed, 78 warnings in 1.68s"]}
+{"i": 30, "name": "F3 view directory names not canonical", "exit": 1, "tail": ["1 failed, 78 warnings in 1.72s"]}
+{"i": 31, "name": "F3 symlinked episode aliases accepted", "exit": 1, "tail": ["1 failed, 78 warnings in 1.73s"]}
+{"i": 32, "name": "F3 statistics config (layout) not compared", "exit": 1, "tail": ["1 failed, 78 warnings in 1.75s"]}
+{"i": 33, "name": "F3 statistics config digest not recomputed", "exit": 1, "tail": ["1 failed, 3 passed, 312 warnings in 2.24s"]}
+{"i": 34, "name": "F3 checkpoint sample order not compared", "exit": 1, "tail": ["1 failed, 13 passed, 92 warnings in 7.43s"]}
+{"i": 35, "name": "F4 frame bytes not verified at launch", "exit": 1, "tail": ["1 failed, 78 warnings in 1.70s"]}
+{"i": 36, "name": "F4 builder does not check resolution", "exit": 1, "tail": ["1 failed, 78 warnings in 1.73s"]}
+{"i": 37, "name": "F5 negative/zero grad_clip accepted", "exit": 1, "tail": ["1 failed, 78 warnings in 1.94s"]}
+{"i": 38, "name": "F5 booleans accepted as integers", "exit": 1, "tail": ["1 failed, 5 passed, 78 warnings in 1.73s"]}
+{"i": 39, "name": "F5 resolved TinyDP values not validated", "exit": 1, "tail": ["1 failed, 9 passed, 78 warnings in 1.70s"]}
+{"i": 40, "name": "F5 NaN literals accepted in protocol files", "exit": 1, "tail": ["1 failed, 78 warnings in 1.69s"]}
+{"i": 41, "name": "F6 validation not transactional", "exit": 1, "tail": ["1 failed, 79 warnings in 3.01s"]}
+{"i": 42, "name": "F6 non-finite validation loss accepted", "exit": 1, "tail": ["1 failed, 79 warnings in 3.05s"]}
+{"i": 43, "name": "F6 non-finite EMA export accepted", "exit": 1, "tail": ["1 failed, 79 warnings in 3.09s"]}
+{"i": 44, "name": "F7 EMA key set/shape/finiteness not checked", "exit": 1, "tail": ["1 failed, 79 warnings in 3.34s"]}
+{"i": 45, "name": "F7 counters/data position not checked", "exit": 1, "tail": ["1 failed, 8 passed, 87 warnings in 6.10s"]}
+{"i": 46, "name": "F8 non-finite inference inputs accepted", "exit": 1, "tail": ["1 failed, 79 warnings in 3.74s"]}
+{"i": 47, "name": "F8 non-finite policy output returned", "exit": 1, "tail": ["1 failed, 79 warnings in 3.65s"]}
+{"i": 48, "name": "F8 collinear rot6d rows accepted", "exit": 1, "tail": ["1 failed, 1 warning in 1.55s"]}

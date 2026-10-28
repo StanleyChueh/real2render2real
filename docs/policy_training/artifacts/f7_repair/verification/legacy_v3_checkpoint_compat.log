@@ -1,0 +1,52 @@
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.377160e+08
+{"/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_v3/u20_A/ckpt_full_u0000010.pt": {"sha256": "f541951b0426c5bc300201ff62b6af2be623573fd34f483bbe086b248c21d6e3", "format": "r2r2r-dp-ckpt-v3", "update": 10, "has_optimizer_history": false, "optimizer_params": 254, "adam_state_entries": 254, "adam_steps": [10], "problems": [], "load_full": "applied", "param_steps_after_load": [10], "unchanged": true}}
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.377160e+08
+{"/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_v3/u20_A/ckpt_full_u0000020.pt": {"sha256": "c4e0840b1edab78f321fcdd6e2bb98709ef366b0678637152317e8e686b07f17", "format": "r2r2r-dp-ckpt-v3", "update": 20, "has_optimizer_history": false, "optimizer_params": 254, "adam_state_entries": 254, "adam_steps": [20], "problems": [], "load_full": "applied", "param_steps_after_load": [20], "unchanged": true}}
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.377160e+08
+{"/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_v3/u20_B/ckpt_full_u0000010.pt": {"sha256": "a7834483865e25a68151a59d9258484526abeba90e1a776ff56988db12706c02", "format": "r2r2r-dp-ckpt-v3", "update": 10, "has_optimizer_history": false, "optimizer_params": 254, "adam_state_entries": 254, "adam_steps": [10], "problems": [], "load_full": "applied", "param_steps_after_load": [10], "unchanged": true}}
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.377160e+08
+{"/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_v3/u20_B/ckpt_full_u0000020.pt": {"sha256": "8a98ec67a3589d2efba939375bfb9ffc1e015e3b969a943563f84bb2219cf036", "format": "r2r2r-dp-ckpt-v3", "update": 20, "has_optimizer_history": false, "optimizer_params": 254, "adam_state_entries": 254, "adam_steps": [20], "problems": [], "load_full": "applied", "param_steps_after_load": [20], "unchanged": true}}
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.377160e+08
+{"/home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_v3/isolated_ckpt/ckpt_full_u0000020.pt": {"sha256": "8a98ec67a3589d2efba939375bfb9ffc1e015e3b969a943563f84bb2219cf036", "format": "r2r2r-dp-ckpt-v3", "update": 20, "has_optimizer_history": false, "optimizer_params": 254, "adam_state_entries": 254, "adam_steps": [20], "problems": [], "load_full": "applied", "param_steps_after_load": [20], "unchanged": true}}

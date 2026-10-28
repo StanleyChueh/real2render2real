@@ -1,5 +1,7 @@
 # Repair of the Codex final-audit findings F1–F8 (protocol v3)
 
+> **Update (F7):** Codex's re-audit of `986a3fa` ([CODEX_REAUDIT_986a3fa.md](CODEX_REAUDIT_986a3fa.md)) graded F7 PARTIAL (N1: missing Adam state accepted on resume). The targeted repair is documented in [F7_CHECKPOINT_REPAIR.md](F7_CHECKPOINT_REPAIR.md) (branch `fix/f7-optimizer-state-validation`). The F7 rows below describe the state at 966d459/986a3fa.
+
 | | |
 |---|---|
 | Audited commit | `43ab363058c4c9a5a45207b1414315320ef8438d` (branch `fix/tinydp-audit-gates`, kept unchanged as the reference) |

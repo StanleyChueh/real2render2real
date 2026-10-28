@@ -1,0 +1,2 @@
+{"updates_this_session": 10, "final_update": 10, "elapsed_s": 56.35, "data_wait_s": 8.87, "skipped_updates_this_session": 0, "attempted_updates_total": 10, "skipped_updates_total": 0, "finished": false, "peak_gpu_mem_allocated_GiB": 15.42}
+{"updates_this_session": 10, "final_update": 20, "elapsed_s": 434.26, "data_wait_s": 8.65, "skipped_updates_this_session": 0, "attempted_updates_total": 20, "skipped_updates_total": 0, "finished": true, "peak_gpu_mem_allocated_GiB": 15.42}

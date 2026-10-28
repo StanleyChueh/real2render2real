@@ -1,0 +1,105 @@
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "device": "NVIDIA GeForce RTX 4090",
+ "cases": {
+  "valid": {
+   "result": "applied",
+   "update": 2
+  },
+  "cuda_rng_missing": {
+   "result": "rejected",
+   "error": "checkpoint RNG state incomplete or unexpected (['numpy', 'python', 'torch']; needs ['cuda', 'numpy', 'python', 'torch'])",
+   "state_unchanged": true
+  },
+  "cuda_rng_length": {
+   "result": "rejected",
+   "error": "rng.cuda is not a valid state (ValueError: expected uint8 (16,), got (torch.uint8, (3,)))",
+   "state_unchanged": true
+  },
+  "missing_one_adam_state": {
+   "result": "rejected",
+   "error": "optimizer: no Adam state for 1 parameters with recorded updates, e.g. ['vision_encoder.bn1.weight (2 recorded updates)']",
+   "state_unchanged": true
+  },
+  "scaler_empty": {
+   "result": "rejected",
+   "error": "grad-scaler state is empty, but this run's grad scaler is enabled",
+   "state_unchanged": true
+  },
+  "scaler_nan_scale": {
+   "result": "rejected",
+   "error": "grad-scaler scale nan is not a positive finite number",
+   "state_unchanged": true
+  }
+ },
+ "scaler_enabled": true,
+ "rng_keys": [
+  "cuda",
+  "numpy",
+  "python",
+  "torch"
+ ],
+ "all_ok": true
+}

@@ -1,0 +1,34 @@
+F
+=================================== FAILURES ===================================
+__________________________ test_renamed_view_rejected __________________________
+
+fresh = {'source': '/tmp/pytest-of-stanley/pytest-256/test_renamed_view_rejected0/fixture/src', 'manifest': {'version': 1, 'sa...d0/fixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-256/test_renamed_view_rejected0/fixture/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-256/test_renamed_view_rejected0')
+
+    def test_renamed_view_rejected(fresh, tmp_path):
+        ep = _first_train_episode(fresh)
+        os.rename(ep, os.path.join(os.path.dirname(ep), "zz_renamed"))
+>       assert "directory name must be ep_train_0000" in _problems(fresh, tmp_path / "o")
+
+tests/test_codex_final_inputs.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fx = {'source': '/tmp/pytest-of-stanley/pytest-256/test_renamed_view_rejected0/fixture/src', 'manifest': {'version': 1, 'sa...d0/fixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-256/test_renamed_view_rejected0/fixture/views', ...}
+out = PosixPath('/tmp/pytest-of-stanley/pytest-256/test_renamed_view_rejected0/o')
+protocol = None
+
+    def _problems(fx, out, protocol=None):
+>       with pytest.raises(LaunchError) as e:
+E       Failed: DID NOT RAISE LaunchError
+
+tests/test_codex_final_inputs.py:41: Failed
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_renamed_view_rejected - Failed:...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 78 warnings in 1.72s

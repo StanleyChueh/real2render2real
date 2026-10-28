@@ -1,0 +1,23 @@
+	Command being timed: ".venv-tinydp/bin/python policy_training/train_r2r2r_dp.py --protocol policy_training/configs/lifecycle_u20_v3.json --train-size 50 --device cuda --output-dir /home/stanley/Stanley_ws/r2r2r_policy_runs/lifecycle_f7/u10_C_corrupt --stop-after-updates 10"
+	User time (seconds): 274.72
+	System time (seconds): 65.99
+	Percent of CPU this job got: 481%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:10.79
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 8770824
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 23
+	Minor (reclaiming a frame) page faults: 27414312
+	Voluntary context switches: 1895662
+	Involuntary context switches: 2807895
+	Swaps: 0
+	File system inputs: 13854528
+	File system outputs: 5817600
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

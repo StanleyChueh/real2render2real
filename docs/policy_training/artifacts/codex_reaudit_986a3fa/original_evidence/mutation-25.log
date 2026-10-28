@@ -1,0 +1,16 @@
+F
+=================================== FAILURES ===================================
+__________ test_normalized_rejects_nonfinite_actions_and_bounds[nan] ___________
+
+bad = nan
+
+    @pytest.mark.parametrize("bad", [np.nan, np.inf, -np.inf])
+    def test_normalized_rejects_nonfinite_actions_and_bounds(bad):
+>       with pytest.raises(ValueError, match="non-finite"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_codex_final_inputs.py:55: Failed
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_normalized_rejects_nonfinite_actions_and_bounds[nan]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 1.53s

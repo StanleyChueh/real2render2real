@@ -1,0 +1,51 @@
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "checks": {
+  "skip_run": true,
+  "resumed_from_u2": true,
+  "resumed_counters": true,
+  "resume_state_equal": true,
+  "one_skip_record": true
+ },
+ "skip_run": {
+  "update": 4,
+  "attempted": 5,
+  "skipped": 1,
+  "optimizer_calls": 4,
+  "scheduler_last_epoch": 4,
+  "adam_steps": [
+   4
+  ],
+  "micro": 20,
+  "scale": 32768.0,
+  "amp": true,
+  "scaler_enabled": true
+ },
+ "model_diff": 0.0
+}

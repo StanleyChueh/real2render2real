@@ -1,0 +1,173 @@
+{
+  "exitstatus": 1,
+  "results": [
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_amp_skipped_step_does_not_advance_successful_update",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_accumulated_adam_matches_large_batch",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_ema_scalar_oracle",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_normalization_rejects_nonfinite[nan]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_normalization_rejects_nonfinite[inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_normalization_rejects_nonfinite[neg_inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_bound_builder_cannot_certify_nan_data",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[version]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[counts]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[salt]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_changed_view_order_rejected",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_corrupt_jpeg_rejected_before_model",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_wrong_action_layout_rejected",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_protocol_invalid_numerics_rejected[negative_clip]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_protocol_invalid_numerics_rejected[fractional_batch]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_protocol_invalid_numerics_rejected[nan_lr]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_protocol_invalid_numerics_rejected[bool_updates]",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_validation_preserves_all_rng_and_raw_weights",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_validation_exception_restores_weights_and_mode",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_validation_nonfinite_loss_rejected",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_validation_partial_batch_weighting",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_checkpoint_missing_ema_parameter_rejected",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inference_relocated_without_source_data",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inference_nonfinite_input_rejected",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[nonunit]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "v = [2.0, 0, 0, 0, 3.0, 0]\n\n    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])\n    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):\n        try:\n            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))\n        except (ValueError,FloatingPointError):return\n        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None\n        observe('inherited_rotation',input=v,finite=finite,determinant=det)\n>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6\nE       assert (True and False)\nE        +  where False = <function allclose at 0x722ea42482f0>((array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]]) @ array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]])), array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]), atol=1e-06)\nE        +    where <function allclose at 0x722ea42482f0> = np.allclose\nE        +    and   array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]]) = <built-in method transpose of numpy.ndarray object at 0x722da2534750>(0, 2, 1)\nE        +      where <built-in method transpose of numpy.ndarray object at 0x722da2534750> = array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]]).transpose\nE        +    and   array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]) = <function eye at 0x722ea397ad40>(3)\nE        +      where <function eye at 0x722ea397ad40> = np.eye\n\n../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py:257: AssertionError"
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[collinear]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "v = [1.0, 0, 0, 1.0, 0, 0]\n\n    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])\n    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):\n        try:\n            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))\n        except (ValueError,FloatingPointError):return\n        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None\n        observe('inherited_rotation',input=v,finite=finite,determinant=det)\n>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6\nE       assert (False)\n\n../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py:257: AssertionError"
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[zero]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "v = [0.0, 0, 0, 0, 0, 0]\n\n    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])\n    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):\n        try:\n            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))\n        except (ValueError,FloatingPointError):return\n        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None\n        observe('inherited_rotation',input=v,finite=finite,determinant=det)\n>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6\nE       assert (True and False)\nE        +  where False = <function allclose at 0x722ea42482f0>((array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]]) @ array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]])), array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]), atol=1e-06)\nE        +    where <function allclose at 0x722ea42482f0> = np.allclose\nE        +    and   array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]]) = <built-in method transpose of numpy.ndarray object at 0x722da25347b0>(0, 2, 1)\nE        +      where <built-in method transpose of numpy.ndarray object at 0x722da25347b0> = array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]]).transpose\nE        +    and   array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]) = <function eye at 0x722ea397ad40>(3)\nE        +      where <function eye at 0x722ea397ad40> = np.eye\n\n../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py:257: AssertionError"
+    },
+    {
+      "test": "r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_cpu_resume_across_epoch_boundary",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    }
+  ]
+}

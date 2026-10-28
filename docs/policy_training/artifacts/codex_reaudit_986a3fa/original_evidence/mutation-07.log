@@ -1,0 +1,167 @@
+F
+=================================== FAILURES ===================================
+_________________ test_interrupted_resume_equals_uninterrupted _________________
+
+fx6 = {'source': '/tmp/pytest-of-stanley/pytest-234/d60/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_root...h': '/tmp/pytest-of-stanley/pytest-234/d60/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-234/d60/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-234/test_interrupted_resume_equals0')
+
+    def test_interrupted_resume_equals_uninterrupted(fx6, tmp_path):
+        a, b = str(tmp_path / "a"), str(tmp_path / "b")
+        sa = _cli(fx6, a)
+        assert sa["finished"] and sa["final_update"] == 6
+        # interrupted run: crashes after update 5 (its u5 checkpoint lost), resumes from u3 with 2 spawn workers
+        sb = _cli(fx6, b, "--stop-after-updates", "5")
+        assert sb["final_update"] == 5 and not sb["finished"]
+        os.remove(os.path.join(b, "ckpt_full_u0000005.pt"))
+        sr = _cli(fx6, b, "--resume", "--num-workers", "2")
+        assert sr["updates_this_session"] == 3 and sr["final_update"] == 6 and sr["finished"]
+        A = torch.load(os.path.join(a, "ckpt_full_u0000006.pt"), weights_only=False)
+        B = torch.load(os.path.join(b, "ckpt_full_u0000006.pt"), weights_only=False)
+        for k in ("model", "ema"):
+>           assert A[k].keys() == B[k].keys() and all(torch.equal(A[k][n], B[k][n]) for n in A[k])
+E           AssertionError: assert (odict_keys(['...conv.1.bias']) == odict_keys(['...conv.1.bias'])
+E             
+E             Use -v to get more diff and False)
+E            +  where False = all(<generator object test_interrupted_resume_equals_uninterrupted.<locals>.<genexpr> at 0x7ea581286110>)
+
+tests/test_driver.py:195: AssertionError
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "d8932e411fc19855c70c588ee53ed1ca2bb43b817f11a45dfc675cb84e2e8126",
+ "launch": {
+  "manifest_sha256": "dad88b88d4bac3136d5f9cfea1164c27c943633c394dddba0a4d3317de84e0fa",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "7da3d38380f345620d22f4f496cfc1ab778ad0db0b9471cd549131ec9e9af053",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "d32eab51fcd2684fe3c2f9e97d122b528bf027177da7335a1b429011d1afe204",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/pytest-of-stanley/pytest-234/d60/views/train_subsets/n0003",
+   "val": "/tmp/pytest-of-stanley/pytest-234/d60/views/splits/val",
+   "test": "/tmp/pytest-of-stanley/pytest-234/d60/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 6, "final_update": 6, "elapsed_s": 3.1, "data_wait_s": 0.3, "skipped_updates_this_session": 0, "attempted_updates_total": 6, "skipped_updates_total": 0, "finished": true}
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "d8932e411fc19855c70c588ee53ed1ca2bb43b817f11a45dfc675cb84e2e8126",
+ "launch": {
+  "manifest_sha256": "dad88b88d4bac3136d5f9cfea1164c27c943633c394dddba0a4d3317de84e0fa",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "7da3d38380f345620d22f4f496cfc1ab778ad0db0b9471cd549131ec9e9af053",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "d32eab51fcd2684fe3c2f9e97d122b528bf027177da7335a1b429011d1afe204",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/pytest-of-stanley/pytest-234/d60/views/train_subsets/n0003",
+   "val": "/tmp/pytest-of-stanley/pytest-234/d60/views/splits/val",
+   "test": "/tmp/pytest-of-stanley/pytest-234/d60/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 5, "final_update": 5, "elapsed_s": 2.21, "data_wait_s": 0.24, "skipped_updates_this_session": 0, "attempted_updates_total": 5, "skipped_updates_total": 0, "finished": false}
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "d8932e411fc19855c70c588ee53ed1ca2bb43b817f11a45dfc675cb84e2e8126",
+ "launch": {
+  "manifest_sha256": "dad88b88d4bac3136d5f9cfea1164c27c943633c394dddba0a4d3317de84e0fa",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "7da3d38380f345620d22f4f496cfc1ab778ad0db0b9471cd549131ec9e9af053",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "d32eab51fcd2684fe3c2f9e97d122b528bf027177da7335a1b429011d1afe204",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/pytest-of-stanley/pytest-234/d60/views/train_subsets/n0003",
+   "val": "/tmp/pytest-of-stanley/pytest-234/d60/views/splits/val",
+   "test": "/tmp/pytest-of-stanley/pytest-234/d60/views/splits/test"
+  }
+ },
+ "start_update": 3,
+ "start_attempted_updates": 3,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 3, "final_update": 6, "elapsed_s": 11.01, "data_wait_s": 2.14, "skipped_updates_this_session": 0, "attempted_updates_total": 6, "skipped_updates_total": 0, "finished": true}
+=============================== warnings summary ===============================
+tests/test_driver.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+tests/test_driver.py::test_interrupted_resume_equals_uninterrupted
+tests/test_driver.py::test_interrupted_resume_equals_uninterrupted
+tests/test_driver.py::test_interrupted_resume_equals_uninterrupted
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_driver.py::test_interrupted_resume_equals_uninterrupted - A...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 81 warnings in 20.07s

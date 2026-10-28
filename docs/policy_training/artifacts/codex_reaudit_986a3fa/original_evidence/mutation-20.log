@@ -1,0 +1,113 @@
+F
+=================================== FAILURES ===================================
+____________ test_reload_denoise_denormalise_matches_training_model ____________
+
+trained = {'full': '/tmp/pytest-of-stanley/pytest-247/inf0/isolated/ckpt_full_u0000003.pt', 'export': '/tmp/pytest-of-stanley/py... '/tmp/pytest-of-stanley/pytest-247/inf0/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-247/inf0/views', ...}}
+
+    def test_reload_denoise_denormalise_matches_training_model(trained):
+        from tinydp.dataset.utils import unscale_action
+        from tinydp.policy.model import DiffusionPolicy
+        from r2r2r_dp.protocol import config_from_dict
+        ck = torch.load(trained["full"], weights_only=False)
+>       pol = R2R2RPolicy.load(trained["full"], weights="ema")
+
+tests/test_inference.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+r2r2r_dp/inference.py:76: in load
+    return cls(torch.load(path, map_location="cpu", weights_only=False), weights=weights, device=device)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <r2r2r_dp.inference.R2R2RPolicy object at 0x787e7952c040>
+ckpt = {'format': 'r2r2r-dp-ckpt-v3', 'update': 3, 'micro_batches': 12, 'attempted_updates': 3, ...}
+weights = 'ema', device = 'cpu'
+
+    def __init__(self, ckpt: Dict, weights: str = "ema", device: str = "cpu"):
+        from tinydp.dataset.utils import default_vision_transform
+        from tinydp.policy.model import DiffusionPolicy
+        from .protocol import config_from_dict
+    
+        if ckpt.get("format") not in INFERENCE_FORMATS or ckpt.get("kind") not in ("full", "inference"):
+            raise ValueError(f"not a {'/'.join(INFERENCE_FORMATS)} full or inference checkpoint")
+        if weights not in ("ema", "raw"):
+            raise ValueError("weights must be 'ema' or 'raw'")
+        if ckpt["kind"] == "inference" and weights != ckpt["weights"]:
+            raise ValueError(f"inference export holds {ckpt['weights']} weights only")
+        self.cfg = cfg = config_from_dict(ckpt["run"]["tinydp"])
+        if not cfg.model_cfg.policy_cfg.pred_right_only or cfg.shared_cfg.use_delta_action:
+            raise ValueError("adapter supports the right-only absolute-action protocol only")
+        self.device = torch.device(device)
+        self.model = DiffusionPolicy(shared_cfg=cfg.shared_cfg, model_cfg=cfg.model_cfg)
+        self.model.load_state_dict(ckpt["model"])
+        if weights == "ema" and ckpt["kind"] == "full":
+            with torch.no_grad():
+                for name, p in self.model.named_parameters():
+                    p.copy_(ckpt["ema"][name])
+        bad = [k for k, v in self.model.state_dict().items() if v.is_floating_point() and not torch.isfinite(v).all()]
+        if bad:
+            raise ValueError(f"checkpoint weights are not finite: {bad[:5]}")
+        self.model.to(self.device).eval()
+        st = ckpt["action_statistics"]
+>       if st.get("shape") != [20]:
+E       AttributeError: 'NoneType' object has no attribute 'get'
+
+r2r2r_dp/inference.py:62: AttributeError
+---------------------------- Captured stdout setup -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "c10d85814c670839503e0df65aef1e885a6b0ea27ac006506c7987a70936314a",
+ "launch": {
+  "manifest_sha256": "936c6a07c2806ea6f2a2aa525133ea5a7bf477a41f77a8e0d1a7585c0a321696",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "af8b9953eb4abbe5adeafbda99cb531d57dcb5d1caabf44b2a793910564cff9b",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "1d6979006c42bc373e385fac3e1198eab37b7c493ed009a9f8571deb63cec27f",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/pytest-of-stanley/pytest-247/inf0/views/train_subsets/n0003",
+   "val": "/tmp/pytest-of-stanley/pytest-247/inf0/views/splits/val",
+   "test": "/tmp/pytest-of-stanley/pytest-247/inf0/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 3, "final_update": 3, "elapsed_s": 1.68, "data_wait_s": 0.14, "skipped_updates_this_session": 0, "attempted_updates_total": 3, "skipped_updates_total": 0, "finished": true}
+----------------------------- Captured stdout call -----------------------------
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+=============================== warnings summary ===============================
+tests/test_inference.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+tests/test_inference.py::test_reload_denoise_denormalise_matches_training_model
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_inference.py::test_reload_denoise_denormalise_matches_training_model
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 79 warnings in 4.20s

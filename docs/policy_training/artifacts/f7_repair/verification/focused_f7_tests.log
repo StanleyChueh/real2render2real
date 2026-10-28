@@ -1,0 +1,16 @@
+..........................................................               [100%]
+=============================== warnings summary ===============================
+policy_training/tests/test_f7_checkpoint_state.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+policy_training/tests/test_f7_checkpoint_state.py: 63 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+58 passed, 141 warnings in 52.53s
+
+real	0m53.357s
+user	1m55.397s
+sys	0m19.325s

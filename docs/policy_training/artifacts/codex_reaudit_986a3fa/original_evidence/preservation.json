@@ -1,0 +1,58 @@
+{
+  "shas": {
+    "2a0536689e81b1e01876c8cdf0550fa9fae20227": {
+      "exit": 0,
+      "stdout": "2a0536689e81b1e01876c8cdf0550fa9fae20227"
+    },
+    "43ab363058c4c9a5a45207b1414315320ef8438d": {
+      "exit": 0,
+      "stdout": "43ab363058c4c9a5a45207b1414315320ef8438d"
+    },
+    "966d45980bd7fd2654fd9f79c62c0dd844a181d5": {
+      "exit": 0,
+      "stdout": "966d45980bd7fd2654fd9f79c62c0dd844a181d5"
+    },
+    "986a3fab059ff982d6fbc23b59875e1bae7857cf": {
+      "exit": 0,
+      "stdout": "986a3fab059ff982d6fbc23b59875e1bae7857cf"
+    }
+  },
+  "ancestry": [
+    {
+      "exit": 0,
+      "stdout": ""
+    },
+    {
+      "exit": 0,
+      "stdout": ""
+    },
+    {
+      "exit": 0,
+      "stdout": ""
+    }
+  ],
+  "baseline_branch": {
+    "exit": 0,
+    "stdout": "334e83d4d1be7a4a5e78768cd5344051d4a892fa"
+  },
+  "protected": {
+    "exit": 0,
+    "stdout": ""
+  },
+  "submodules": {
+    "exit": 0,
+    "stdout": "7c23afbdfe5cd4700362126dbbbde7739c4c5cf9 dependencies/IsaacLab (7c23afbd)\n bc2c49ff5e553bea320888f2afc08a6da96eba9f dependencies/SuGaR (heads/main)\n 689ad4f9ad5b80eabb128130caa6ec71b70add76 dependencies/openpi (heads/main)\n d1dc83afd89ded4379851257fe5d85632d31d5ec dependencies/openpi/third_party/aloha (d1dc83a)\n f78abd68ee283de9f9be3c8f7e2a9ad60246e95c dependencies/openpi/third_party/libero (f78abd6)\n cca2256472f84ff034dd8a6c69e02dfa726e980c dependencies/rsrd (heads/main)\n 8b2280070ed0a48ce3da6552000929730d33fa88 dependencies/rsrd/dependencies/dig (heads/main)\n 6ac813bdfae1801d609ef3f60ebf173b62d9a743 dependencies/rsrd/dependencies/garfield (heads/main)\n df533a2d04b9e2ece7cf9d6cbc6982e140210517 dependencies/rsrd/dependencies/hamer (df533a2)\n d5216452796c90c6bc29f5c5ec0bdba94366768a dependencies/rsrd/dependencies/hamer/third-party/ViTPose (d521645)\n ec5e4e81e73db47c7a5af36c6356a1191e45851b dependencies/rsrd/dependencies/hamer_helper (ec5e4e8)\n 2d1035c445d2dd64b391cbf0ec2ff6c65e40e05e dependencies/rsrd/dependencies/jaxls (remotes/origin/py310)\n d1ab9c7531ff6cf0bba551e3048cdae31923b4ad dependencies/rsrd/dependencies/jaxmp (heads/main)\n 76d8f9cd14affe0066df3dbb38759b086613f617 dependencies/tinydp (heads/main)\n 6b19f56ac94ae026a160b5390fd17616140fa380 dependencies/trajgen (heads/main)"
+  },
+  "status": {
+    "exit": 0,
+    "stdout": "m dependencies/trajgen"
+  },
+  "artifact_diff": {
+    "exit": 0,
+    "stdout": ""
+  },
+  "v2_stats_diff": {
+    "exit": 0,
+    "stdout": ""
+  }
+}

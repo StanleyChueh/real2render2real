@@ -1,0 +1,44 @@
+........................................................................ [ 28%]
+........................................................................ [ 57%]
+........................................................................ [ 85%]
+....................................                                     [100%]
+=============================== warnings summary ===============================
+policy_training/tests/test_codex_final_inputs.py: 1562 warnings
+policy_training/tests/test_codex_final_training.py: 78 warnings
+policy_training/tests/test_driver.py: 156 warnings
+policy_training/tests/test_f7_checkpoint_state.py: 78 warnings
+policy_training/tests/test_inference.py: 78 warnings
+policy_training/tests/test_launch_checks.py: 626 warnings
+policy_training/tests/test_manifest_adapter.py: 252 warnings
+policy_training/tests/test_normalizer_v2.py: 18 warnings
+policy_training/tests/test_timing_contract.py: 6 warnings
+policy_training/tests/test_tinydp_pipeline.py: 292 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+policy_training/tests/test_codex_final_inputs.py: 1 warning
+policy_training/tests/test_codex_final_training.py: 24 warnings
+policy_training/tests/test_driver.py: 10 warnings
+policy_training/tests/test_f7_checkpoint_state.py: 63 warnings
+policy_training/tests/test_inference.py: 1 warning
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+policy_training/tests/test_driver.py::test_released_engine_counterexample
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/autocast_mode.py:266: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+    warnings.warn(
+
+policy_training/tests/test_driver.py::test_released_engine_counterexample
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:214: UserWarning: Seems like `optimizer.step()` has been overridden after learning rate scheduler initialization. Please, make sure to call `optimizer.step()` before `lr_scheduler.step()`. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+    warnings.warn(
+
+policy_training/tests/test_driver.py::test_update_semantics
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+252 passed, 3248 warnings in 124.78s (0:02:04)
+
+real	2m5.835s
+user	4m58.521s
+sys	0m35.696s

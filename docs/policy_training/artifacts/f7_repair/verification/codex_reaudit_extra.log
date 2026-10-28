@@ -1,0 +1,75 @@
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+optimizer_nan_lr preflight_problems= ['optimizer group 0: lr nan is not the scheduled 0.0 at update 3']
+.using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+optimizer_missing_moment preflight_problems= ['optimizer: 1 invalid Adam state entries, e.g. ["vision_encoder.bn1.weight: keys [\'exp_avg_sq\', \'step\'] != [\'exp_avg\', \'exp_avg_sq\', \'step\']"]']
+.using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+optimizer_bad_moment_shape preflight_problems= ["optimizer: 1 invalid Adam state entries, e.g. ['vision_encoder.bn1.weight: exp_avg: expected torch.float32 (64,), got (torch.float32, (2, 3))']"]
+.using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+scheduler_nan_lr preflight_problems= ['scheduler last lr [nan, nan] is not the scheduled [0.0, 0.0] at update 3']
+.using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+invalid_rng_payload preflight_problems= ['rng.torch is not a valid state (ValueError: expected uint8 (5056,), got (torch.uint8, (1,)))']
+.
+=============================== warnings summary ===============================
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_nan_lr]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_missing_moment]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_bad_moment_shape]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[scheduler_nan_lr]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[invalid_rng_payload]
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+5 passed, 83 warnings in 6.60s

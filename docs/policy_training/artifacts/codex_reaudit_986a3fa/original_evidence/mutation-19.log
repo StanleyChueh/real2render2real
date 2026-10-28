@@ -1,0 +1,97 @@
+F
+=================================== FAILURES ===================================
+____________ test_reload_denoise_denormalise_matches_training_model ____________
+
+trained = {'full': '/tmp/pytest-of-stanley/pytest-246/inf0/isolated/ckpt_full_u0000003.pt', 'export': '/tmp/pytest-of-stanley/py... '/tmp/pytest-of-stanley/pytest-246/inf0/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-246/inf0/views', ...}}
+
+    def test_reload_denoise_denormalise_matches_training_model(trained):
+        from tinydp.dataset.utils import unscale_action
+        from tinydp.policy.model import DiffusionPolicy
+        from r2r2r_dp.protocol import config_from_dict
+        ck = torch.load(trained["full"], weights_only=False)
+        pol = R2R2RPolicy.load(trained["full"], weights="ema")
+        obs, prop = _batch()
+        out = pol.predict(obs, prop, num_inference_steps=4, seed=11)
+        assert out["right_action"].shape == (2, 16, 10) and out["normalized"].shape == (2, 16, 10)
+        assert torch.isfinite(out["right_action"]).all() and out["normalized"].abs().max() <= 1.0 + 1e-6  # clip_sample
+        # reference: the training model with the EMA weights applied (what validation evaluates)
+        cfg = config_from_dict(ck["run"]["tinydp"])
+        ref = DiffusionPolicy(shared_cfg=cfg.shared_cfg, model_cfg=cfg.model_cfg)
+        ref.load_state_dict(ck["model"])
+        with torch.no_grad():
+            for n, p in ref.named_parameters():
+                p.copy_(ck["ema"][n])
+        ref.eval()
+        ref.noise_scheduler.set_timesteps(4)
+        torch.manual_seed(11)
+        with torch.no_grad():
+            z = ref.forward_inference({"observation": obs, "proprio": prop})
+>       assert torch.equal(z, out["normalized"])
+E       assert False
+E        +  where False = <built-in method equal of type object at 0x7cb90e6bf1c0>(tensor([[[-0.1617,  0.8024,  0.8368, -0.8714,  0.3665,  0.1028,  0.9961,\n          -1.0000, -0.4084, -0.1160],\n       ...2043],\n         [-0.5546, -0.0168,  0.5973, -0.3962, -0.4947, -1.0000, -0.9752,\n          -1.0000, -0.8195, -0.3421]]]), tensor([[[-2.5965e-01,  8.7868e-01,  4.9032e-01, -9.1502e-01,  3.1146e-01,\n          -1.8874e-01,  9.8964e-01, -1.0000...2,  6.2568e-01, -5.7390e-01, -5.6138e-01,\n          -1.0000e+00, -9.7361e-01, -1.0000e+00, -8.0979e-01, -2.1027e-01]]]))
+E        +    where <built-in method equal of type object at 0x7cb90e6bf1c0> = torch.equal
+
+tests/test_inference.py:60: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+{
+ "config_sha256": "6e4d041857c998a7aefebf5a64b9756431a56ea772c968f8623041bbed326205",
+ "launch": {
+  "manifest_sha256": "c4b89610521e9c11ac7a45383b9b361adbaf753f30c6a365caa29bb0cfeee95e",
+  "counts": {
+   "train": 3,
+   "val": 2,
+   "test": 2
+  },
+  "train_uids_sha256": "e408b1dc4d3336101ab9a06a310f741b417ac99224e4a4dc9d6c07406898a15a",
+  "action_statistics_sha256": "ff6c85659818bde49b094d70fe22e17e5d3bf0fe33288369b1b8667f47ed4d0e",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "4bbd5d4c0d3d8de520efa1be92464ef69c6b2c3020223966a79583f835c2b3ef",
+   "episodes_verified": 7,
+   "frames_verified": 840,
+   "seconds": 0.0
+  },
+  "roots_realpath": {
+   "train": "/tmp/pytest-of-stanley/pytest-246/inf0/views/train_subsets/n0003",
+   "val": "/tmp/pytest-of-stanley/pytest-246/inf0/views/splits/val",
+   "test": "/tmp/pytest-of-stanley/pytest-246/inf0/views/splits/test"
+  }
+ },
+ "start_update": 0,
+ "start_attempted_updates": 0,
+ "train_order_sha256": "940fada43457afa3e27b430c626b814f90e4a640e717082fd4a9f7728806264a",
+ "batches_per_epoch": 30,
+ "val_subset_batches": 2,
+ "val_full_batches": 20
+}
+{"updates_this_session": 3, "final_update": 3, "elapsed_s": 1.7, "data_wait_s": 0.15, "skipped_updates_this_session": 0, "attempted_updates_total": 3, "skipped_updates_total": 0, "finished": true}
+----------------------------- Captured stdout call -----------------------------
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+=============================== warnings summary ===============================
+tests/test_inference.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+tests/test_inference.py::test_reload_denoise_denormalise_matches_training_model
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_inference.py::test_reload_denoise_denormalise_matches_training_model
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 79 warnings in 4.37s

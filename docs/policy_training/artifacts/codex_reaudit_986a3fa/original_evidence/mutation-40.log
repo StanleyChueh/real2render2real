@@ -1,0 +1,27 @@
+F
+=================================== FAILURES ===================================
+______________________ test_protocol_file_is_strict_json _______________________
+
+fx = {'source': '/tmp/pytest-of-stanley/pytest-266/cfi0/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_roo...: '/tmp/pytest-of-stanley/pytest-266/cfi0/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-266/cfi0/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-266/test_protocol_file_is_strict_j0')
+
+    def test_protocol_file_is_strict_json(fx, tmp_path):
+        text = open(fx["protocol_path"]).read().replace('"grad_clip": 1.0', '"grad_clip": NaN')
+        assert "NaN" in text
+        (tmp_path / "p.json").write_text(text)
+>       with pytest.raises(ProtocolError, match="NaN"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'NaN'
+E         Actual message: 'schedule.grad_clip must be a finite positive gradient-norm bound, got nan'
+
+tests/test_codex_final_inputs.py:268: AssertionError
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_protocol_file_is_strict_json - ...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 78 warnings in 1.69s

@@ -1,0 +1,25 @@
+F
+=================================== FAILURES ===================================
+__________________ test_builder_decodes_and_checks_resolution __________________
+
+fresh = {'source': '/tmp/pytest-of-stanley/pytest-262/test_builder_decodes_and_check0/fixture/src', 'manifest': {'version': 1,...ixture/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-262/test_builder_decodes_and_check0/fixture/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-262/test_builder_decodes_and_check0')
+
+    def test_builder_decodes_and_checks_resolution(fresh, tmp_path):
+        f = _frame(fresh)
+        rgb = os.path.dirname(f)
+        Image.new("RGB", (64, 48)).save(f, quality=95)
+>       with pytest.raises(ii.ImageIntegrityError, match=r"\(64, 48\)"):
+E       Failed: DID NOT RAISE ImageIntegrityError
+
+tests/test_codex_final_inputs.py:194: Failed
+=============================== warnings summary ===============================
+tests/test_codex_final_inputs.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_codex_final_inputs.py::test_builder_decodes_and_checks_resolution
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 78 warnings in 1.73s

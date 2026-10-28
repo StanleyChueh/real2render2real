@@ -1,0 +1,74 @@
+........................FFF.                                             [100%]
+=================================== FAILURES ===================================
+___ test_inherited_physical_rotation_conversion_is_valid_or_rejects[nonunit] ___
+
+v = [2.0, 0, 0, 0, 3.0, 0]
+
+    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])
+    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):
+        try:
+            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))
+        except (ValueError,FloatingPointError):return
+        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None
+        observe('inherited_rotation',input=v,finite=finite,determinant=det)
+>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6
+E       assert (True and False)
+E        +  where False = <function allclose at 0x722ea42482f0>((array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]]) @ array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]])), array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]), atol=1e-06)
+E        +    where <function allclose at 0x722ea42482f0> = np.allclose
+E        +    and   array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]]) = <built-in method transpose of numpy.ndarray object at 0x722da2534750>(0, 2, 1)
+E        +      where <built-in method transpose of numpy.ndarray object at 0x722da2534750> = array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]]).transpose
+E        +    and   array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]) = <function eye at 0x722ea397ad40>(3)
+E        +      where <function eye at 0x722ea397ad40> = np.eye
+
+../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py:257: AssertionError
+__ test_inherited_physical_rotation_conversion_is_valid_or_rejects[collinear] __
+
+v = [1.0, 0, 0, 1.0, 0, 0]
+
+    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])
+    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):
+        try:
+            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))
+        except (ValueError,FloatingPointError):return
+        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None
+        observe('inherited_rotation',input=v,finite=finite,determinant=det)
+>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6
+E       assert (False)
+
+../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py:257: AssertionError
+____ test_inherited_physical_rotation_conversion_is_valid_or_rejects[zero] _____
+
+v = [0.0, 0, 0, 0, 0, 0]
+
+    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])
+    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):
+        try:
+            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))
+        except (ValueError,FloatingPointError):return
+        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None
+        observe('inherited_rotation',input=v,finite=finite,determinant=det)
+>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6
+E       assert (True and False)
+E        +  where False = <function allclose at 0x722ea42482f0>((array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]]) @ array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]])), array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]), atol=1e-06)
+E        +    where <function allclose at 0x722ea42482f0> = np.allclose
+E        +    and   array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]]) = <built-in method transpose of numpy.ndarray object at 0x722da25347b0>(0, 2, 1)
+E        +      where <built-in method transpose of numpy.ndarray object at 0x722da25347b0> = array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]]).transpose
+E        +    and   array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]) = <function eye at 0x722ea397ad40>(3)
+E        +      where <function eye at 0x722ea397ad40> = np.eye
+
+../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py:257: AssertionError
+=============================== warnings summary ===============================
+r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py: 10 warnings
+  /tmp/r2r2r-v3-audit-worktree/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py: 782 warnings
+  /tmp/r2r2r-v3-audit-worktree/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[nonunit]
+FAILED ../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[collinear]
+FAILED ../r2r2r-codex-reaudit-986a3fa/original/suite.Kg55/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[zero]
+3 failed, 25 passed, 792 warnings in 23.23s

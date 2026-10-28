@@ -1,0 +1,53 @@
+F
+=================================== FAILURES ===================================
+____________________________ test_update_semantics _____________________________
+
+fx9 = {'source': '/tmp/pytest-of-stanley/pytest-229/d90/src', 'manifest': {'version': 1, 'salt': 'r2r2r-dp-v1', 'source_root...h': '/tmp/pytest-of-stanley/pytest-229/d90/manifest.json', 'views': '/tmp/pytest-of-stanley/pytest-229/d90/views', ...}
+tmp_path = PosixPath('/tmp/pytest-of-stanley/pytest-229/test_update_semantics0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fe360e18eb0>
+
+    def test_update_semantics(fx9, tmp_path, monkeypatch):
+        from diffusers.optimization import get_scheduler
+        from tinydp.dataset.image_dataset import VideoSampler
+        t = _trainer(fx9, tmp_path)
+        assert t.batches_per_epoch == 30
+        keys, train_losses, ema_calls = [], [], []
+        orig_get = driver.SeededItems.__getitem__
+        monkeypatch.setattr(driver.SeededItems, "__getitem__", lambda self, k: (keys.append(k), orig_get(self, k))[1])
+        orig_fwd = t.model.forward
+        t.model.forward = lambda b: (lambda l: (train_losses.append(float(l)) if t.model.training else None, l)[1])(orig_fwd(b))
+        orig_ema = t.ema.update
+        t.ema.update = lambda m: (ema_calls.append(1), orig_ema(m))[1]
+        summary = t.train()
+        assert summary["final_update"] == 9 and summary["skipped_updates_total"] == 0
+        assert summary["attempted_updates_total"] == t.attempted_updates == t.optimizer_calls == 9
+>       assert t.scheduler.last_epoch == 9 and len(ema_calls) == 9
+E       assert (36 == 9)
+E        +  where 36 = <torch.optim.lr_scheduler.LambdaLR object at 0x7fe35a516020>.last_epoch
+E        +    where <torch.optim.lr_scheduler.LambdaLR object at 0x7fe35a516020> = <r2r2r_dp.driver.Trainer object at 0x7fe360e19cf0>.scheduler
+
+tests/test_driver.py:111: AssertionError
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+=============================== warnings summary ===============================
+tests/test_driver.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+tests/test_driver.py::test_update_semantics
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_driver.py::test_update_semantics - assert (36 == 9)
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 79 warnings in 6.16s
