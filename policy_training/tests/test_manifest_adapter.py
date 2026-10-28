@@ -61,7 +61,7 @@ def test_manifest_rejects_duplicate_content_and_tampering(source, tmp_path):
     victim = next(e for e in m["episodes"] if e["split"] == "val")
     clone = dict(victim, split="train", split_rank=8)
     m["episodes"].append(clone)
-    with pytest.raises(AssertionError):
+    with pytest.raises(mf.ManifestError):  # explicit exception (was AssertionError, lost under python -O)
         mf.check_manifest(m)
 
 

@@ -1,5 +1,7 @@
 # TinyDP pre-training audit: repair report (M1–M7)
 
+> **Superseded status (2026-10-28).** The independent Codex final audit of this report's commit `43ab363` ([CODEX_FINAL_AUDIT.md](CODEX_FINAL_AUDIT.md)) graded M2 and M4 **FAIL** and M1, M3, M5, M6, M7 **PARTIAL**, with eight MAJOR findings (F1–F8), and returned **NO-GO**. The PASS grades and the GO decision below were therefore premature; they are kept unchanged as the historical record of commit `43ab363`. The repairs, re-grading and current decision are in [CODEX_FINDINGS_REPAIR.md](CODEX_FINDINGS_REPAIR.md). In particular, the invariant "`micro_batches` = 4 × `update`" in §6 holds only when no optimizer step was skipped; the repaired invariant is `micro_batches` = 4 × `attempted_updates`, `attempted_updates` = `update` + `skipped_updates`.
+
 Branch `fix/tinydp-audit-gates`, based on `repro/dp-training` @ `2a053668` (local HEAD = GitHub HEAD, verified 2026-10-27). The audit is in [CODEX_PRETRAIN_AUDIT.md](CODEX_PRETRAIN_AUDIT.md). The frozen result is [VALIDATED_TRAINING_PROTOCOL.md](VALIDATED_TRAINING_PROTOCOL.md), and the bounded GPU run is in [LIFECYCLE_TEST_RESULTS.md](LIFECYCLE_TEST_RESULTS.md).
 
 **Not modified:** the R2R2R generator, `scripts/`, `real2render2real/`, every submodule (TinyDP stays clean at `76d8f9c`), the environments, the 1,825 source episodes, the dataset views, and the v1 statistics files. Phase 4 below verifies this. No dependency was installed or upgraded.

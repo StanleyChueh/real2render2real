@@ -1,0 +1,431 @@
+F..FFFFFFFFFFFFFF.FF.F.FFFF.                                             [100%]
+=================================== FAILURES ===================================
+___________ test_amp_skipped_step_does_not_advance_successful_update ___________
+
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_amp_skipped_step_does_not0')
+
+    def test_amp_skipped_step_does_not_advance_successful_update(tmp_path):
+        b={'x':torch.ones((4,1),dtype=torch.float64),'y':torch.zeros((4,1),dtype=torch.float64)}
+        t=scalar_driver(tmp_path/'amp',[b],4)
+        t.scaler._scaler=torch.amp.GradScaler('cpu')  # real GradScaler, actual committed train() logic
+        hook_calls=[0];ema_calls=[0];orig=t.ema.update
+        def bad_first_group(g):
+            hook_calls[0]+=1
+            return torch.full_like(g,float('inf')) if hook_calls[0]<=4 else g
+        t.model.w.register_hook(bad_first_group)
+        def counted_ema(m):ema_calls[0]+=1;orig(m)
+        t.ema.update=counted_ema
+        result=t.train()
+        observe('amp_skip',optimizer_steps=t.optimizer.steps,scheduler_steps=t.scheduler.last_epoch,
+                ema_updates=ema_calls[0],successful_updates=t.update,micro_batches=t.micro,
+                scaler_scale=t.scaler._scaler.get_scale(),summary=result)
+>       assert t.update==t.optimizer.steps==t.scheduler.last_epoch==ema_calls[0]==1
+E       assert 1 == 0
+E        +  where 1 = <r2r2r_dp.driver.Trainer object at 0x77e003d835b0>.update
+E        +  and   0 = CountingAdam (\nParameter Group 0\n    amsgrad: False\n    betas: (0.9, 0.999)\n    capturable: False\n    differentiable: ... 1e-08\n    foreach: None\n    fused: None\n    initial_lr: 0.01\n    lr: 0.01\n    maximize: False\n    weight_decay: 0.09\n).steps
+E        +    where CountingAdam (\nParameter Group 0\n    amsgrad: False\n    betas: (0.9, 0.999)\n    capturable: False\n    differentiable: ... 1e-08\n    foreach: None\n    fused: None\n    initial_lr: 0.01\n    lr: 0.01\n    maximize: False\n    weight_decay: 0.09\n) = <r2r2r_dp.driver.Trainer object at 0x77e003d835b0>.optimizer
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:94: AssertionError
+__________________ test_normalization_rejects_nonfinite[nan] ___________________
+
+bad = nan
+
+    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-float('inf')],ids=['nan','inf','neg_inf'])
+    def test_normalization_rejects_nonfinite(bad):
+>       with pytest.raises((ValueError,FloatingPointError)):
+E       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:117: Failed
+__________________ test_normalization_rejects_nonfinite[inf] ___________________
+
+bad = inf
+
+    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-float('inf')],ids=['nan','inf','neg_inf'])
+    def test_normalization_rejects_nonfinite(bad):
+>       with pytest.raises((ValueError,FloatingPointError)):
+E       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:117: Failed
+________________ test_normalization_rejects_nonfinite[neg_inf] _________________
+
+bad = -inf
+
+    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-float('inf')],ids=['nan','inf','neg_inf'])
+    def test_normalization_rejects_nonfinite(bad):
+>       with pytest.raises((ValueError,FloatingPointError)):
+E       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:117: Failed
+__________________ test_bound_builder_cannot_certify_nan_data __________________
+
+fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_bound_builder_cannot_cert0/fixture/views', ...}
+
+    def test_bound_builder_cannot_certify_nan_data(fresh):
+        root=Path(fresh['views'])/'train_subsets/n0003';ep=next(root.iterdir())
+        z=ep/'robot_data/robot_data_proprio.zarr';a=zarr.load(str(z));a[21,7]=float('nan');zarr.save_array(str(z),a)
+>       with pytest.raises((ValueError,FloatingPointError)):
+E       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:124: Failed
+_________ test_manifest_metadata_rejected_even_when_re_pinned[version] _________
+
+fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte0/fixture/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte0')
+field = 'version'
+
+    @pytest.mark.parametrize('field',['version','counts','salt'])
+    def test_manifest_metadata_rejected_even_when_re_pinned(fresh,tmp_path,field):
+        m=json.load(open(fresh['manifest_path']))
+        m[field]={'train':999,'val':999,'test':999} if field=='counts' else (999 if field=='version' else 'wrong-salt')
+        Path(fresh['manifest_path']).write_text(json.dumps(m));sha=nv.file_sha256(fresh['manifest_path'])
+        p=copy.deepcopy(fresh['protocol']);p['data']['manifest_sha256']=sha
+        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'
+        st=json.loads(sp.read_text());st['provenance']['manifest_sha256']=sha;sp.write_text(json.dumps(st))
+        r=resolve(p,3,str(tmp_path/'out'))
+>       with pytest.raises((LaunchError,ValueError,AssertionError)):
+E       Failed: DID NOT RAISE any of (LaunchError, ValueError, AssertionError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:138: Failed
+_________ test_manifest_metadata_rejected_even_when_re_pinned[counts] __________
+
+fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte1/fixture/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte1')
+field = 'counts'
+
+    @pytest.mark.parametrize('field',['version','counts','salt'])
+    def test_manifest_metadata_rejected_even_when_re_pinned(fresh,tmp_path,field):
+        m=json.load(open(fresh['manifest_path']))
+        m[field]={'train':999,'val':999,'test':999} if field=='counts' else (999 if field=='version' else 'wrong-salt')
+        Path(fresh['manifest_path']).write_text(json.dumps(m));sha=nv.file_sha256(fresh['manifest_path'])
+        p=copy.deepcopy(fresh['protocol']);p['data']['manifest_sha256']=sha
+        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'
+        st=json.loads(sp.read_text());st['provenance']['manifest_sha256']=sha;sp.write_text(json.dumps(st))
+        r=resolve(p,3,str(tmp_path/'out'))
+>       with pytest.raises((LaunchError,ValueError,AssertionError)):
+E       Failed: DID NOT RAISE any of (LaunchError, ValueError, AssertionError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:138: Failed
+__________ test_manifest_metadata_rejected_even_when_re_pinned[salt] ___________
+
+fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte2/fixture/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte2')
+field = 'salt'
+
+    @pytest.mark.parametrize('field',['version','counts','salt'])
+    def test_manifest_metadata_rejected_even_when_re_pinned(fresh,tmp_path,field):
+        m=json.load(open(fresh['manifest_path']))
+        m[field]={'train':999,'val':999,'test':999} if field=='counts' else (999 if field=='version' else 'wrong-salt')
+        Path(fresh['manifest_path']).write_text(json.dumps(m));sha=nv.file_sha256(fresh['manifest_path'])
+        p=copy.deepcopy(fresh['protocol']);p['data']['manifest_sha256']=sha
+        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'
+        st=json.loads(sp.read_text());st['provenance']['manifest_sha256']=sha;sp.write_text(json.dumps(st))
+        r=resolve(p,3,str(tmp_path/'out'))
+>       with pytest.raises((LaunchError,ValueError,AssertionError)):
+E       Failed: DID NOT RAISE any of (LaunchError, ValueError, AssertionError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:138: Failed
+_______________________ test_changed_view_order_rejected _______________________
+
+fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_changed_view_order_reject0/fixture/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_changed_view_order_reject0')
+
+    def test_changed_view_order_rejected(fresh,tmp_path):
+        r=run_of(fresh,tmp_path/'out');before=dataset_order(r)
+        root=Path(r['paths']['train_root']);first=sorted(root.iterdir())[0];first.rename(root/'zz_renamed_episode')
+        after=dataset_order(r);assert before!=after
+>       with pytest.raises((LaunchError,ValueError)):
+E       Failed: DID NOT RAISE any of (LaunchError, ValueError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:151: Failed
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+___________________ test_corrupt_jpeg_rejected_before_model ____________________
+
+fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_corrupt_jpeg_rejected_bef0/fixture/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_corrupt_jpeg_rejected_bef0')
+
+    def test_corrupt_jpeg_rejected_before_model(fresh,tmp_path):
+        root=Path(fresh['views'])/'train_subsets/n0003';ep=next(root.iterdir())
+        (ep/'camera_0/rgb/0007.jpg').write_bytes(b'not a jpeg')  # only synthetic source fixture
+>       with pytest.raises((LaunchError,ValueError)):
+E       Failed: DID NOT RAISE any of (LaunchError, ValueError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:158: Failed
+______________________ test_wrong_action_layout_rejected _______________________
+
+fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_wrong_action_layout_rejec0/fixture/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_wrong_action_layout_rejec0')
+
+    def test_wrong_action_layout_rejected(fresh,tmp_path):
+        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'
+        st=json.loads(sp.read_text());st['config']['layout']=list(reversed(st['config']['layout']));sp.write_text(json.dumps(st))
+>       with pytest.raises((LaunchError,ValueError)):
+E       Failed: DID NOT RAISE any of (LaunchError, ValueError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:164: Failed
+____________ test_protocol_invalid_numerics_rejected[negative_clip] ____________
+
+stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics0')
+case = 'negative_clip'
+
+    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])
+    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):
+        p=copy.deepcopy(stable['protocol'])
+        if case=='negative_clip':p['schedule']['grad_clip']=-1.
+        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5
+        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')
+        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0
+>       with pytest.raises((ProtocolError,ValueError)):
+E       Failed: DID NOT RAISE any of (ProtocolError, ValueError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed
+__________ test_protocol_invalid_numerics_rejected[fractional_batch] ___________
+
+stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics1')
+case = 'fractional_batch'
+
+    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])
+    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):
+        p=copy.deepcopy(stable['protocol'])
+        if case=='negative_clip':p['schedule']['grad_clip']=-1.
+        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5
+        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')
+        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0
+>       with pytest.raises((ProtocolError,ValueError)):
+E       Failed: DID NOT RAISE any of (ProtocolError, ValueError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed
+_______________ test_protocol_invalid_numerics_rejected[nan_lr] ________________
+
+stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics2')
+case = 'nan_lr'
+
+    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])
+    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):
+        p=copy.deepcopy(stable['protocol'])
+        if case=='negative_clip':p['schedule']['grad_clip']=-1.
+        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5
+        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')
+        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0
+>       with pytest.raises((ProtocolError,ValueError)):
+E       Failed: DID NOT RAISE any of (ProtocolError, ValueError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed
+____________ test_protocol_invalid_numerics_rejected[bool_updates] _____________
+
+stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics3')
+case = 'bool_updates'
+
+    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])
+    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):
+        p=copy.deepcopy(stable['protocol'])
+        if case=='negative_clip':p['schedule']['grad_clip']=-1.
+        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5
+        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')
+        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0
+>       with pytest.raises((ProtocolError,ValueError)):
+E       Failed: DID NOT RAISE any of (ProtocolError, ValueError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed
+_____________ test_validation_exception_restores_weights_and_mode ______________
+
+stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_validation_exception_rest0')
+
+    def test_validation_exception_restores_weights_and_mode(stable,tmp_path):
+        t=trainer(stable,tmp_path/'exception_val');t.model.train()
+        with torch.no_grad():next(t.model.parameters()).add_(.5)
+        raw={k:v.clone() for k,v in t.model.state_dict().items()}
+        def explode(_):raise RuntimeError('injected validation failure')
+        t.model.forward=explode
+        with pytest.raises(RuntimeError,match='injected'):t.evaluate(t.val_subset)
+        restored=all(torch.equal(v,t.model.state_dict()[k]) for k,v in raw.items())
+        observe('validation_exception',raw_weights_restored=restored,training_mode=t.model.training)
+>       assert restored and t.model.training
+E       assert (False)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:197: AssertionError
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+___________________ test_validation_nonfinite_loss_rejected ____________________
+
+stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_validation_nonfinite_loss0')
+
+    def test_validation_nonfinite_loss_rejected(stable,tmp_path):
+        t=trainer(stable,tmp_path/'nan_val');t.model.forward=lambda _:torch.tensor(float('nan'))
+>       with pytest.raises((FloatingPointError,ValueError,RuntimeError)):
+E       Failed: DID NOT RAISE any of (FloatingPointError, ValueError, RuntimeError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:201: Failed
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+________________ test_checkpoint_missing_ema_parameter_rejected ________________
+
+trained = ({'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43a...stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_trained0'))
+tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_checkpoint_missing_ema_pa0')
+
+    def test_checkpoint_missing_ema_parameter_rejected(trained,tmp_path):
+        fx,t,root=trained
+        cp=torch.load(Path(t.out)/'ckpt_full_u0000003.pt',weights_only=False)
+        missing=next(iter(cp['ema']));del cp['ema'][missing];path=tmp_path/'missing_ema.pt';torch.save(cp,path)
+        u=trainer(fx,tmp_path/'ema_load')
+>       with pytest.raises((ValueError,KeyError,RuntimeError)):
+E       Failed: DID NOT RAISE any of (ValueError, KeyError, RuntimeError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:223: Failed
+---------------------------- Captured stdout setup -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+----------------------------- Captured stdout call -----------------------------
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+___________________ test_inference_nonfinite_input_rejected ____________________
+
+trained = ({'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43a...stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_trained0'))
+
+    def test_inference_nonfinite_input_rejected(trained):
+        fx,t,root=trained;pol=R2R2RPolicy.load(str(Path(t.out)/'policy_ema_u0000003.pt'))
+        obs=torch.zeros((1,4,2,3,32,32));prop=torch.zeros((1,4,20));prop[0,0,0]=float('nan')
+>       with pytest.raises((ValueError,FloatingPointError,RuntimeError)):
+E       Failed: DID NOT RAISE any of (ValueError, FloatingPointError, RuntimeError)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:246: Failed
+----------------------------- Captured stdout call -----------------------------
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+___ test_inherited_physical_rotation_conversion_is_valid_or_rejects[nonunit] ___
+
+v = [2.0, 0, 0, 0, 3.0, 0]
+
+    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])
+    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):
+        try:
+            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))
+        except (ValueError,FloatingPointError):return
+        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None
+        observe('inherited_rotation',input=v,finite=finite,determinant=det)
+>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6
+E       assert (True and False)
+E        +  where False = <function allclose at 0x77e0de35cab0>((array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]]) @ array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]])), array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]), atol=1e-06)
+E        +    where <function allclose at 0x77e0de35cab0> = np.allclose
+E        +    and   array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]]) = <built-in method transpose of numpy.ndarray object at 0x77e0008d3810>(0, 2, 1)
+E        +      where <built-in method transpose of numpy.ndarray object at 0x77e0008d3810> = array([[[2., 0., 0.],\n        [0., 3., 0.],\n        [0., 0., 6.]]]).transpose
+E        +    and   array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]) = <function eye at 0x77e0ddb01630>(3)
+E        +      where <function eye at 0x77e0ddb01630> = np.eye
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:257: AssertionError
+__ test_inherited_physical_rotation_conversion_is_valid_or_rejects[collinear] __
+
+v = [1.0, 0, 0, 1.0, 0, 0]
+
+    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])
+    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):
+        try:
+            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))
+        except (ValueError,FloatingPointError):return
+        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None
+        observe('inherited_rotation',input=v,finite=finite,determinant=det)
+>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6
+E       assert (False)
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:257: AssertionError
+____ test_inherited_physical_rotation_conversion_is_valid_or_rejects[zero] _____
+
+v = [0.0, 0, 0, 0, 0, 0]
+
+    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])
+    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):
+        try:
+            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))
+        except (ValueError,FloatingPointError):return
+        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None
+        observe('inherited_rotation',input=v,finite=finite,determinant=det)
+>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6
+E       assert (True and False)
+E        +  where False = <function allclose at 0x77e0de35cab0>((array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]]) @ array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]])), array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]), atol=1e-06)
+E        +    where <function allclose at 0x77e0de35cab0> = np.allclose
+E        +    and   array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]]) = <built-in method transpose of numpy.ndarray object at 0x77e0008d2670>(0, 2, 1)
+E        +      where <built-in method transpose of numpy.ndarray object at 0x77e0008d2670> = array([[[0., 0., 0.],\n        [0., 0., 0.],\n        [0., 0., 0.]]]).transpose
+E        +    and   array([[1., 0., 0.],\n       [0., 1., 0.],\n       [0., 0., 1.]]) = <function eye at 0x77e0ddb01630>(3)
+E        +      where <function eye at 0x77e0ddb01630> = np.eye
+
+/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:257: AssertionError
+=============================== warnings summary ===============================
+test_independent_final.py: 10 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+test_independent_final.py::test_amp_skipped_step_does_not_advance_successful_update
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+    warnings.warn(
+
+test_independent_final.py: 782 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_amp_skipped_step_does_not_advance_successful_update
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_normalization_rejects_nonfinite[nan]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_normalization_rejects_nonfinite[inf]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_normalization_rejects_nonfinite[neg_inf]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_bound_builder_cannot_certify_nan_data
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[version]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[counts]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[salt]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_changed_view_order_rejected
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_corrupt_jpeg_rejected_before_model
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_wrong_action_layout_rejected
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_protocol_invalid_numerics_rejected[negative_clip]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_protocol_invalid_numerics_rejected[fractional_batch]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_protocol_invalid_numerics_rejected[nan_lr]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_protocol_invalid_numerics_rejected[bool_updates]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_validation_exception_restores_weights_and_mode
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_validation_nonfinite_loss_rejected
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_checkpoint_missing_ema_parameter_rejected
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_inference_nonfinite_input_rejected
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[nonunit]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[collinear]
+FAILED ../../../../tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[zero]
+22 failed, 6 passed, 793 warnings in 22.78s

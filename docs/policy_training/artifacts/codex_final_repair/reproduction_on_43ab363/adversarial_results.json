@@ -1,0 +1,173 @@
+{
+  "exitstatus": 1,
+  "results": [
+    {
+      "test": "test_independent_final.py::test_amp_skipped_step_does_not_advance_successful_update",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "tmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_amp_skipped_step_does_not0')\n\n    def test_amp_skipped_step_does_not_advance_successful_update(tmp_path):\n        b={'x':torch.ones((4,1),dtype=torch.float64),'y':torch.zeros((4,1),dtype=torch.float64)}\n        t=scalar_driver(tmp_path/'amp',[b],4)\n        t.scaler._scaler=torch.amp.GradScaler('cpu')  # real GradScaler, actual committed train() logic\n        hook_calls=[0];ema_calls=[0];orig=t.ema.update\n        def bad_first_group(g):\n            hook_calls[0]+=1\n            return torch.full_like(g,float('inf')) if hook_calls[0]<=4 else g\n        t.model.w.register_hook(bad_first_group)\n        def counted_ema(m):ema_calls[0]+=1;orig(m)\n        t.ema.update=counted_ema\n        result=t.train()\n        observe('amp_skip',optimizer_steps=t.optimizer.steps,scheduler_steps=t.scheduler.last_epoch,\n                ema_updates=ema_calls[0],successful_updates=t.update,micro_batches=t.micro,\n                scaler_scale=t.scaler._scaler.get_scale(),summary=result)\n>       assert t.update==t.optimizer.steps==t.scheduler.last_epoch==ema_calls[0]==1\nE       assert 1 == 0\nE        +  where 1 = <r2r2r_dp.driver.Trainer object at 0x77e003d835b0>.update\nE        +  and   0 = CountingAdam (\\nParameter Group 0\\n    amsgrad: False\\n    betas: (0.9, 0.999)\\n    capturable: False\\n    differentiable: ... 1e-08\\n    foreach: None\\n    fused: None\\n    initial_lr: 0.01\\n    lr: 0.01\\n    maximize: False\\n    weight_decay: 0.09\\n).steps\nE        +    where CountingAdam (\\nParameter Group 0\\n    amsgrad: False\\n    betas: (0.9, 0.999)\\n    capturable: False\\n    differentiable: ... 1e-08\\n    foreach: None\\n    fused: None\\n    initial_lr: 0.01\\n    lr: 0.01\\n    maximize: False\\n    weight_decay: 0.09\\n) = <r2r2r_dp.driver.Trainer object at 0x77e003d835b0>.optimizer\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:94: AssertionError"
+    },
+    {
+      "test": "test_independent_final.py::test_accumulated_adam_matches_large_batch",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "test_independent_final.py::test_ema_scalar_oracle",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "test_independent_final.py::test_normalization_rejects_nonfinite[nan]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "bad = nan\n\n    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-float('inf')],ids=['nan','inf','neg_inf'])\n    def test_normalization_rejects_nonfinite(bad):\n>       with pytest.raises((ValueError,FloatingPointError)):\nE       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:117: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_normalization_rejects_nonfinite[inf]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "bad = inf\n\n    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-float('inf')],ids=['nan','inf','neg_inf'])\n    def test_normalization_rejects_nonfinite(bad):\n>       with pytest.raises((ValueError,FloatingPointError)):\nE       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:117: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_normalization_rejects_nonfinite[neg_inf]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "bad = -inf\n\n    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-float('inf')],ids=['nan','inf','neg_inf'])\n    def test_normalization_rejects_nonfinite(bad):\n>       with pytest.raises((ValueError,FloatingPointError)):\nE       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:117: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_bound_builder_cannot_certify_nan_data",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_bound_builder_cannot_cert0/fixture/views', ...}\n\n    def test_bound_builder_cannot_certify_nan_data(fresh):\n        root=Path(fresh['views'])/'train_subsets/n0003';ep=next(root.iterdir())\n        z=ep/'robot_data/robot_data_proprio.zarr';a=zarr.load(str(z));a[21,7]=float('nan');zarr.save_array(str(z),a)\n>       with pytest.raises((ValueError,FloatingPointError)):\nE       Failed: DID NOT RAISE any of (ValueError, FloatingPointError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:124: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[version]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte0/fixture/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte0')\nfield = 'version'\n\n    @pytest.mark.parametrize('field',['version','counts','salt'])\n    def test_manifest_metadata_rejected_even_when_re_pinned(fresh,tmp_path,field):\n        m=json.load(open(fresh['manifest_path']))\n        m[field]={'train':999,'val':999,'test':999} if field=='counts' else (999 if field=='version' else 'wrong-salt')\n        Path(fresh['manifest_path']).write_text(json.dumps(m));sha=nv.file_sha256(fresh['manifest_path'])\n        p=copy.deepcopy(fresh['protocol']);p['data']['manifest_sha256']=sha\n        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'\n        st=json.loads(sp.read_text());st['provenance']['manifest_sha256']=sha;sp.write_text(json.dumps(st))\n        r=resolve(p,3,str(tmp_path/'out'))\n>       with pytest.raises((LaunchError,ValueError,AssertionError)):\nE       Failed: DID NOT RAISE any of (LaunchError, ValueError, AssertionError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:138: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[counts]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte1/fixture/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte1')\nfield = 'counts'\n\n    @pytest.mark.parametrize('field',['version','counts','salt'])\n    def test_manifest_metadata_rejected_even_when_re_pinned(fresh,tmp_path,field):\n        m=json.load(open(fresh['manifest_path']))\n        m[field]={'train':999,'val':999,'test':999} if field=='counts' else (999 if field=='version' else 'wrong-salt')\n        Path(fresh['manifest_path']).write_text(json.dumps(m));sha=nv.file_sha256(fresh['manifest_path'])\n        p=copy.deepcopy(fresh['protocol']);p['data']['manifest_sha256']=sha\n        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'\n        st=json.loads(sp.read_text());st['provenance']['manifest_sha256']=sha;sp.write_text(json.dumps(st))\n        r=resolve(p,3,str(tmp_path/'out'))\n>       with pytest.raises((LaunchError,ValueError,AssertionError)):\nE       Failed: DID NOT RAISE any of (LaunchError, ValueError, AssertionError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:138: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_manifest_metadata_rejected_even_when_re_pinned[salt]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte2/fixture/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_manifest_metadata_rejecte2')\nfield = 'salt'\n\n    @pytest.mark.parametrize('field',['version','counts','salt'])\n    def test_manifest_metadata_rejected_even_when_re_pinned(fresh,tmp_path,field):\n        m=json.load(open(fresh['manifest_path']))\n        m[field]={'train':999,'val':999,'test':999} if field=='counts' else (999 if field=='version' else 'wrong-salt')\n        Path(fresh['manifest_path']).write_text(json.dumps(m));sha=nv.file_sha256(fresh['manifest_path'])\n        p=copy.deepcopy(fresh['protocol']);p['data']['manifest_sha256']=sha\n        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'\n        st=json.loads(sp.read_text());st['provenance']['manifest_sha256']=sha;sp.write_text(json.dumps(st))\n        r=resolve(p,3,str(tmp_path/'out'))\n>       with pytest.raises((LaunchError,ValueError,AssertionError)):\nE       Failed: DID NOT RAISE any of (LaunchError, ValueError, AssertionError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:138: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_changed_view_order_rejected",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_changed_view_order_reject0/fixture/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_changed_view_order_reject0')\n\n    def test_changed_view_order_rejected(fresh,tmp_path):\n        r=run_of(fresh,tmp_path/'out');before=dataset_order(r)\n        root=Path(r['paths']['train_root']);first=sorted(root.iterdir())[0];first.rename(root/'zz_renamed_episode')\n        after=dataset_order(r);assert before!=after\n>       with pytest.raises((LaunchError,ValueError)):\nE       Failed: DID NOT RAISE any of (LaunchError, ValueError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:151: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_corrupt_jpeg_rejected_before_model",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_corrupt_jpeg_rejected_bef0/fixture/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_corrupt_jpeg_rejected_bef0')\n\n    def test_corrupt_jpeg_rejected_before_model(fresh,tmp_path):\n        root=Path(fresh['views'])/'train_subsets/n0003';ep=next(root.iterdir())\n        (ep/'camera_0/rgb/0007.jpg').write_bytes(b'not a jpeg')  # only synthetic source fixture\n>       with pytest.raises((LaunchError,ValueError)):\nE       Failed: DID NOT RAISE any of (LaunchError, ValueError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:158: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_wrong_action_layout_rejected",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "fresh = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_wrong_action_layout_rejec0/fixture/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_wrong_action_layout_rejec0')\n\n    def test_wrong_action_layout_rejected(fresh,tmp_path):\n        sp=Path(fresh['stats_dir'])/'action_statistics_v2_train_n0003.json'\n        st=json.loads(sp.read_text());st['config']['layout']=list(reversed(st['config']['layout']));sp.write_text(json.dumps(st))\n>       with pytest.raises((LaunchError,ValueError)):\nE       Failed: DID NOT RAISE any of (LaunchError, ValueError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:164: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_protocol_invalid_numerics_rejected[negative_clip]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics0')\ncase = 'negative_clip'\n\n    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])\n    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):\n        p=copy.deepcopy(stable['protocol'])\n        if case=='negative_clip':p['schedule']['grad_clip']=-1.\n        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5\n        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')\n        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0\n>       with pytest.raises((ProtocolError,ValueError)):\nE       Failed: DID NOT RAISE any of (ProtocolError, ValueError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_protocol_invalid_numerics_rejected[fractional_batch]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics1')\ncase = 'fractional_batch'\n\n    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])\n    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):\n        p=copy.deepcopy(stable['protocol'])\n        if case=='negative_clip':p['schedule']['grad_clip']=-1.\n        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5\n        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')\n        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0\n>       with pytest.raises((ProtocolError,ValueError)):\nE       Failed: DID NOT RAISE any of (ProtocolError, ValueError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_protocol_invalid_numerics_rejected[nan_lr]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics2')\ncase = 'nan_lr'\n\n    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])\n    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):\n        p=copy.deepcopy(stable['protocol'])\n        if case=='negative_clip':p['schedule']['grad_clip']=-1.\n        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5\n        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')\n        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0\n>       with pytest.raises((ProtocolError,ValueError)):\nE       Failed: DID NOT RAISE any of (ProtocolError, ValueError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_protocol_invalid_numerics_rejected[bool_updates]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_protocol_invalid_numerics3')\ncase = 'bool_updates'\n\n    @pytest.mark.parametrize('case',['negative_clip','fractional_batch','nan_lr','bool_updates'])\n    def test_protocol_invalid_numerics_rejected(stable,tmp_path,case):\n        p=copy.deepcopy(stable['protocol'])\n        if case=='negative_clip':p['schedule']['grad_clip']=-1.\n        elif case=='fractional_batch':p['tinydp']['shared_cfg.batch_size']=2.5\n        elif case=='nan_lr':p['tinydp']['optimizer_cfg.lr']=float('nan')\n        else:p['schedule']['total_updates']=True;p['schedule']['warmup_updates']=0\n>       with pytest.raises((ProtocolError,ValueError)):\nE       Failed: DID NOT RAISE any of (ProtocolError, ValueError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:174: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_validation_preserves_all_rng_and_raw_weights",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "test_independent_final.py::test_validation_exception_restores_weights_and_mode",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_validation_exception_rest0')\n\n    def test_validation_exception_restores_weights_and_mode(stable,tmp_path):\n        t=trainer(stable,tmp_path/'exception_val');t.model.train()\n        with torch.no_grad():next(t.model.parameters()).add_(.5)\n        raw={k:v.clone() for k,v in t.model.state_dict().items()}\n        def explode(_):raise RuntimeError('injected validation failure')\n        t.model.forward=explode\n        with pytest.raises(RuntimeError,match='injected'):t.evaluate(t.val_subset)\n        restored=all(torch.equal(v,t.model.state_dict()[k]) for k,v in raw.items())\n        observe('validation_exception',raw_weights_restored=restored,training_mode=t.model.training)\n>       assert restored and t.model.training\nE       assert (False)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:197: AssertionError"
+    },
+    {
+      "test": "test_independent_final.py::test_validation_nonfinite_loss_rejected",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "stable = {'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab...tanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_stable0/views', ...}\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_validation_nonfinite_loss0')\n\n    def test_validation_nonfinite_loss_rejected(stable,tmp_path):\n        t=trainer(stable,tmp_path/'nan_val');t.model.forward=lambda _:torch.tensor(float('nan'))\n>       with pytest.raises((FloatingPointError,ValueError,RuntimeError)):\nE       Failed: DID NOT RAISE any of (FloatingPointError, ValueError, RuntimeError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:201: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_validation_partial_batch_weighting",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "test_independent_final.py::test_checkpoint_missing_ema_parameter_rejected",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "trained = ({'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43a...stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_trained0'))\ntmp_path = PosixPath('/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/test_checkpoint_missing_ema_pa0')\n\n    def test_checkpoint_missing_ema_parameter_rejected(trained,tmp_path):\n        fx,t,root=trained\n        cp=torch.load(Path(t.out)/'ckpt_full_u0000003.pt',weights_only=False)\n        missing=next(iter(cp['ema']));del cp['ema'][missing];path=tmp_path/'missing_ema.pt';torch.save(cp,path)\n        u=trainer(fx,tmp_path/'ema_load')\n>       with pytest.raises((ValueError,KeyError,RuntimeError)):\nE       Failed: DID NOT RAISE any of (ValueError, KeyError, RuntimeError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:223: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_inference_relocated_without_source_data",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "test_independent_final.py::test_inference_nonfinite_input_rejected",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "trained = ({'source': '/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43a...stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/basetemp/independent_trained0'))\n\n    def test_inference_nonfinite_input_rejected(trained):\n        fx,t,root=trained;pol=R2R2RPolicy.load(str(Path(t.out)/'policy_ema_u0000003.pt'))\n        obs=torch.zeros((1,4,2,3,32,32));prop=torch.zeros((1,4,20));prop[0,0,0]=float('nan')\n>       with pytest.raises((ValueError,FloatingPointError,RuntimeError)):\nE       Failed: DID NOT RAISE any of (ValueError, FloatingPointError, RuntimeError)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:246: Failed"
+    },
+    {
+      "test": "test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[nonunit]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "v = [2.0, 0, 0, 0, 3.0, 0]\n\n    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])\n    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):\n        try:\n            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))\n        except (ValueError,FloatingPointError):return\n        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None\n        observe('inherited_rotation',input=v,finite=finite,determinant=det)\n>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6\nE       assert (True and False)\nE        +  where False = <function allclose at 0x77e0de35cab0>((array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]]) @ array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]])), array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]), atol=1e-06)\nE        +    where <function allclose at 0x77e0de35cab0> = np.allclose\nE        +    and   array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]]) = <built-in method transpose of numpy.ndarray object at 0x77e0008d3810>(0, 2, 1)\nE        +      where <built-in method transpose of numpy.ndarray object at 0x77e0008d3810> = array([[[2., 0., 0.],\\n        [0., 3., 0.],\\n        [0., 0., 6.]]]).transpose\nE        +    and   array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]) = <function eye at 0x77e0ddb01630>(3)\nE        +      where <function eye at 0x77e0ddb01630> = np.eye\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:257: AssertionError"
+    },
+    {
+      "test": "test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[collinear]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "v = [1.0, 0, 0, 1.0, 0, 0]\n\n    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])\n    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):\n        try:\n            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))\n        except (ValueError,FloatingPointError):return\n        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None\n        observe('inherited_rotation',input=v,finite=finite,determinant=det)\n>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6\nE       assert (False)\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:257: AssertionError"
+    },
+    {
+      "test": "test_independent_final.py::test_inherited_physical_rotation_conversion_is_valid_or_rejects[zero]",
+      "phase": "call",
+      "outcome": "failed",
+      "failure": "v = [0.0, 0, 0, 0, 0, 0]\n\n    @pytest.mark.parametrize('v',[[2.,0,0,0,3.,0],[1.,0,0,1.,0,0],[0.,0,0,0,0,0]],ids=['nonunit','collinear','zero'])\n    def test_inherited_physical_rotation_conversion_is_valid_or_rejects(v):\n        try:\n            with np.errstate(divide='ignore',invalid='ignore'):R=rot_6d_to_rot_mat(np.array([v]))\n        except (ValueError,FloatingPointError):return\n        finite=bool(np.isfinite(R).all());det=float(np.linalg.det(R)[0]) if finite else None\n        observe('inherited_rotation',input=v,finite=finite,determinant=det)\n>       assert finite and np.allclose(R@R.transpose(0,2,1),np.eye(3),atol=1e-6) and abs(det-1)<1e-6\nE       assert (True and False)\nE        +  where False = <function allclose at 0x77e0de35cab0>((array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]]) @ array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]])), array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]), atol=1e-06)\nE        +    where <function allclose at 0x77e0de35cab0> = np.allclose\nE        +    and   array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]]) = <built-in method transpose of numpy.ndarray object at 0x77e0008d2670>(0, 2, 1)\nE        +      where <built-in method transpose of numpy.ndarray object at 0x77e0008d2670> = array([[[0., 0., 0.],\\n        [0., 0., 0.],\\n        [0., 0., 0.]]]).transpose\nE        +    and   array([[1., 0., 0.],\\n       [0., 1., 0.],\\n       [0., 0., 1.]]) = <function eye at 0x77e0ddb01630>(3)\nE        +      where <function eye at 0x77e0ddb01630> = np.eye\n\n/tmp/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/codex_rerun_43ab363/suite.y2kc/test_independent_final.py:257: AssertionError"
+    },
+    {
+      "test": "test_independent_final.py::test_cpu_resume_across_epoch_boundary",
+      "phase": "call",
+      "outcome": "passed",
+      "failure": null
+    }
+  ]
+}

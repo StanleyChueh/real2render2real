@@ -1,5 +1,7 @@
 # Bounded GPU lifecycle test — protocol v2 (2026-10-27)
 
+> **Historical (2026-10-28).** These runs used protocol v2 / checkpoint format v2 at commit `43ab363`, before the Codex final-audit repairs. "0 GradScaler-skipped steps" below was inferred from the scale-decrease heuristic that F1 replaced; these runs never decreased the scale, so the inference holds for them, but the v2 driver would have counted a skipped step as an update. The bounded v3 re-run is in [CODEX_FINDINGS_REPAIR.md](CODEX_FINDINGS_REPAIR.md) §5.
+
 **Scope:** the real entry point (`policy_training/train_r2r2r_dp.py`), the full-size TinyDP model, real data, the N = 50 training subset and at most 100 optimizer updates. **This is not a training result:** losses after ≤ 100 updates say nothing about policy quality, and no 100,000-update run was started.
 
 **Machine:**

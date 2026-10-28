@@ -1,0 +1,155 @@
+{
+  "candidate": {
+    "exit": 0,
+    "stdout": "43ab363058c4c9a5a45207b1414315320ef8438d",
+    "stderr": ""
+  },
+  "reference": "2a0536689e81b1e01876c8cdf0550fa9fae20227",
+  "baseline_branch": {
+    "exit": 0,
+    "stdout": "334e83d4d1be7a4a5e78768cd5344051d4a892fa",
+    "stderr": ""
+  },
+  "protected_diff": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "recursive_submodules": {
+    "exit": 0,
+    "stdout": "7c23afbdfe5cd4700362126dbbbde7739c4c5cf9 dependencies/IsaacLab (7c23afbd)\n bc2c49ff5e553bea320888f2afc08a6da96eba9f dependencies/SuGaR (heads/main)\n 689ad4f9ad5b80eabb128130caa6ec71b70add76 dependencies/openpi (heads/main)\n d1dc83afd89ded4379851257fe5d85632d31d5ec dependencies/openpi/third_party/aloha (d1dc83a)\n f78abd68ee283de9f9be3c8f7e2a9ad60246e95c dependencies/openpi/third_party/libero (f78abd6)\n cca2256472f84ff034dd8a6c69e02dfa726e980c dependencies/rsrd (heads/main)\n 8b2280070ed0a48ce3da6552000929730d33fa88 dependencies/rsrd/dependencies/dig (heads/main)\n 6ac813bdfae1801d609ef3f60ebf173b62d9a743 dependencies/rsrd/dependencies/garfield (heads/main)\n df533a2d04b9e2ece7cf9d6cbc6982e140210517 dependencies/rsrd/dependencies/hamer (df533a2)\n d5216452796c90c6bc29f5c5ec0bdba94366768a dependencies/rsrd/dependencies/hamer/third-party/ViTPose (d521645)\n ec5e4e81e73db47c7a5af36c6356a1191e45851b dependencies/rsrd/dependencies/hamer_helper (ec5e4e8)\n 2d1035c445d2dd64b391cbf0ec2ff6c65e40e05e dependencies/rsrd/dependencies/jaxls (remotes/origin/py310)\n d1ab9c7531ff6cf0bba551e3048cdae31923b4ad dependencies/rsrd/dependencies/jaxmp (heads/main)\n 76d8f9cd14affe0066df3dbb38759b086613f617 dependencies/tinydp (heads/main)\n 6b19f56ac94ae026a160b5390fd17616140fa380 dependencies/trajgen (heads/main)",
+    "stderr": ""
+  },
+  "main_status_before": {
+    "exit": 0,
+    "stdout": "m dependencies/trajgen",
+    "stderr": ""
+  },
+  "trajgen_metadata": {
+    "exit": 0,
+    "stdout": "trajgen.egg-info/PKG-INFO    | 2 +-\n trajgen.egg-info/SOURCES.txt | 1 +\n 2 files changed, 2 insertions(+), 1 deletion(-)",
+    "stderr": ""
+  },
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "source_fingerprint": "dd23bd44ce626485a9f3ec8f78ce3c75cfeadb90785efdcf456c8f997c2f2bcd",
+  "fingerprint_matches_preparation": true,
+  "source_counts": {
+    "test": 182,
+    "train": 1461,
+    "val": 182
+  },
+  "views_checked": 3125,
+  "sidecars_checked": 9375,
+  "independent_normalizers": [
+    {
+      "n": 50,
+      "min_bound_error": 0.0,
+      "max_bound_error": 0.0,
+      "supervised_rows": 7550,
+      "supervised_rows_outside": 0,
+      "max_normalized_abs": 1.0
+    },
+    {
+      "n": 100,
+      "min_bound_error": 0.0,
+      "max_bound_error": 0.0,
+      "supervised_rows": 15100,
+      "supervised_rows_outside": 0,
+      "max_normalized_abs": 1.0
+    },
+    {
+      "n": 150,
+      "min_bound_error": 0.0,
+      "max_bound_error": 0.0,
+      "supervised_rows": 22650,
+      "supervised_rows_outside": 0,
+      "max_normalized_abs": 1.0,
+      "original_row15_v1": -1.0807001295046446,
+      "original_row15_v2": -1.0
+    },
+    {
+      "n": 1000,
+      "min_bound_error": 0.0,
+      "max_bound_error": 0.0,
+      "supervised_rows": 151000,
+      "supervised_rows_outside": 0,
+      "max_normalized_abs": 1.0
+    },
+    {
+      "n": 1461,
+      "min_bound_error": 0.0,
+      "max_bound_error": 0.0,
+      "supervised_rows": 220611,
+      "supervised_rows_outside": 0,
+      "max_normalized_abs": 1.0
+    }
+  ],
+  "original_artifacts_diff": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "real_launch_checks": {
+    "50": {
+      "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+      "counts": {
+        "train": 50,
+        "val": 182,
+        "test": 182
+      },
+      "train_uids_sha256": "176396f472853a06c51d862800f46352aa1caac0ef375fc985959db563ef7113",
+      "action_statistics_sha256": "f9c0bad124d1fb2bdeb633fda594867e427ce7b9cecf3190b28ef96a4b65ebf4",
+      "normalizer_version": "r2r2r-dp-norm-v2"
+    },
+    "100": {
+      "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+      "counts": {
+        "train": 100,
+        "val": 182,
+        "test": 182
+      },
+      "train_uids_sha256": "4c31cdc373912aa72d80cc382b317f4ad62f202839384eb8471198718acff628",
+      "action_statistics_sha256": "3faa63fc6568ef56b3927c546b7fab6d9dc8d2973e2efd987bc8df8c2b00bf03",
+      "normalizer_version": "r2r2r-dp-norm-v2"
+    },
+    "150": {
+      "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+      "counts": {
+        "train": 150,
+        "val": 182,
+        "test": 182
+      },
+      "train_uids_sha256": "55c406cb14ff50582f40338f860f50b5dc1be81866d965111c7eeebb006927ba",
+      "action_statistics_sha256": "029449f6eeb3d4798878af176e608cbbd33e2b8616fdf40afce8202215603b7c",
+      "normalizer_version": "r2r2r-dp-norm-v2"
+    },
+    "1000": {
+      "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+      "counts": {
+        "train": 1000,
+        "val": 182,
+        "test": 182
+      },
+      "train_uids_sha256": "53b05f3dd2819286271239065cfab579a0fc9111cd7cde8590f0896cc4634104",
+      "action_statistics_sha256": "840a00e404790bfb35fc8ef0e207b1f0e8ca42cb042a509c5d6c058d4112ceb9",
+      "normalizer_version": "r2r2r-dp-norm-v2"
+    },
+    "1461": {
+      "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+      "counts": {
+        "train": 1461,
+        "val": 182,
+        "test": 182
+      },
+      "train_uids_sha256": "ad7b36297ea5aafa6dbbfbcb3208b99f0900188c8a1208cace4e8165aed63752",
+      "action_statistics_sha256": "30fef948c5c2fdc29e666f38e6e0223cc269ece8dbe07390463504d0fe4c5922",
+      "normalizer_version": "r2r2r-dp-norm-v2"
+    }
+  },
+  "errors": [],
+  "main_status_after": {
+    "exit": 0,
+    "stdout": "m dependencies/trajgen",
+    "stderr": ""
+  }
+}

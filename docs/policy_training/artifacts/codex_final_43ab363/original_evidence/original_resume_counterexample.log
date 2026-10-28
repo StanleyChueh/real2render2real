@@ -1,0 +1,110 @@
+/home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+/tmp/r2r2r-codex-final-43ab363/dependencies/tinydp/tinydp/util/misc.py:376: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(args.shared_cfg.resume, map_location='cpu')
+job dir: /tmp/r2r2r-codex-final-43ab363/dependencies/tinydp/script
+ExperimentConfig(dataset_cfg=DatasetConfig(dataset_root=None,
+data_subsample_ratio=-1,
+data_subsample_num_traj=-1,
+balance_data=False,
+is_sim_data=True,
+scale_action=True,
+dataset_json=None,
+action_statistics=None,
+train_split=0.95,
+sort_by_lang=False,
+task_barrier=False,
+skip_step=False,
+proprio_noise=0.003,
+action_noise=0.0,
+task_names=None,
+vision_aug=True,
+rebalance_tasks=False,
+non_overlapping=False,
+num_repeat_traj=1,
+shuffle_repeat_traj=False,
+num_weighted_steps=30,
+goal_conditioned=False,
+dataset_fraction=1.0,
+neg_prompt=False,
+subsample_steps=2),
+model_cfg=ModelConfig(policy_cfg=PolicyConfig(down_dims=(256,
+256,
+512,
+1024),
+pred_left_only=False,
+pred_right_only=False,
+only_vision=False,
+num_train_diffusion_steps=100,
+num_inference_diffusion_steps=100,
+compile=False,
+diffusion_model_type='unet',
+transformer_n_layer=8,
+transformer_n_head=4,
+transformer_n_emb=256,
+transformer_p_drop_emb=0.0,
+transformer_p_drop_attn=0.3,
+transformer_causal_attn=True,
+transformer_time_as_cond=True,
+transformer_obs_as_cond=True,
+transformer_n_cond_layers=0,
+gripper_loss_w=5.0),
+vision_encoder_cfg=VisionEncoderConfig(vision_encoder='vit_base_patch16_224.mae',
+vision_nonpretrained=False,
+vision_unfreeze_all=False,
+vision_lora=False,
+vision_lora_rank=8,
+vision_unfreeze_last_n=0)),
+optimizer_cfg=OptimizerConfig(weight_decay=0.01,
+lr=0.0001,
+blr=0.001,
+min_lr=0.0,
+warmup_epochs=40),
+shared_cfg=SharedConfig(batch_size=64,
+rot_6d=True,
+seq_length=4,
+seed=0,
+start_epoch=0,
+save_every=1000,
+resume='/tmp/tmp4v1szaml/checkpoint_4.pt',
+num_stages=1,
+split_epoch=1,
+num_cameras=2,
+num_pred_steps=16,
+use_delta_action=False,
+scale_action=None,
+image_size=448),
+logging_cfg=LoggingConfig(output_dir='/tmp/tmp4v1szaml/out',
+log_dir=None,
+log_name=None),
+trainer_cfg=TrainerConfig(epochs=6,
+accum_iter=1,
+pin_memory=True,
+num_workers=0,
+num_augmentation_workers=20,
+augment_with_gpu=False),
+train=True,
+world_size=1,
+local_rank=-1,
+dist_on_itp=False,
+dist_url='env://',
+device='cpu',
+load_config=None)
+Total parameters: 1
+accumulate grad iterations: 1
+effective batch size: 64
+vision transform:  <function default_vision_transform at 0x757f189ec040>
+augmented vision transform:  Compose(
+    Resize(size=(448, 448), interpolation=bilinear, max_size=None, antialias=True)
+    ColorJitter(brightness=(0.9, 1.1), contrast=(0.8, 1.2), saturation=(0.9, 1.1), hue=(-0.1, 0.1))
+    MaybeToTensor()
+    Normalize(mean=tensor([0.4850, 0.4560, 0.4060]), std=tensor([0.2290, 0.2240, 0.2250]))
+)
+Pretrained weights found at /tmp/tmp4v1szaml/checkpoint_4.pt and loaded with msg: <All keys matched successfully>
+Validation Epoch 0
+Validation Epoch 1
+Validation Epoch 2
+Validation Epoch 3
+Validation Epoch 4
+Validation Epoch 5
+{"train_epochs_called": [0, 1, 2, 3, 4, 5], "expected_epochs": [5], "args_start_epoch_after_resume": 5, "saved_checkpoint_keys": ["ema", "epoch", "model", "optimizer"], "saved_ema_w": 3.0, "checkpoint_ema_w": 9.0, "saved_model_w": 3.0}

@@ -7,17 +7,26 @@ diffusers cosine scheduler. Replaced: the epoch loop of tinydp/util/engine.py an
 Semantics (each differs from the released loop, see docs/policy_training/AUDIT_REPAIR_REPORT.md):
   * one optimizer update = exactly `accum` consecutive micro-batches of a continuous stream that runs
     across epoch boundaries, so no accumulated gradient is ever discarded;
-  * the LR scheduler and the EMA advance once per optimizer update; training stops after
-    `total_updates` updates; warm-up is counted in updates;
+  * the LR scheduler and the EMA advance once per *successful* optimizer update, i.e. only when
+    optimizer.step() actually executed; training stops after `total_updates` successful updates;
+    warm-up is counted in successful updates. An accumulation group whose step GradScaler skipped
+    (non-finite gradients) consumes its micro-batches and is retried on the next group, without
+    advancing scheduler, EMA, update counter or validation/checkpoint cadence; the run aborts after
+    MAX_CONSECUTIVE_SKIPPED_UPDATES consecutive or MAX_SKIPPED_UPDATES total skipped groups;
   * logged losses are raw (not divided by `accum`); validation reports the raw mean loss per window;
   * sampler.set_epoch(epoch) is called for every epoch of the stream;
   * every item's randomness (proprio noise, colour jitter) is seeded from (seed, stream, epoch, index),
     so the data stream does not depend on worker count and can be resumed at any micro-batch;
   * validation uses EMA weights under a forked, fixed-seed RNG and does not perturb training RNG;
   * full checkpoints hold model, EMA, optimizer, scheduler, grad-scaler, RNG state, update and data
-    position, plus the resolved run record and the action statistics (self-contained for inference).
+    position, plus the resolved run record and the action statistics (self-contained for inference);
+    loading one validates every component (keys, shapes, dtypes, finiteness, counters, data position,
+    sample order) before any runtime state is changed;
+  * validation and EMA export restore the raw weights and the previous train/eval mode even when
+    they fail, and non-finite or empty validation raises instead of being logged as a result.
 """
 import glob
+import hashlib
 import json
 import math
 import os
@@ -29,8 +38,38 @@ from typing import Dict, List, Optional
 import numpy as np
 import torch
 
-CKPT_FORMAT = "r2r2r-dp-ckpt-v2"
+CKPT_FORMAT = "r2r2r-dp-ckpt-v3"
+INFERENCE_FORMATS = ("r2r2r-dp-ckpt-v2", CKPT_FORMAT)  # weights-only loading; continuation needs CKPT_FORMAT
 TRAIN_STREAM, VAL_STREAM = 0, 1
+# Bounded retry policy for accumulation groups whose optimizer step GradScaler skipped.
+MAX_CONSECUTIVE_SKIPPED_UPDATES = 20  # GradScaler halves its scale per skip: 2**16 -> 2**-4
+MAX_SKIPPED_UPDATES = 1000
+
+
+class CheckpointError(ValueError):
+    pass
+
+
+class SkippedStepError(RuntimeError):
+    pass
+
+
+def _jsonable(x):
+    """Strict-JSON number: non-finite floats become the strings 'nan', 'inf', '-inf'."""
+    x = float(x)
+    return x if math.isfinite(x) else str(x)
+
+
+def sample_order_sha256(ds) -> str:
+    """Digest of the dataset's window order as (episode uid, start, end): what the sampler indexes."""
+    uid_of, rows = {}, []
+    for path, s, e in ds.start_end:
+        ep = os.path.dirname(os.path.dirname(path))
+        if ep not in uid_of:
+            with open(os.path.join(ep, "source.json")) as f:
+                uid_of[ep] = json.load(f)["uid"]
+        rows.append([uid_of[ep], int(s), int(e)])
+    return hashlib.sha256(json.dumps(rows).encode()).hexdigest()
 
 
 class SeededItems(torch.utils.data.Dataset):
@@ -104,6 +143,13 @@ def _save(path: str, obj) -> None:
 
 
 class Trainer:
+    # successful updates are self.update; attempted = successful + skipped accumulation groups
+    attempted_updates = 0
+    skipped_updates = 0
+    consecutive_skipped = 0
+    optimizer_calls = 0  # counted by the wrapper installed in _count_optimizer_steps
+    train_order_sha256 = None
+
     def __init__(self, run: Dict, device: str = "cuda", num_workers: Optional[int] = None):
         from diffusers.optimization import get_scheduler
         import tinydp.util.misc as misc
@@ -135,6 +181,7 @@ class Trainer:
         B, L = cfg.shared_cfg.batch_size, cfg.shared_cfg.seq_length
         self.sampler = VideoSampler(self.ds_train, batch_size=B, sequence_length=L, seed=self.sched["sampler_seed"])
         self.batches_per_epoch = len(self.sampler)
+        self.train_order_sha256 = sample_order_sha256(self.ds_train)
         self.collate = CollateFunction(L, pred_left_only=False, pred_right_only=cfg.model_cfg.policy_cfg.pred_right_only)
         self.val_subset = window_batches(self.ds_val, L, B, self.sched["val_subset_window_stride"])
         self.val_full = window_batches(self.ds_val, L, B, None)
@@ -168,36 +215,54 @@ class Trainer:
 
     # ---- evaluation ----
     def evaluate(self, batches, weights: str = "ema") -> Dict:
+        """Mean raw loss per window. Restores raw weights and train/eval mode on success and failure."""
+        if not batches:
+            raise ValueError("validation: no batches")
         t0 = time.time()
-        raw = None
-        if weights == "ema":
-            raw = {k: v.detach().clone() for k, v in self.model.state_dict().items()}
-            self.ema.apply_ema(self.model)
-        self.model.eval()
+        was_training = self.model.training
+        raw = {k: v.detach().clone() for k, v in self.model.state_dict().items()} if weights == "ema" else None
         total, n = 0.0, 0
-        devs = [self.device.index or 0] if self.device.type == "cuda" else []
-        with torch.random.fork_rng(devices=devs):
-            torch.manual_seed(self.sched["val_seed"])
-            if self.device.type == "cuda":
-                torch.cuda.manual_seed(self.sched["val_seed"])
-            loader = self._loader(self.ds_val, batches, persistent=False)
-            with torch.no_grad():
-                for batch in loader:
-                    batch = {k: v.to(self.device, non_blocking=True) for k, v in batch.items()}
-                    with torch.autocast(self.device.type, dtype=torch.bfloat16, enabled=self.amp):
-                        loss = self.model(batch)
-                    w = batch["proprio"].shape[0]
-                    total += float(loss.item()) * w
-                    n += w
-            del loader
-        if raw is not None:
-            self.model.load_state_dict(raw)
-        self.model.train()
-        return {"loss": total / n, "windows": n, "weights": weights, "seconds": round(time.time() - t0, 2)}
+        try:
+            if raw is not None:
+                self.ema.apply_ema(self.model)
+            self.model.eval()
+            devs = [self.device.index or 0] if self.device.type == "cuda" else []
+            with torch.random.fork_rng(devices=devs):
+                torch.manual_seed(self.sched["val_seed"])
+                if self.device.type == "cuda":
+                    torch.cuda.manual_seed(self.sched["val_seed"])
+                it = iter(self._loader(self.ds_val, batches, persistent=False))
+                try:
+                    with torch.no_grad():
+                        for i, batch in enumerate(it):
+                            batch = {k: v.to(self.device, non_blocking=True) for k, v in batch.items()}
+                            with torch.autocast(self.device.type, dtype=torch.bfloat16, enabled=self.amp):
+                                loss = float(self.model(batch).item())
+                            if not math.isfinite(loss):
+                                raise FloatingPointError(f"validation: non-finite loss {loss} in batch {i}")
+                            w = batch["proprio"].shape[0]
+                            total += loss * w
+                            n += w
+                finally:
+                    if hasattr(it, "_shutdown_workers"):
+                        it._shutdown_workers()
+                    del it
+        finally:
+            if raw is not None:
+                self.model.load_state_dict(raw)
+            self.model.train(was_training)
+        if n == 0:
+            raise ValueError("validation: no windows evaluated")
+        mean = total / n
+        if not math.isfinite(mean):
+            raise FloatingPointError(f"validation: non-finite mean loss {mean}")
+        return {"loss": mean, "windows": n, "weights": weights, "seconds": round(time.time() - t0, 2)}
 
     # ---- checkpoints ----
     def _common(self) -> Dict:
         return {"format": CKPT_FORMAT, "update": self.update, "micro_batches": self.micro,
+                "attempted_updates": self.attempted_updates, "skipped_updates": self.skipped_updates,
+                "train_order_sha256": self.train_order_sha256,
                 "run": {k: self.run[k] for k in ("tinydp", "config_sha256", "train_size", "protocol", "launch", "provenance")
                         if k in self.run},
                 "action_statistics": self.stats_json}
@@ -217,42 +282,114 @@ class Trainer:
 
     def save_inference(self) -> str:
         raw = {k: v.detach().clone() for k, v in self.model.state_dict().items()}
-        self.ema.apply_ema(self.model)
+        try:
+            self.ema.apply_ema(self.model)
+            weights = {k: v.detach().cpu().clone() for k, v in self.model.state_dict().items()}
+        finally:
+            self.model.load_state_dict(raw)
+        bad = [k for k, v in weights.items() if v.is_floating_point() and not torch.isfinite(v).all()]
+        if bad:
+            raise FloatingPointError(f"EMA export: non-finite weights in {bad[:5]}")
         state = self._common()
-        state.update(kind="inference", weights="ema", model={k: v.detach().cpu().clone() for k, v in self.model.state_dict().items()})
-        self.model.load_state_dict(raw)
+        state.update(kind="inference", weights="ema", model=weights)
         path = os.path.join(self.out, f"policy_ema_u{self.update:07d}.pt")
         _save(path, state)
         return path
 
+    def checkpoint_problems(self, st: Dict) -> List[str]:
+        """Everything that must hold for st to continue this run exactly; [] if it may be loaded."""
+        if st.get("format") != CKPT_FORMAT or st.get("kind") != "full":
+            return [f"not a {CKPT_FORMAT} full checkpoint (format={st.get('format')!r}, kind={st.get('kind')!r})"]
+        need = {"update", "micro_batches", "attempted_updates", "skipped_updates", "train_order_sha256", "run",
+                "action_statistics", "model", "ema", "optimizer", "scheduler", "scaler", "rng", "data_position"}
+        if need - set(st):
+            return [f"checkpoint lacks {sorted(need - set(st))}"]
+        p = []
+        if st["run"].get("config_sha256") != self.run["config_sha256"]:
+            p.append("checkpoint was trained with a different resolved configuration")
+        if st["action_statistics"] != self.stats_json:
+            p.append("checkpoint action statistics differ from this run's statistics")
+        if st["train_order_sha256"] != self.train_order_sha256:
+            p.append("training sample order differs from the checkpoint (view order or membership changed)")
+        p += _tensor_dict_problems("model", st["model"], self.model.state_dict())
+        p += _tensor_dict_problems("ema", st["ema"], self.ema.ema)
+        u, att, sk, mb = st["update"], st["attempted_updates"], st["skipped_updates"], st["micro_batches"]
+        accum = self.sched["accum_micro_batches"]
+        if not all(type(v) is int and v >= 0 for v in (u, att, sk, mb)):
+            p.append("counters must be non-negative integers")
+            return p
+        if att != u + sk:
+            p.append(f"attempted_updates {att} != update {u} + skipped_updates {sk}")
+        if mb != accum * att:
+            p.append(f"micro_batches {mb} != accum {accum} x attempted_updates {att}")
+        dp = st["data_position"]
+        if dp.get("batches_per_epoch") != self.batches_per_epoch:
+            p.append("training data differs from the checkpoint (batches per epoch)")
+        elif not (type(dp.get("epoch")) is int and type(dp.get("batch")) is int and 0 <= dp["batch"] < self.batches_per_epoch
+                  and dp["epoch"] * self.batches_per_epoch + dp["batch"] == mb):
+            p.append(f"data position {dp} is inconsistent with {mb} consumed micro-batches")
+        if st["scheduler"].get("last_epoch") != u:
+            p.append(f"scheduler last_epoch {st['scheduler'].get('last_epoch')} != update {u}")
+        opt, ref = st["optimizer"], self.optimizer.state_dict()
+        if [len(g["params"]) for g in opt.get("param_groups", [])] != [len(g["params"]) for g in ref["param_groups"]]:
+            p.append("optimizer parameter groups differ from this model")
+        else:
+            steps = {int(v["step"]) for v in opt.get("state", {}).values()}
+            if steps != ({u} if u else set()):
+                p.append(f"optimizer step counts {sorted(steps)} != update {u}")
+            for i, v in opt.get("state", {}).items():
+                if any(torch.is_tensor(t) and t.is_floating_point() and not torch.isfinite(t).all() for t in v.values()):
+                    p.append(f"optimizer state {i} is not finite")
+                    break
+        scale = st["scaler"].get("scale")
+        if st["scaler"] and not (scale is not None and math.isfinite(float(scale)) and float(scale) > 0):
+            p.append(f"grad-scaler scale {scale!r} is not a positive finite number")
+        if not {"python", "numpy", "torch"} <= set(st["rng"]):
+            p.append("checkpoint RNG state incomplete")
+        return p
+
     def load_full(self, path: str) -> None:
         st = torch.load(path, map_location="cpu", weights_only=False)
-        if st.get("format") != CKPT_FORMAT or st.get("kind") != "full":
-            raise ValueError(f"{path} is not a {CKPT_FORMAT} full checkpoint")
-        if st["run"]["config_sha256"] != self.run["config_sha256"]:
-            raise ValueError("checkpoint was trained with a different resolved configuration")
-        if st["action_statistics"] != self.stats_json:
-            raise ValueError("checkpoint action statistics differ from this run's statistics")
-        if st["data_position"]["batches_per_epoch"] != self.batches_per_epoch:
-            raise ValueError("training data differs from the checkpoint (batches per epoch)")
+        problems = self.checkpoint_problems(st)
+        if problems:
+            raise CheckpointError(f"{path}: " + "; ".join(problems))
         self.model.load_state_dict(st["model"])
-        self.ema.load_state_dict({k: v.to(self.device) for k, v in st["ema"].items()})
+        self.ema.load_state_dict({k: v.to(self.device) for k, v in st["ema"].items()})  # exact key set checked
         self.optimizer.load_state_dict(st["optimizer"])
         self.scheduler.load_state_dict(st["scheduler"])
         self.scaler.load_state_dict(st["scaler"])
         self.update, self.micro = st["update"], st["micro_batches"]
+        self.attempted_updates, self.skipped_updates = st["attempted_updates"], st["skipped_updates"]
         self.epoch, self.batch_in_epoch = st["data_position"]["epoch"], st["data_position"]["batch"]
         self._resume_rng = st["rng"]
 
     # ---- training ----
     def _log(self, rec: Dict) -> None:
         with open(os.path.join(self.out, "metrics.jsonl"), "a") as f:
-            f.write(json.dumps(rec) + "\n")
+            f.write(json.dumps(rec, allow_nan=False) + "\n")
+
+    def _count_optimizer_steps(self) -> None:
+        """Count calls that reach optimizer.step(). GradScaler.step() skips the call when gradients are
+        non-finite; its return value cannot tell (AdamW.step() returns None either way). Installed as an
+        instance attribute, so it counts each executed step exactly once, also for subclasses."""
+        if getattr(self.optimizer.step, "_r2r2r_counter", False):
+            return
+        inner = self.optimizer.step
+
+        def step(*args, **kwargs):
+            out = inner(*args, **kwargs)
+            self.optimizer_calls += 1
+            return out
+        step._r2r2r_counter = True
+        if hasattr(inner, "_wrapped_by_lr_sched"):  # keep the LR scheduler's step-order bookkeeping intact
+            step._wrapped_by_lr_sched = inner._wrapped_by_lr_sched
+        self.optimizer.step = step
 
     def train(self, stop_after: Optional[int] = None) -> Dict:
         s = self.sched
         total, accum = s["total_updates"], s["accum_micro_batches"]
         stop = total if stop_after is None else min(total, stop_after)
+        self._count_optimizer_steps()
         stream = self._loader(self.ds_train, TrainBatchStream(self.sampler, self.epoch, self.batch_in_epoch), persistent=True)
         it = iter(stream)
         if getattr(self, "_resume_rng", None) is not None:
@@ -265,7 +402,7 @@ class Trainer:
             t0 = time.time()
             self.optimizer.zero_grad(set_to_none=True)
             raws, wait = [], 0.0
-            scale_before = self.scaler._scaler.get_scale()
+            calls_before = self.optimizer_calls
             for m in range(accum):
                 tw = time.time()
                 batch = next(it)
@@ -280,19 +417,38 @@ class Trainer:
                 grad_norm = self.scaler(loss / accum, self.optimizer, parameters=params,
                                         update_grad=(m == accum - 1), clip_grad=s["grad_clip"])
                 self._advance_position()
+            self.attempted_updates += 1
+            t_data += wait
             lr_used = self.optimizer.param_groups[0]["lr"]
-            skipped = self.scaler._scaler.get_scale() < scale_before  # GradScaler skipped a non-finite step
-            n_skipped += int(skipped)
+            steps = self.optimizer_calls - calls_before
+            if steps == 0:  # GradScaler found non-finite gradients and did not call optimizer.step()
+                self.skipped_updates += 1
+                self.consecutive_skipped += 1
+                n_skipped += 1
+                self._log({"type": "train_skipped", "update": self.update + 1, "attempt": self.attempted_updates,
+                           "micro_batches": self.micro, "epoch": self.epoch, "batch_in_epoch": self.batch_in_epoch,
+                           "lr": lr_used, "loss_raw_micro": raws, "grad_norm_before_clip": _jsonable(grad_norm),
+                           "grad_scale_after": _jsonable(self.scaler._scaler.get_scale()),
+                           "consecutive_skipped": self.consecutive_skipped, "skipped_total": self.skipped_updates})
+                if (self.consecutive_skipped >= MAX_CONSECUTIVE_SKIPPED_UPDATES
+                        or self.skipped_updates >= MAX_SKIPPED_UPDATES):
+                    raise SkippedStepError(
+                        f"optimizer step skipped {self.consecutive_skipped} times in a row ({self.skipped_updates} "
+                        f"in total) before update {self.update + 1}; aborting (last durable checkpoint is unchanged)")
+                continue
+            if steps != 1:
+                raise RuntimeError(f"optimizer.step() ran {steps} times in one accumulation group")
+            self.consecutive_skipped = 0
             self.scheduler.step()
             self.ema.update(self.model)
             self.update += 1
             n_updates += 1
-            t_data += wait
             if self.update % s["log_every_updates"] == 0 or self.update == stop:
-                self._log({"type": "train", "update": self.update, "micro_batches": self.micro, "epoch": self.epoch,
+                self._log({"type": "train", "update": self.update, "attempt": self.attempted_updates,
+                           "micro_batches": self.micro, "epoch": self.epoch,
                            "batch_in_epoch": self.batch_in_epoch, "lr_used": lr_used,
                            "loss_raw_mean": sum(raws) / len(raws), "loss_raw_micro": raws,
-                           "grad_norm_before_clip": float(grad_norm), "optimizer_step_skipped": bool(skipped),
+                           "grad_norm_before_clip": _jsonable(grad_norm), "skipped_total": self.skipped_updates,
                            "update_s": round(time.time() - t0, 4),
                            "data_wait_s": round(wait, 4)})
             if self.update % s["val_every_updates"] == 0 or self.update == total:
@@ -312,7 +468,29 @@ class Trainer:
             it._shutdown_workers()
         del it, stream
         return {"updates_this_session": n_updates, "final_update": self.update, "elapsed_s": round(elapsed, 2),
-                "data_wait_s": round(t_data, 2), "optimizer_steps_skipped": n_skipped, "finished": self.update == total}
+                "data_wait_s": round(t_data, 2), "skipped_updates_this_session": n_skipped,
+                "attempted_updates_total": self.attempted_updates, "skipped_updates_total": self.skipped_updates,
+                "finished": self.update == total}
+
+
+def _tensor_dict_problems(name: str, got: Dict, ref: Dict) -> List[str]:
+    """Exact key set, shapes, dtypes and finite floating values of a checkpoint tensor dictionary."""
+    if not isinstance(got, dict):
+        return [f"{name}: not a dictionary"]
+    p = []
+    missing, extra = sorted(set(ref) - set(got)), sorted(set(got) - set(ref))
+    if missing:
+        p.append(f"{name}: {len(missing)} missing tensors, e.g. {missing[:3]}")
+    if extra:
+        p.append(f"{name}: {len(extra)} unexpected tensors, e.g. {extra[:3]}")
+    for k in sorted(set(ref) & set(got)):
+        v, r = got[k], ref[k]
+        if not torch.is_tensor(v) or v.shape != r.shape or v.dtype != r.dtype:
+            p.append(f"{name}.{k}: expected {r.dtype} {tuple(r.shape)}, got "
+                     f"{(v.dtype, tuple(v.shape)) if torch.is_tensor(v) else type(v).__name__}")
+        elif v.is_floating_point() and not torch.isfinite(v).all():
+            p.append(f"{name}.{k}: non-finite values")
+    return p
 
 
 def write_run_files(run: Dict) -> None:
@@ -320,7 +498,7 @@ def write_run_files(run: Dict) -> None:
     out = run["paths"]["output_dir"]
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, "run_config.json"), "w") as f:
-        json.dump(run, f, indent=1, sort_keys=True)
+        json.dump(run, f, indent=1, sort_keys=True, allow_nan=False)
     shutil.copyfile(run["paths"]["action_statistics"], os.path.join(out, "action_statistics.json"))
 
 

@@ -1,0 +1,27 @@
+{
+  "source_fingerprint_after_all_tests": "dd23bd44ce626485a9f3ec8f78ce3c75cfeadb90785efdcf456c8f997c2f2bcd",
+  "claude_status": {
+    "exit": 0,
+    "output": "m dependencies/trajgen"
+  },
+  "baseline_ref": {
+    "exit": 0,
+    "output": "334e83d4d1be7a4a5e78768cd5344051d4a892fa"
+  },
+  "preparation_ref": {
+    "exit": 0,
+    "output": "2a0536689e81b1e01876c8cdf0550fa9fae20227"
+  },
+  "isolated_commit": {
+    "exit": 0,
+    "output": "43ab363058c4c9a5a45207b1414315320ef8438d"
+  },
+  "isolated_status": {
+    "exit": 0,
+    "output": ""
+  },
+  "tinydp_status": {
+    "exit": 0,
+    "output": ""
+  }
+}

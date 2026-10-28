@@ -1,0 +1,12 @@
+[
+  {
+    "suite": "reported89",
+    "exit_code": 0,
+    "log": "/tmp/r2r2r-codex-final-evidence/reported89_pytest.log"
+  },
+  {
+    "suite": "independent",
+    "exit_code": 1,
+    "log": "/tmp/r2r2r-codex-final-evidence/independent_pytest.log"
+  }
+]

@@ -1,6 +1,6 @@
 {
- "protocol_version": "r2r2r-dp-protocol-v2",
- "name": "baseline_v2",
+ "protocol_version": "r2r2r-dp-protocol-v3",
+ "name": "baseline_v3",
  "purpose": "R2R2R YuMi coffee-maker TinyDP baseline: released sim loader and model, right-arm-only 10-D absolute EE actions, released image/state pairing, v2 train-only normalizer, optimizer-update schedule.",
  "data": {
   "manifest": "docs/policy_training/artifacts/manifest_v1.json",
@@ -9,7 +9,9 @@
   "eval_split": "val",
   "normalizer": "v2",
   "statistics_dir": "docs/policy_training/artifacts/normalizer_v2",
-  "timing_variant": "released_pairing"
+  "timing_variant": "released_pairing",
+  "image_integrity": "docs/policy_training/artifacts/image_integrity_v1/image_integrity_v1.json",
+  "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e"
  },
  "tinydp": {
   "dataset_cfg.is_sim_data": true,

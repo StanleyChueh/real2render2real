@@ -1,0 +1,108 @@
+{
+ "u20_A": {
+  "exit": {
+   "tag": "u20_A",
+   "exit_code": 0,
+   "wall_s": 736.27737187
+  },
+  "max_rss_kB": 11049584,
+  "gpu0_peak_MiB": 22335,
+  "gpu1_peak_MiB": 319,
+  "gpu0_mean_util_pct": 20.5,
+  "tracebacks": 0,
+  "session_summary": {
+   "updates_this_session": 20,
+   "final_update": 20,
+   "elapsed_s": 716.38,
+   "data_wait_s": 17.86,
+   "skipped_updates_this_session": 0,
+   "attempted_updates_total": 20,
+   "skipped_updates_total": 0,
+   "finished": true,
+   "peak_gpu_mem_allocated_GiB": 15.43
+  },
+  "start": {
+   "config_sha256": "4e800408d9105fc00a1105591044f97dc755c8382066cb7fd66dcc68b0efcc91",
+   "train_order_sha256": "40d6e761e0e481598c43d3c0f4342ad40aeefe3a92c87da9080ad91591873da0",
+   "start_update": 0,
+   "start_attempted_updates": 0
+  },
+  "launch_images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 414,
+   "frames_verified": 133308,
+   "seconds": 5.7
+  }
+ },
+ "u20_B1": {
+  "exit": {
+   "tag": "u20_B1",
+   "exit_code": 0,
+   "wall_s": 124.966269163
+  },
+  "max_rss_kB": 8771892,
+  "gpu0_peak_MiB": 22293,
+  "gpu1_peak_MiB": 317,
+  "gpu0_mean_util_pct": 11.0,
+  "tracebacks": 0,
+  "session_summary": {
+   "updates_this_session": 10,
+   "final_update": 10,
+   "elapsed_s": 86.52,
+   "data_wait_s": 17.45,
+   "skipped_updates_this_session": 0,
+   "attempted_updates_total": 10,
+   "skipped_updates_total": 0,
+   "finished": false,
+   "peak_gpu_mem_allocated_GiB": 15.43
+  },
+  "start": {
+   "config_sha256": "4e800408d9105fc00a1105591044f97dc755c8382066cb7fd66dcc68b0efcc91",
+   "train_order_sha256": "40d6e761e0e481598c43d3c0f4342ad40aeefe3a92c87da9080ad91591873da0",
+   "start_update": 0,
+   "start_attempted_updates": 0
+  },
+  "launch_images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 414,
+   "frames_verified": 133308,
+   "seconds": 21.5
+  }
+ },
+ "u20_B2": {
+  "exit": {
+   "tag": "u20_B2",
+   "exit_code": 0,
+   "wall_s": 717.881595346
+  },
+  "max_rss_kB": 11069136,
+  "gpu0_peak_MiB": 22287,
+  "gpu1_peak_MiB": 367,
+  "gpu0_mean_util_pct": 18.4,
+  "tracebacks": 0,
+  "session_summary": {
+   "updates_this_session": 10,
+   "final_update": 20,
+   "elapsed_s": 664.41,
+   "data_wait_s": 17.54,
+   "skipped_updates_this_session": 0,
+   "attempted_updates_total": 20,
+   "skipped_updates_total": 0,
+   "finished": true,
+   "peak_gpu_mem_allocated_GiB": 15.43
+  },
+  "start": {
+   "config_sha256": "4e800408d9105fc00a1105591044f97dc755c8382066cb7fd66dcc68b0efcc91",
+   "train_order_sha256": "40d6e761e0e481598c43d3c0f4342ad40aeefe3a92c87da9080ad91591873da0",
+   "start_update": 10,
+   "start_attempted_updates": 10
+  },
+  "launch_images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 414,
+   "frames_verified": 133308,
+   "seconds": 20.8
+  }
+ },
+ "note": "Run concurrently with CPU test/mutation jobs (load average up to 37 on 24 cores): wall times are not throughput measurements."
+}

@@ -1,6 +1,6 @@
 {
- "protocol_version": "r2r2r-dp-protocol-v2",
- "name": "lifecycle_u100_v2",
+ "protocol_version": "r2r2r-dp-protocol-v3",
+ "name": "lifecycle_u100_v3",
  "purpose": "Bounded lifecycle test of baseline_v2 (100 optimizer updates); identical data/model/optimizer, shortened schedule. Not a training result.",
  "data": {
   "manifest": "docs/policy_training/artifacts/manifest_v1.json",
@@ -9,7 +9,9 @@
   "eval_split": "val",
   "normalizer": "v2",
   "statistics_dir": "docs/policy_training/artifacts/normalizer_v2",
-  "timing_variant": "released_pairing"
+  "timing_variant": "released_pairing",
+  "image_integrity": "docs/policy_training/artifacts/image_integrity_v1/image_integrity_v1.json",
+  "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e"
  },
  "tinydp": {
   "dataset_cfg.is_sim_data": true,

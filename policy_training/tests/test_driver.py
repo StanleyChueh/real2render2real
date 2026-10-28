@@ -106,7 +106,8 @@ def test_update_semantics(fx9, tmp_path, monkeypatch):
     orig_ema = t.ema.update
     t.ema.update = lambda m: (ema_calls.append(1), orig_ema(m))[1]
     summary = t.train()
-    assert summary["final_update"] == 9 and summary["optimizer_steps_skipped"] == 0
+    assert summary["final_update"] == 9 and summary["skipped_updates_total"] == 0
+    assert summary["attempted_updates_total"] == t.attempted_updates == t.optimizer_calls == 9
     assert t.scheduler.last_epoch == 9 and len(ema_calls) == 9
     adam_steps = {int(s["step"]) for s in t.optimizer.state.values()}
     assert adam_steps == {9}

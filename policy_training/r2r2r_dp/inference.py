@@ -13,6 +13,12 @@ Inputs (TinyDP sim contract, see VALIDATED_TRAINING_PROTOCOL.md):
                (absolute, base_link, metres; rot6d = first two ROWS of R; grip 1 = close command)
 Output: right-arm actions (B, 16, 10) = [xyz, rot6d, gripper] in the same frame and units, i.e. absolute
 targets for state rows t+2, t+4, ..., t+32 relative to the newest observation row t (subsample 2).
+right_poses() converts them to validated rotation matrices (rotation.py), never via TinyDP's helper.
+
+Validation (Codex final audit F8): weights and bounds must be finite with min <= max (finite zero-range
+dims keep TinyDP's constant denormalisation); inputs must be finite tensors of the exact shapes above
+(H = W = image_size); num_inference_steps must be an integer in [1, num_train_diffusion_steps]; a
+non-finite policy output raises instead of being returned.
 """
 import hashlib
 import json
@@ -21,8 +27,9 @@ from typing import Dict, List, Optional
 import numpy as np
 import torch
 
-from .driver import CKPT_FORMAT
-from .normalizer_v2 import absolute_actions
+from .driver import INFERENCE_FORMATS
+from .normalizer_v2 import absolute_actions, require_bounds
+from .rotation import rot6d_rows_to_matrix
 
 
 class R2R2RPolicy:
@@ -31,8 +38,8 @@ class R2R2RPolicy:
         from tinydp.policy.model import DiffusionPolicy
         from .protocol import config_from_dict
 
-        if ckpt.get("format") != CKPT_FORMAT:
-            raise ValueError(f"not a {CKPT_FORMAT} checkpoint")
+        if ckpt.get("format") not in INFERENCE_FORMATS or ckpt.get("kind") not in ("full", "inference"):
+            raise ValueError(f"not a {'/'.join(INFERENCE_FORMATS)} full or inference checkpoint")
         if weights not in ("ema", "raw"):
             raise ValueError("weights must be 'ema' or 'raw'")
         if ckpt["kind"] == "inference" and weights != ckpt["weights"]:
@@ -47,10 +54,14 @@ class R2R2RPolicy:
             with torch.no_grad():
                 for name, p in self.model.named_parameters():
                     p.copy_(ckpt["ema"][name])
+        bad = [k for k, v in self.model.state_dict().items() if v.is_floating_point() and not torch.isfinite(v).all()]
+        if bad:
+            raise ValueError(f"checkpoint weights are not finite: {bad[:5]}")
         self.model.to(self.device).eval()
         st = ckpt["action_statistics"]
-        lo = np.array(st["min_action"], dtype=np.float64).reshape(st["shape"])
-        hi = np.array(st["max_action"], dtype=np.float64).reshape(st["shape"])
+        if st.get("shape") != [20]:
+            raise ValueError(f"action statistics shape {st.get('shape')!r}, expected [20]")
+        lo, hi = require_bounds(st["min_action"], st["max_action"])
         self.right_min, self.right_max = lo[10:20], hi[10:20]
         # zero-range dims: training targets were nan_to_num'd to 0 and denormalise to the constant (as TinyDP)
         self.degenerate_dims = [int(i) for i in np.flatnonzero(self.right_max - self.right_min <= 0)]
@@ -78,12 +89,35 @@ class R2R2RPolicy:
         hi = torch.as_tensor(self.right_max, dtype=z.dtype, device=z.device)
         return (z + 1) / 2 * (hi - lo) + lo
 
+    def right_poses(self, right_action) -> Dict[str, np.ndarray]:
+        """(..., 10) right-arm actions -> xyz (..., 3), validated rotation matrices (..., 3, 3), gripper (...)."""
+        a = np.asarray(right_action.detach().cpu() if torch.is_tensor(right_action) else right_action, dtype=np.float64)
+        if a.shape[-1] != 10 or not np.isfinite(a).all():
+            raise ValueError("right_action must be finite with a trailing dimension of 10")
+        return {"xyz": a[..., :3], "rotation": rot6d_rows_to_matrix(a[..., 3:9]), "gripper": a[..., 9]}
+
+    def _check_inputs(self, observation, proprio, num_inference_steps, seed) -> int:
+        if not (torch.is_tensor(observation) and torch.is_tensor(proprio)):
+            raise TypeError("observation and proprio must be torch tensors")
+        S, L = self.cfg.shared_cfg.image_size, self.obs_horizon
+        B = proprio.shape[0] if proprio.ndim == 3 else -1
+        if B < 1 or tuple(proprio.shape) != (B, L, 20) or tuple(observation.shape) != (B, L, 2, 3, S, S):
+            raise ValueError(f"expected observation (B,{L},2,3,{S},{S}) and proprio (B,{L},20) with B >= 1, "
+                             f"got {tuple(observation.shape)} and {tuple(proprio.shape)}")
+        for name, x in (("observation", observation), ("proprio", proprio)):
+            if not x.is_floating_point() or not torch.isfinite(x).all():
+                raise ValueError(f"{name} must be a finite floating-point tensor")
+        n_train = self.cfg.model_cfg.policy_cfg.num_train_diffusion_steps
+        if num_inference_steps is not None and not (type(num_inference_steps) is int and 1 <= num_inference_steps <= n_train):
+            raise ValueError(f"num_inference_steps must be an integer in [1, {n_train}], got {num_inference_steps!r}")
+        if seed is not None and not (type(seed) is int and seed >= 0):
+            raise ValueError(f"seed must be a non-negative integer, got {seed!r}")
+        return B
+
     @torch.no_grad()
     def predict(self, observation: torch.Tensor, proprio: torch.Tensor, num_inference_steps: Optional[int] = None,
                 seed: Optional[int] = None) -> Dict[str, torch.Tensor]:
-        B = proprio.shape[0]
-        if observation.shape[:3] != (B, self.obs_horizon, 2) or proprio.shape[1:] != (self.obs_horizon, 20):
-            raise ValueError(f"expected observation (B,{self.obs_horizon},2,3,H,W) and proprio (B,{self.obs_horizon},20)")
+        B = self._check_inputs(observation, proprio, num_inference_steps, seed)
         steps = num_inference_steps or self.cfg.model_cfg.policy_cfg.num_inference_diffusion_steps
         self.model.noise_scheduler.set_timesteps(steps)
         batch = {"observation": observation.to(self.device).float(), "proprio": proprio.to(self.device).float()}
@@ -94,4 +128,7 @@ class R2R2RPolicy:
             z = self.model.forward_inference(batch)
         if z.shape != (B, self.action_horizon, 10):
             raise RuntimeError(f"unexpected policy output shape {tuple(z.shape)}")
-        return {"normalized": z, "right_action": self.denormalize(z.double()).float()}
+        action = self.denormalize(z.double()).float()
+        if not (torch.isfinite(z).all() and torch.isfinite(action).all()):
+            raise FloatingPointError("policy output is not finite")
+        return {"normalized": z, "right_action": action}

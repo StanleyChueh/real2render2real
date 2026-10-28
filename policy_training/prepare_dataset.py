@@ -5,6 +5,7 @@
     python policy_training/prepare_dataset.py views    --manifest MANIFEST --out-root VIEWS
     python policy_training/prepare_dataset.py stats    --manifest MANIFEST --views-root VIEWS --out-dir STATS
     python policy_training/prepare_dataset.py analyze  --manifest MANIFEST --views-root VIEWS --out REPORT
+    python policy_training/prepare_dataset.py image-integrity --manifest MANIFEST --out FILE [--workers 16]
 
 Every command exits non-zero on any failed check.
 """
@@ -160,9 +161,7 @@ def cmd_stats_v2(a):
         if cov2["rows_out_of_bounds"]:
             _fail(f"{tag}: v2 bounds do not cover the training targets: {cov2}")
         v1 = json.load(open(os.path.join(a.v1_dir, f"action_statistics_train_{tag}.json")))
-        with open(out, "w") as f:
-            json.dump(st, f, indent=1)
-            f.write("\n")
+        nv.dump_statistics(st, out)
         lo1, hi1 = np.array(v1["min_action"]), np.array(v1["max_action"])
         summary["subsets"][tag] = {
             "file": os.path.relpath(out), "sha256": nv.file_sha256(out),
@@ -172,7 +171,7 @@ def cmd_stats_v2(a):
             "val_targets_outside_v2_train_bounds_right": nv.coverage(val_h5s, st, s, L, P),
         }
     with open(os.path.join(a.out_dir, "normalizer_v2_summary.json"), "w") as f:
-        json.dump(summary, f, indent=1)
+        json.dump(summary, f, indent=1, allow_nan=False)
         f.write("\n")
     print(json.dumps({k: {kk: vv for kk, vv in v.items() if "coverage" in kk or kk.startswith("val")}
                       for k, v in summary["subsets"].items()}, indent=1))
@@ -259,6 +258,20 @@ def cmd_analyze(a):
     print(json.dumps(rep, indent=1))
 
 
+def cmd_image_integrity(a):
+    """Codex final audit F4: decode every source frame once (read-only) and record per-camera byte digests."""
+    from r2r2r_dp import image_integrity as ii
+    from r2r2r_dp.normalizer_v2 import file_sha256
+    m = mf.load_manifest(a.manifest)
+    try:
+        rec = ii.build_image_integrity(m, file_sha256(a.manifest), YUMI_COFFEE_MAKER.image_size, workers=a.workers)
+    except ii.ImageIntegrityError as e:
+        _fail(str(e))
+    ii.dump_image_integrity(rec, a.out)
+    print(json.dumps({"out": a.out, "sha256": file_sha256(a.out), "episodes": len(rec["episodes"]),
+                      "frames": 2 * sum(e["num_steps"] for e in m["episodes"]), "image_size": rec["image_size"]}, indent=1))
+
+
 def main():
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest="cmd", required=True)
@@ -269,8 +282,10 @@ def main():
     p = sp.add_parser("stats"); p.add_argument("--manifest", required=True); p.add_argument("--views-root", required=True); p.add_argument("--out-dir", required=True)
     p = sp.add_parser("stats-v2"); p.add_argument("--manifest", required=True); p.add_argument("--views-root", required=True); p.add_argument("--v1-dir", required=True); p.add_argument("--out-dir", required=True)
     p = sp.add_parser("analyze"); p.add_argument("--manifest", required=True); p.add_argument("--views-root", required=True); p.add_argument("--out", required=True)
+    p = sp.add_parser("image-integrity"); p.add_argument("--manifest", required=True); p.add_argument("--out", required=True); p.add_argument("--workers", type=int, default=16)
     a = ap.parse_args()
-    {"manifest": cmd_manifest, "trial": cmd_trial, "views": cmd_views, "stats": cmd_stats, "stats-v2": cmd_stats_v2, "analyze": cmd_analyze}[a.cmd](a)
+    {"manifest": cmd_manifest, "trial": cmd_trial, "views": cmd_views, "stats": cmd_stats, "stats-v2": cmd_stats_v2, "analyze": cmd_analyze,
+     "image-integrity": cmd_image_integrity}[a.cmd](a)
 
 
 if __name__ == "__main__":

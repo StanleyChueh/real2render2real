@@ -1,0 +1,139 @@
+{
+ "episode": "run07_env12_gpu0_noprealloc_nullclient/env_9_2026_10_22_21_02_42",
+ "window_start": 60,
+ "observation_rows": [
+  60,
+  62,
+  64,
+  66
+ ],
+ "target_rows": [
+  68,
+  70,
+  72,
+  74,
+  76,
+  78,
+  80,
+  82,
+  84,
+  86,
+  88,
+  90,
+  92,
+  94,
+  96,
+  98
+ ],
+ "checkpoints": {
+  "ckpt_full_u0000020.pt": {
+   "update": 20,
+   "weights": "ema",
+   "config_sha256": "4e800408d9105fc00a1105591044f97dc755c8382066cb7fd66dcc68b0efcc91",
+   "statistics_sha256": "ac22d4dbc46894d1c3aa3d97b81bb8aa138a794f006a657c542ef306b1052cf8",
+   "observation_shape": [
+    1,
+    4,
+    2,
+    3,
+    448,
+    448
+   ],
+   "proprio_shape": [
+    1,
+    4,
+    20
+   ],
+   "output_shape": [
+    1,
+    16,
+    10
+   ],
+   "finite": true,
+   "normalized_abs_max": 1.0,
+   "inference_steps": 100,
+   "load_s": 2.0,
+   "predict_s": 2.1,
+   "pred_first_step": [
+    0.1362999975681305,
+    -0.41499999165534973,
+    0.03269999846816063,
+    1.0,
+    0.18880000710487366,
+    0.26460000872612,
+    0.2621000111103058,
+    -0.9886999726295471,
+    0.08780000358819962,
+    0.04490000009536743
+   ],
+   "target_first_step": [
+    0.4161,
+    -0.2014,
+    0.0582,
+    0.897,
+    -0.3189,
+    0.3062,
+    -0.4251,
+    -0.4316,
+    0.7956,
+    1.0
+   ],
+   "pred_xyz_mean_abs_err_m": 0.16427570030403635
+  },
+  "policy_ema_u0000020.pt": {
+   "update": 20,
+   "weights": "ema",
+   "config_sha256": "4e800408d9105fc00a1105591044f97dc755c8382066cb7fd66dcc68b0efcc91",
+   "statistics_sha256": "ac22d4dbc46894d1c3aa3d97b81bb8aa138a794f006a657c542ef306b1052cf8",
+   "observation_shape": [
+    1,
+    4,
+    2,
+    3,
+    448,
+    448
+   ],
+   "proprio_shape": [
+    1,
+    4,
+    20
+   ],
+   "output_shape": [
+    1,
+    16,
+    10
+   ],
+   "finite": true,
+   "normalized_abs_max": 1.0,
+   "inference_steps": 100,
+   "load_s": 0.9,
+   "predict_s": 2.2,
+   "pred_first_step": [
+    0.1362999975681305,
+    -0.41499999165534973,
+    0.03269999846816063,
+    1.0,
+    0.18880000710487366,
+    0.26460000872612,
+    0.2621000111103058,
+    -0.9886999726295471,
+    0.08780000358819962,
+    0.04490000009536743
+   ],
+   "target_first_step": [
+    0.4161,
+    -0.2014,
+    0.0582,
+    0.897,
+    -0.3189,
+    0.3062,
+    -0.4251,
+    -0.4316,
+    0.7956,
+    1.0
+   ],
+   "pred_xyz_mean_abs_err_m": 0.16427570030403635
+  }
+ },
+ "full_vs_export_identical": true
+}

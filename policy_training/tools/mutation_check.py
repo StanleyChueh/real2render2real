@@ -1,4 +1,5 @@
-"""Phase 4 (usage: .venv-tinydp/bin/python policy_training/tools/mutation_check.py OUT.json): re-introduce each audited defect into a scratch copy of policy_training and confirm a test fails.
+"""Re-introduce each audited defect (M1-M5 and Codex final F1-F8) into a scratch copy of policy_training
+and confirm its regression test fails.  Usage: .venv-tinydp/bin/python policy_training/tools/mutation_check.py OUT.json
 
 Works on a copy (never edits the repository). Each mutation is a single exact string replacement.
 """
@@ -14,8 +15,8 @@ PY = os.path.join(REPO, ".venv-tinydp", "bin", "python")
 
 MUTATIONS = [
     ("M1 even-row-only normalizer", "r2r2r_dp/normalizer_v2.py",
-     "        rows = released_target_rows(len(a), s, L, P)\n        mins.append",
-     "        rows = np.arange(s, len(a), s)\n        mins.append",
+     "        rows = released_target_rows(len(a), s, L, P)\n        if len(rows) == 0",
+     "        rows = np.arange(s, len(a), s)\n        if len(rows) == 0",
      "tests/test_normalizer_v2.py::test_odd_row_spike_v1_out_of_bounds_v2_covered"),
     ("M2 scheduler per micro-batch", "r2r2r_dp/driver.py",
      "                self._advance_position()\n",
@@ -39,7 +40,7 @@ MUTATIONS = [
      "        self.scheduler.load_state_dict(st[\"scheduler\"])\n", "",
      "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted"),
     ("M3 EMA not restored", "r2r2r_dp/driver.py",
-     "        self.ema.load_state_dict({k: v.to(self.device) for k, v in st[\"ema\"].items()})\n", "",
+     "        self.ema.load_state_dict({k: v.to(self.device) for k, v in st[\"ema\"].items()})  # exact key set checked\n", "",
      "tests/test_driver.py::test_interrupted_resume_equals_uninterrupted"),
     ("M3 RNG not restored", "r2r2r_dp/driver.py",
      "            _set_rng_state(self._resume_rng, self.device)\n", "            pass\n",
@@ -79,6 +80,85 @@ MUTATIONS = [
     ("M5 denormalise with left-arm statistics", "r2r2r_dp/inference.py",
      "        self.right_min, self.right_max = lo[10:20], hi[10:20]", "        self.right_min, self.right_max = lo[0:10], hi[0:10]",
      "tests/test_inference.py"),
+    # ---- Codex final audit (43ab363) F1-F8: undo one repair at a time ----
+    ("F1 skipped GradScaler step counted as an update", "r2r2r_dp/driver.py",
+     "            steps = self.optimizer_calls - calls_before\n", "            steps = 1\n",
+     "tests/test_codex_final_training.py::test_skipped_step_advances_nothing_but_data"),
+    ("F1 no bound on consecutive skipped steps", "r2r2r_dp/driver.py",
+     "                if (self.consecutive_skipped >= MAX_CONSECUTIVE_SKIPPED_UPDATES\n",
+     "                if (False\n", "tests/test_codex_final_training.py::test_persistent_overflow_aborts_without_counting"),
+    ("F1 skip counters not restored on resume", "r2r2r_dp/driver.py",
+     "        self.attempted_updates, self.skipped_updates = st[\"attempted_updates\"], st[\"skipped_updates\"]\n", "",
+     "tests/test_codex_final_training.py::test_resume_after_skip_equals_uninterrupted"),
+    ("F2 normalized() sanitizes non-finite actions", "r2r2r_dp/normalizer_v2.py",
+     "    a = require_finite(\"actions\", a)\n", "    a = np.asarray(a, dtype=np.float64)\n",
+     "tests/test_codex_final_inputs.py::test_normalized_rejects_nonfinite_actions_and_bounds"),
+    ("F2 statistics built from non-finite sidecars (all finite checks off)", "r2r2r_dp/normalizer_v2.py",
+     "    if not np.isfinite(a).all():\n        bad = np.argwhere", "    if False:\n        bad = np.argwhere",
+     "tests/test_codex_final_inputs.py::test_nan_sidecar_cannot_be_certified"),
+    ("F3 manifest counts not checked", "r2r2r_dp/manifest.py",
+     "    if counts != actual:\n", "    if False:\n", "tests/test_codex_final_inputs.py::test_manifest_semantics"),
+    ("F3 manifest salt order not checked", "r2r2r_dp/manifest.py",
+     "        if (e[\"split\"], e[\"split_rank\"]) != want:\n", "        if False:\n", "tests/test_codex_final_inputs.py::test_manifest_semantics"),
+    ("F3 manifest version not checked", "r2r2r_dp/manifest.py",
+     "    if not _is_int(m[\"version\"]) or m[\"version\"] != MANIFEST_VERSION:\n", "    if False:\n",
+     "tests/test_codex_final_inputs.py::test_manifest_semantics"),
+    ("F3 view directory names not canonical", "r2r2r_dp/launch_checks.py",
+     "        if parts[0] != canonical:\n", "        if False:\n", "tests/test_codex_final_inputs.py::test_renamed_view_rejected"),
+    ("F3 symlinked episode aliases accepted", "r2r2r_dp/launch_checks.py",
+     "        if os.path.islink(ep) or os.path.islink(os.path.join(ep, \"robot_data\")):\n", "        if False:\n",
+     "tests/test_codex_final_inputs.py::test_symlinked_episode_alias_rejected"),
+    ("F3 statistics config (layout) not compared", "r2r2r_dp/launch_checks.py",
+     "        \"config\": (st[\"config\"], statistics_config(s, L, P)),\n", "",
+     "tests/test_codex_final_inputs.py::test_statistics_declared_config_enforced"),
+    ("F3 statistics config digest not recomputed", "r2r2r_dp/launch_checks.py",
+     "        \"config_sha256\": (st[\"config_sha256\"], config_sha256(st[\"config\"])),\n", "",
+     "tests/test_codex_final_inputs.py::test_statistics_declared_config_enforced"),
+    ("F3 checkpoint sample order not compared", "r2r2r_dp/driver.py",
+     "        if st[\"train_order_sha256\"] != self.train_order_sha256:\n", "        if False:\n",
+     "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes"),
+    ("F4 frame bytes not verified at launch", "r2r2r_dp/launch_checks.py",
+     "    problems.extend(verify_episodes(eps, ii, workers))\n", "",
+     "tests/test_codex_final_inputs.py::test_corrupt_wrong_size_and_missing_frames_rejected"),
+    ("F4 builder does not check resolution", "r2r2r_dp/image_integrity.py",
+     "        if fmt != \"JPEG\" or mode != \"RGB\" or tuple(got) != tuple(size):\n", "        if False:\n",
+     "tests/test_codex_final_inputs.py::test_builder_decodes_and_checks_resolution"),
+    ("F5 negative/zero grad_clip accepted", "r2r2r_dp/protocol.py",
+     "    if not _is_real(s[\"grad_clip\"], 0, lo_open=True):\n", "    if False:\n",
+     "tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected"),
+    ("F5 booleans accepted as integers", "r2r2r_dp/protocol.py",
+     "    return type(v) is int and (lo is None", "    return isinstance(v, int) and (lo is None",
+     "tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected"),
+    ("F5 resolved TinyDP values not validated", "r2r2r_dp/protocol.py",
+     "    validate_resolved_tinydp(cfg)\n", "", "tests/test_codex_final_inputs.py::test_invalid_protocol_values_rejected"),
+    ("F5 NaN literals accepted in protocol files", "r2r2r_dp/protocol.py",
+     "        p = json.load(f, parse_constant=_reject_constant)\n", "        p = json.load(f)\n",
+     "tests/test_codex_final_inputs.py::test_protocol_file_is_strict_json"),
+    ("F6 validation not transactional", "r2r2r_dp/driver.py",
+     "        finally:\n            if raw is not None:\n                self.model.load_state_dict(raw)\n            self.model.train(was_training)\n",
+     "        except BaseException:\n            raise\n        if raw is not None:\n            self.model.load_state_dict(raw)\n        self.model.train(was_training)\n",
+     "tests/test_codex_final_training.py::test_validation_failure_restores_weights_and_mode"),
+    ("F6 non-finite validation loss accepted", "r2r2r_dp/driver.py",
+     "                            if not math.isfinite(loss):\n", "                            if False:\n",
+     "tests/test_codex_final_training.py::test_nonfinite_and_empty_validation_raise"),
+    ("F6 non-finite EMA export accepted", "r2r2r_dp/driver.py",
+     "        if bad:\n            raise FloatingPointError(f\"EMA export", "        if False:\n            raise FloatingPointError(f\"EMA export",
+     "tests/test_codex_final_training.py::test_export_failure_restores_raw_weights"),
+    ("F7 EMA key set/shape/finiteness not checked", "r2r2r_dp/driver.py",
+     "        p += _tensor_dict_problems(\"ema\", st[\"ema\"], self.ema.ema)\n", "",
+     "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes"),
+    ("F7 counters/data position not checked", "r2r2r_dp/driver.py",
+     "        if mb != accum * att:\n", "        if False:\n",
+     "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes"),
+    ("F8 non-finite inference inputs accepted", "r2r2r_dp/inference.py",
+     "            if not x.is_floating_point() or not torch.isfinite(x).all():\n", "            if False:\n",
+     "tests/test_codex_final_inputs.py::test_inference_rejects_invalid_inputs"),
+    ("F8 non-finite policy output returned", "r2r2r_dp/inference.py",
+     "        if not (torch.isfinite(z).all() and torch.isfinite(action).all()):\n", "        if False:\n",
+     "tests/test_codex_final_inputs.py::test_nonfinite_output_and_weights_rejected"),
+    ("F8 collinear rot6d rows accepted", "r2r2r_dp/rotation.py",
+     "        raise ValueError(\"rot6d rows are zero or (nearly) collinear\")\n", "        pass\n",
+     "tests/test_codex_final_inputs.py::test_rotation_converter_cases"),
 ]
 
 
@@ -119,11 +199,16 @@ def main():
                 results.append({"mutation": name, "status": "MUTATION NOT APPLICABLE", "count": src.count(old)})
                 continue
             open(path, "w").write(src.replace(old, new))
-            r = subprocess.run([PY, "-m", "pytest", "-q", "-x", "-p", "no:cacheprovider", test], cwd=work,
-                               capture_output=True, text=True, timeout=900)
-            tail = [l for l in r.stdout.splitlines() if "passed" in l or "failed" in l or "error" in l.lower()][-1:]
-            results.append({"mutation": name, "test": test, "pytest_exit": r.returncode,
-                            "detected": r.returncode != 0, "summary": tail[0] if tail else ""})
+            try:
+                r = subprocess.run([PY, "-m", "pytest", "-q", "-x", "-p", "no:cacheprovider", test], cwd=work,
+                                   capture_output=True, text=True, timeout=900)
+            except subprocess.TimeoutExpired:  # the test did not pass within the limit: counted as detected
+                results.append({"mutation": name, "test": test, "pytest_exit": None, "detected": True,
+                                "summary": "timeout after 900 s"})
+            else:
+                tail = [l for l in r.stdout.splitlines() if "passed" in l or "failed" in l or "error" in l.lower()][-1:]
+                results.append({"mutation": name, "test": test, "pytest_exit": r.returncode,
+                                "detected": r.returncode != 0, "summary": tail[0] if tail else ""})
         print(json.dumps(results[-1]), flush=True)
     json.dump({"control": ctl, "mutations": results}, open(sys.argv[1], "w"), indent=1)
     print("all detected:", all(x.get("detected") for x in results))

@@ -1,12 +1,14 @@
-"""Phase-4 invariants after the M1-M7 repair and the GPU lifecycle runs (read-only).
+"""Invariants after the M1-M7 and Codex-final (F1-F8) repairs (read-only).
 
     .venv-tinydp/bin/python policy_training/verify_repair_invariants.py --base 2a05366 \
         --checkpoint RUN/ckpt_full_u0000100.pt --out report.json
 
 Checks: protected repository paths equal the data-generation baseline; submodules clean and at their pins;
 v1 statistics and manifest unchanged; source-episode fingerprint equals the preparation record; no view file
-modified since the given date; all train sizes still pass the launch checks; checkpoint counters equal the
-optimizer's own step counts.
+modified since the given date; all train sizes still pass the launch checks (incl. image integrity);
+checkpoint counters: Adam steps == scheduler steps == successful updates, attempted == successful +
+skipped, micro-batches == accum x attempted == epoch x batches_per_epoch + batch. Legacy v2 checkpoints
+(no skip counters) are checked with attempted == successful.
 """
 import argparse
 import glob
@@ -69,7 +71,7 @@ def main():
 
     from r2r2r_dp.launch_checks import check_launch
     from r2r2r_dp.protocol import load_protocol, resolve
-    p = load_protocol(os.path.join(HERE, "configs", "baseline_v2.json"))
+    p = load_protocol(os.path.join(HERE, "configs", "baseline_v3.json"))
     lc = {}
     for n in (50, 100, 150, 1000, 1461):
         try:
@@ -84,14 +86,18 @@ def main():
         st = torch.load(path, map_location="cpu", weights_only=False)
         steps = sorted({int(s["step"]) for s in st["optimizer"]["state"].values()})
         accum = st["run"]["protocol"]["schedule"]["accum_micro_batches"]
-        ck[path] = {"update": st["update"], "micro_batches": st["micro_batches"], "adam_steps": steps,
-                    "scheduler_last_epoch": st["scheduler"]["last_epoch"],
+        att, sk = st.get("attempted_updates", st["update"]), st.get("skipped_updates", 0)
+        dp = st["data_position"]
+        ck[path] = {"format": st["format"], "update": st["update"], "attempted_updates": att, "skipped_updates": sk,
+                    "micro_batches": st["micro_batches"], "adam_steps": steps,
+                    "scheduler_last_epoch": st["scheduler"]["last_epoch"], "data_position": dp,
                     "ok": steps == [st["update"]] and st["scheduler"]["last_epoch"] == st["update"]
-                          and st["micro_batches"] == accum * st["update"]}
+                          and att == st["update"] + sk and st["micro_batches"] == accum * att
+                          and st["micro_batches"] == dp["epoch"] * dp["batches_per_epoch"] + dp["batch"]}
     rep["checkpoint_counters"] = {"ok": all(v["ok"] for v in ck.values()), "per_checkpoint": ck}
     rep["all_ok"] = all(v["ok"] for v in rep.values() if isinstance(v, dict) and "ok" in v)
     with open(a.out, "w") as f:
-        json.dump(rep, f, indent=1)
+        json.dump(rep, f, indent=1, allow_nan=False)
     print(json.dumps({k: (v["ok"] if isinstance(v, dict) and "ok" in v else v) for k, v in rep.items()}, indent=1))
     sys.exit(0 if rep["all_ok"] else 1)
 

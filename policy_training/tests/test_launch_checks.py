@@ -75,7 +75,7 @@ def test_v1_statistics_rejected(fx, tmp_path):
     json.dump({k: st[k] for k in ("shape", "min_action", "max_action")}, open(v1, "w"))  # released file format
     run = _run(fx, str(tmp_path / "out"))
     run["paths"]["action_statistics"] = str(v1)
-    assert "normalizer_version=None" in _problems(lambda: check_launch(run))
+    assert "keys must be" in _problems(lambda: check_launch(run))  # no v2 provenance/config at all
 
 
 def test_tampered_statistics_rejected(fresh, tmp_path):
@@ -94,7 +94,7 @@ def test_absolute_statistics_with_delta_actions_rejected(fx, tmp_path):
     # a resolved run altered after protocol validation is still caught by the statistics binding
     run = _run(fx, str(tmp_path / "out"))
     run["tinydp"]["shared_cfg"]["use_delta_action"] = True
-    assert "action_mode='absolute', expected 'delta'" in _problems(lambda: check_launch(run))
+    assert "normalizer v2 supports absolute actions only" in _problems(lambda: check_launch(run))
 
 
 @pytest.mark.parametrize("mutate,match", [
@@ -221,7 +221,7 @@ def test_frozen_repository_protocols_are_valid():
         assert p["tinydp"]["shared_cfg.batch_size"] == 16 and p["schedule"]["accum_micro_batches"] == 4
         assert p["tinydp"]["optimizer_cfg.lr"] == 2e-4 and p["tinydp"]["optimizer_cfg.weight_decay"] == 0.09
         assert p["tinydp"]["shared_cfg.image_size"] == 448 and p["tinydp"]["model_cfg.policy_cfg.pred_right_only"]
-    base = json.load(open(os.path.join(here, "baseline_v2.json")))
-    for name in ("lifecycle_u20_v2.json", "lifecycle_u100_v2.json"):
+    base = json.load(open(os.path.join(here, "baseline_v3.json")))
+    for name in ("lifecycle_u20_v3.json", "lifecycle_u100_v3.json"):
         p = json.load(open(os.path.join(here, name)))
         assert p["data"] == base["data"] and p["tinydp"] == base["tinydp"]  # only the schedule differs

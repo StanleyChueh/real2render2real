@@ -8,16 +8,17 @@ import copy
 import json
 import os
 
-from fixtures import make_source_tree
+from fixtures import SMALL, make_source_tree
 from r2r2r_dp.adapter import build_all_views
+from r2r2r_dp.image_integrity import build_image_integrity, dump_image_integrity
 from r2r2r_dp.manifest import build_manifest, save_manifest
-from r2r2r_dp.normalizer_v2 import build_statistics, file_sha256
+from r2r2r_dp.normalizer_v2 import build_statistics, dump_statistics, file_sha256
 from r2r2r_dp.protocol import PROTOCOL_VERSION
 
 TRAIN_SIZES = (3, 6)
 
 
-def tiny_protocol(manifest, manifest_sha, views, stats_dir, **schedule):
+def tiny_protocol(manifest, manifest_sha, views, stats_dir, images, images_sha, **schedule):
     sched = {"accum_micro_batches": 4, "total_updates": 6, "warmup_updates": 2, "lr_schedule": "cosine",
              "ema_decay_per_update": 0.9, "grad_clip": 1.0, "amp_dtype": "bfloat16", "sampler_seed": 42,
              "log_every_updates": 1, "val_every_updates": 2, "val_subset_window_stride": 10, "val_seed": 7,
@@ -27,7 +28,8 @@ def tiny_protocol(manifest, manifest_sha, views, stats_dir, **schedule):
     return {
         "protocol_version": PROTOCOL_VERSION, "name": "tiny_test", "purpose": "unit tests",
         "data": {"manifest": manifest, "manifest_sha256": manifest_sha, "views_root": views, "eval_split": "val",
-                 "normalizer": "v2", "statistics_dir": stats_dir, "timing_variant": "released_pairing"},
+                 "normalizer": "v2", "statistics_dir": stats_dir, "timing_variant": "released_pairing",
+                 "image_integrity": images, "image_integrity_sha256": images_sha},
         "tinydp": {"dataset_cfg.is_sim_data": True, "dataset_cfg.scale_action": True, "dataset_cfg.proprio_noise": 0.003,
                    "dataset_cfg.subsample_steps": 2, "model_cfg.policy_cfg.pred_right_only": True,
                    "model_cfg.policy_cfg.down_dims": [8, 16], "model_cfg.policy_cfg.num_inference_diffusion_steps": 4,
@@ -54,11 +56,13 @@ def make_run_fixture(tmp, n_episodes=10, **schedule):
     msha = file_sha256(mpath)
     for n, uids in m["train_subsets"].items():
         st = build_statistics(os.path.join(views, "train_subsets", f"n{int(n):04d}"), f"n{int(n):04d}", uids, msha, 2, 4, 16)
-        with open(os.path.join(stats_dir, f"action_statistics_v2_train_n{int(n):04d}.json"), "w") as f:
-            json.dump(st, f)
-    proto = tiny_protocol(mpath, msha, views, stats_dir, **schedule)
+        dump_statistics(st, os.path.join(stats_dir, f"action_statistics_v2_train_n{int(n):04d}.json"))
+    images = os.path.join(tmp, "image_integrity.json")
+    dump_image_integrity(build_image_integrity(m, msha, SMALL.image_size, workers=1), images)
+    proto = tiny_protocol(mpath, msha, views, stats_dir, images, file_sha256(images), **schedule)
     ppath = os.path.join(tmp, "protocol.json")
     with open(ppath, "w") as f:
         json.dump(proto, f)
     return {"source": src, "manifest": m, "manifest_path": mpath, "views": views, "stats_dir": stats_dir,
+            "image_integrity": images,
             "protocol": copy.deepcopy(proto), "protocol_path": ppath}

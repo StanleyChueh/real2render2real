@@ -1,0 +1,122 @@
+{
+ "50": {
+  "config_sha256": "9db83c3ca2471ca3ab32fa35313bc2122368170ce62ccfac35dafd13e602b1d1",
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "counts": {
+   "train": 50,
+   "val": 182,
+   "test": 182
+  },
+  "train_uids_sha256": "176396f472853a06c51d862800f46352aa1caac0ef375fc985959db563ef7113",
+  "action_statistics_sha256": "f9c0bad124d1fb2bdeb633fda594867e427ce7b9cecf3190b28ef96a4b65ebf4",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 414,
+   "frames_verified": 133308,
+   "seconds": 5.8
+  },
+  "roots_realpath": {
+   "train": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n0050",
+   "val": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/val",
+   "test": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/test"
+  },
+  "seconds": 6.9
+ },
+ "100": {
+  "config_sha256": "247c761e5db3a412cd3e169aacd82f0737e9b3b3e2578faa0c8253d12708f63a",
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "counts": {
+   "train": 100,
+   "val": 182,
+   "test": 182
+  },
+  "train_uids_sha256": "4c31cdc373912aa72d80cc382b317f4ad62f202839384eb8471198718acff628",
+  "action_statistics_sha256": "3faa63fc6568ef56b3927c546b7fab6d9dc8d2973e2efd987bc8df8c2b00bf03",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 464,
+   "frames_verified": 149408,
+   "seconds": 5.0
+  },
+  "roots_realpath": {
+   "train": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n0100",
+   "val": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/val",
+   "test": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/test"
+  },
+  "seconds": 6.3
+ },
+ "150": {
+  "config_sha256": "a49588c9385622b132fea9df5e6116e64fe9964a133557f19d914f14c24534a6",
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "counts": {
+   "train": 150,
+   "val": 182,
+   "test": 182
+  },
+  "train_uids_sha256": "55c406cb14ff50582f40338f860f50b5dc1be81866d965111c7eeebb006927ba",
+  "action_statistics_sha256": "029449f6eeb3d4798878af176e608cbbd33e2b8616fdf40afce8202215603b7c",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 514,
+   "frames_verified": 165508,
+   "seconds": 6.1
+  },
+  "roots_realpath": {
+   "train": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n0150",
+   "val": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/val",
+   "test": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/test"
+  },
+  "seconds": 7.5
+ },
+ "1000": {
+  "config_sha256": "87831dfd12dd2962d73bac5a50dc3371962a7fbcd7dc1f6b8d6c769ced84d954",
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "counts": {
+   "train": 1000,
+   "val": 182,
+   "test": 182
+  },
+  "train_uids_sha256": "53b05f3dd2819286271239065cfab579a0fc9111cd7cde8590f0896cc4634104",
+  "action_statistics_sha256": "840a00e404790bfb35fc8ef0e207b1f0e8ca42cb042a509c5d6c058d4112ceb9",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 1364,
+   "frames_verified": 439208,
+   "seconds": 20.0
+  },
+  "roots_realpath": {
+   "train": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n1000",
+   "val": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/val",
+   "test": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/test"
+  },
+  "seconds": 25.7
+ },
+ "1461": {
+  "config_sha256": "762280f673cacae8018713b95cf23d9d80bb0d0df36cfafc93d5442f7784b9a8",
+  "manifest_sha256": "2c58b6f975103c085ed09ec852fa9bcbbc3d22f30d3d77386dcc4678899b1031",
+  "counts": {
+   "train": 1461,
+   "val": 182,
+   "test": 182
+  },
+  "train_uids_sha256": "ad7b36297ea5aafa6dbbfbcb3208b99f0900188c8a1208cace4e8165aed63752",
+  "action_statistics_sha256": "30fef948c5c2fdc29e666f38e6e0223cc269ece8dbe07390463504d0fe4c5922",
+  "normalizer_version": "r2r2r-dp-norm-v2",
+  "images": {
+   "image_integrity_sha256": "63eecde5df0e2fc5e30d8069aeda6af17f4528e5255b9f7eb9fc7e4fb902814e",
+   "episodes_verified": 1825,
+   "frames_verified": 587650,
+   "seconds": 30.1
+  },
+  "roots_realpath": {
+   "train": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/train_subsets/n1461",
+   "val": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/val",
+   "test": "/home/stanley/Stanley_ws/r2r2r_policy_runs/dataset_v1/views/splits/test"
+  },
+  "seconds": 38.4
+ }
+}
