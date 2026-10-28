@@ -1,0 +1,56 @@
+[
+  {
+    "case": "valid",
+    "preflight_problems": [],
+    "load_accepted": true,
+    "summary": {
+      "updates_this_session": 1,
+      "final_update": 4,
+      "elapsed_s": 0.81,
+      "data_wait_s": 0.05,
+      "skipped_updates_this_session": 0,
+      "attempted_updates_total": 4,
+      "skipped_updates_total": 0,
+      "finished": true
+    },
+    "finite_model": true,
+    "final_checkpoint_problems": []
+  },
+  {
+    "case": "missing_adam_state",
+    "preflight_problems": [],
+    "load_accepted": true,
+    "summary": {
+      "updates_this_session": 1,
+      "final_update": 4,
+      "elapsed_s": 0.82,
+      "data_wait_s": 0.05,
+      "skipped_updates_this_session": 0,
+      "attempted_updates_total": 4,
+      "skipped_updates_total": 0,
+      "finished": true
+    },
+    "finite_model": true,
+    "final_checkpoint_problems": [
+      "optimizer step counts [1, 4] != update 4"
+    ]
+  },
+  {
+    "case": "bad_moment_shape",
+    "preflight_problems": [],
+    "load_accepted": true,
+    "exception": "RuntimeError: The size of tensor a (3) must match the size of tensor b (64) at non-singleton dimension 1"
+  },
+  {
+    "case": "invalid_rng",
+    "preflight_problems": [],
+    "load_accepted": true,
+    "exception": "RuntimeError: Expected either a CPUGeneratorImplStateLegacy of size 5048 or a CPUGeneratorImplState of size 5056 but found the input RNG state size to be 1"
+  },
+  {
+    "case": "nan_lr",
+    "preflight_problems": [],
+    "load_accepted": true,
+    "exception": "ValueError: Out of range float values are not JSON compliant"
+  }
+]

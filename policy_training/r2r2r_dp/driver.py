@@ -21,10 +21,14 @@ Semantics (each differs from the released loop, see docs/policy_training/AUDIT_R
   * full checkpoints hold model, EMA, optimizer, scheduler, grad-scaler, RNG state, update and data
     position, plus the resolved run record and the action statistics (self-contained for inference);
     loading one validates every component (keys, shapes, dtypes, finiteness, counters, data position,
-    sample order) before any runtime state is changed;
+    sample order, per-parameter Adam state against the recorded optimizer history, optimizer and
+    scheduler hyperparameters against the schedule, grad-scaler and RNG payloads) before any runtime
+    state is changed, and restores the previous state if applying it fails; a checkpoint that fails
+    the same validation is never written (docs/policy_training/F7_CHECKPOINT_REPAIR.md);
   * validation and EMA export restore the raw weights and the previous train/eval mode even when
     they fail, and non-finite or empty validation raises instead of being logged as a result.
 """
+import copy
 import glob
 import hashlib
 import json
@@ -149,6 +153,8 @@ class Trainer:
     consecutive_skipped = 0
     optimizer_calls = 0  # counted by the wrapper installed in _count_optimizer_steps
     train_order_sha256 = None
+    unusable = None  # set when a failed checkpoint load could not be rolled back; train() then refuses
+    param_steps = None  # optimizer history, see __init__
 
     def __init__(self, run: Dict, device: str = "cuda", num_workers: Optional[int] = None):
         from diffusers.optimization import get_scheduler
@@ -196,6 +202,11 @@ class Trainer:
                                        num_warmup_steps=self.sched["warmup_updates"],
                                        num_training_steps=self.sched["total_updates"])
         self.ema = ModelEMA(self.model, decay=self.sched["ema_decay_per_update"], device=self.device)
+        # Optimizer history: per optimizer parameter (group order), the number of executed optimizer steps in
+        # which it had a gradient, i.e. the Adam step it must carry. Kept by the _count_optimizer_steps wrapper.
+        names = {id(q): n for n, q in self.model.named_parameters()}
+        self.optimizer_param_names = [[names[id(q)] for q in g["params"]] for g in self.optimizer.param_groups]
+        self.param_steps = [[0] * len(g["params"]) for g in self.optimizer.param_groups]
         self.update, self.micro, self.epoch, self.batch_in_epoch = 0, 0, 0, 0
         self.stats_json = json.load(open(run["paths"]["action_statistics"]))
 
@@ -273,8 +284,13 @@ class Trainer:
                      optimizer=self.optimizer.state_dict(), scheduler=self.scheduler.state_dict(),
                      scaler=self.scaler.state_dict(), rng=_rng_state(self.device),
                      data_position={"epoch": self.epoch, "batch": self.batch_in_epoch,
-                                    "batches_per_epoch": self.batches_per_epoch})
+                                    "batches_per_epoch": self.batches_per_epoch},
+                     optimizer_history={"param_names": [list(g) for g in self.optimizer_param_names],
+                                        "steps": [list(g) for g in self.param_steps]})
         path = os.path.join(self.out, f"ckpt_full_u{self.update:07d}.pt")
+        problems = self.checkpoint_problems(state)
+        if problems:  # never publish (or rotate older checkpoints out for) a state that could not be resumed
+            raise CheckpointError(f"refusing to write {path}: " + "; ".join(problems))
         _save(path, state)
         for old in sorted(glob.glob(os.path.join(self.out, "ckpt_full_u*.pt")))[:-self.sched["keep_full_checkpoints"]]:
             os.remove(old)
@@ -297,7 +313,16 @@ class Trainer:
         return path
 
     def checkpoint_problems(self, st: Dict) -> List[str]:
-        """Everything that must hold for st to continue this run exactly; [] if it may be loaded."""
+        """Everything that must hold for st to continue this run exactly; [] if it may be loaded.
+        Never changes runtime state; a malformed component is reported as a problem, not raised."""
+        try:
+            return self._checkpoint_problems(st)
+        except Exception as e:  # noqa: BLE001 - any unexpected structure means the checkpoint cannot be resumed
+            return [f"malformed checkpoint ({type(e).__name__}: {e})"]
+
+    def _checkpoint_problems(self, st: Dict) -> List[str]:
+        if not isinstance(st, dict):
+            return [f"not a checkpoint dictionary ({type(st).__name__})"]
         if st.get("format") != CKPT_FORMAT or st.get("kind") != "full":
             return [f"not a {CKPT_FORMAT} full checkpoint (format={st.get('format')!r}, kind={st.get('kind')!r})"]
         need = {"update", "micro_batches", "attempted_updates", "skipped_updates", "train_order_sha256", "run",
@@ -328,31 +353,167 @@ class Trainer:
         elif not (type(dp.get("epoch")) is int and type(dp.get("batch")) is int and 0 <= dp["batch"] < self.batches_per_epoch
                   and dp["epoch"] * self.batches_per_epoch + dp["batch"] == mb):
             p.append(f"data position {dp} is inconsistent with {mb} consumed micro-batches")
-        if st["scheduler"].get("last_epoch") != u:
-            p.append(f"scheduler last_epoch {st['scheduler'].get('last_epoch')} != update {u}")
-        opt, ref = st["optimizer"], self.optimizer.state_dict()
-        if [len(g["params"]) for g in opt.get("param_groups", [])] != [len(g["params"]) for g in ref["param_groups"]]:
-            p.append("optimizer parameter groups differ from this model")
-        else:
-            steps = {int(v["step"]) for v in opt.get("state", {}).values()}
-            if steps != ({u} if u else set()):
-                p.append(f"optimizer step counts {sorted(steps)} != update {u}")
-            for i, v in opt.get("state", {}).items():
-                if any(torch.is_tensor(t) and t.is_floating_point() and not torch.isfinite(t).all() for t in v.values()):
-                    p.append(f"optimizer state {i} is not finite")
-                    break
-        scale = st["scaler"].get("scale")
-        if st["scaler"] and not (scale is not None and math.isfinite(float(scale)) and float(scale) > 0):
+        p += self._scheduler_problems(st["scheduler"], u)
+        p += self._optimizer_problems(st["optimizer"], st.get("optimizer_history"), u)
+        p += self._scaler_problems(st["scaler"])
+        p += _rng_problems(st["rng"], self.device)
+        return p
+
+    def _scheduled_lrs(self, u: int) -> List[float]:
+        """Per parameter group, the learning rate the schedule sets after u successful updates."""
+        return [base * lam(u) for lam, base in zip(self.scheduler.lr_lambdas, self.scheduler.base_lrs)]
+
+    def _scheduler_problems(self, sc, u: int) -> List[str]:
+        ref = self.scheduler.state_dict()
+        if not isinstance(sc, dict) or set(sc) != set(ref):
+            return [f"scheduler state keys {sorted(sc) if isinstance(sc, dict) else type(sc).__name__} "
+                    f"!= {sorted(ref)}"]
+        p = []
+        if sc["last_epoch"] != u or type(sc["last_epoch"]) is not int:
+            p.append(f"scheduler last_epoch {sc['last_epoch']!r} != update {u}")
+        if sc["_step_count"] != u + 1 or type(sc["_step_count"]) is not int:
+            p.append(f"scheduler _step_count {sc['_step_count']!r} != update {u} + 1")
+        p += [f"scheduler {k} {sc[k]!r} != {ref[k]!r}" for k in sorted(ref)
+              if k not in ("last_epoch", "_step_count", "_last_lr") and sc[k] != ref[k]]
+        lrs = self._scheduled_lrs(u)
+        last = sc["_last_lr"]
+        if not (isinstance(last, list) and len(last) == len(lrs) and all(map(_same_lr, last, lrs))):
+            p.append(f"scheduler last lr {last!r} is not the scheduled {lrs} at update {u}")
+        return p
+
+    def _expected_param_steps(self, hist, u: int):
+        """(Adam step every optimizer parameter must carry, problems) from the checkpoint's optimizer history.
+
+        Parameters need not share one history: a parameter without a gradient in some update is not stepped
+        by AdamW. v3 checkpoints written before the history was recorded (986a3fa and earlier) carry none;
+        for them every parameter must have been stepped in all u updates, which holds for this policy (every
+        parameter receives a gradient in every update; see F7_CHECKPOINT_REPAIR.md)."""
+        if hist is None:
+            return [[u] * len(g) for g in self.optimizer_param_names], []
+        if not isinstance(hist, dict) or set(hist) != {"param_names", "steps"}:
+            return None, ["optimizer history is malformed"]
+        if hist["param_names"] != self.optimizer_param_names:
+            return None, ["optimizer parameter groups map to different model parameters than this run's"]
+        steps = hist["steps"]
+        if not (isinstance(steps, list) and all(isinstance(g, list) for g in steps)
+                and [len(g) for g in steps] == [len(g) for g in self.optimizer_param_names]
+                and all(type(k) is int and 0 <= k <= u for g in steps for k in g)):
+            return None, [f"optimizer history steps must be one integer in [0, update {u}] per optimizer parameter"]
+        top = max((k for g in steps for k in g), default=0)
+        if top != u:  # an executed update steps at least one parameter; none before the first update
+            return None, [f"optimizer history: the most-updated parameter has {top} steps, the checkpoint claims {u} "
+                          "successful updates"]
+        return steps, []
+
+    def _optimizer_problems(self, opt, hist, u: int) -> List[str]:
+        ref = self.optimizer.state_dict()
+        if not (isinstance(opt, dict) and set(opt) == {"state", "param_groups"} and isinstance(opt["state"], dict)
+                and isinstance(opt["param_groups"], list) and all(isinstance(g, dict) for g in opt["param_groups"])):
+            return ["optimizer: not an optimizer state dictionary"]
+        if [g.get("params") for g in opt["param_groups"]] != [g["params"] for g in ref["param_groups"]]:
+            return ["optimizer parameter groups differ from this model"]
+        p = []
+        for i, (g, r, lr) in enumerate(zip(opt["param_groups"], ref["param_groups"], self._scheduled_lrs(u))):
+            if set(g) != set(r):
+                p.append(f"optimizer group {i}: keys {sorted(set(g) ^ set(r))} differ from this optimizer's")
+                continue
+            p += [f"optimizer group {i}: {k} {g[k]!r} != {r[k]!r}" for k in r if k not in ("params", "lr") and g[k] != r[k]]
+            if not _same_lr(g["lr"], lr):
+                p.append(f"optimizer group {i}: lr {g['lr']!r} is not the scheduled {lr!r} at update {u}")
+        steps, q = self._expected_param_steps(hist, u)
+        if q:
+            return p + q
+        unknown = sorted(set(opt["state"]) - {i for g in ref["param_groups"] for i in g["params"]}, key=str)
+        if unknown:
+            p.append(f"optimizer: state for {len(unknown)} unknown parameter ids, e.g. {unknown[:3]}")
+        missing, unexpected, malformed = [], [], []
+        for g, r, names, ks in zip(self.optimizer.param_groups, ref["param_groups"], self.optimizer_param_names, steps):
+            need = {"step", "exp_avg", "exp_avg_sq"} | ({"max_exp_avg_sq"} if r["amsgrad"] else set())
+            for param, pid, name, k in zip(g["params"], r["params"], names, ks):
+                s = opt["state"].get(pid)
+                if s is None:
+                    if k:
+                        missing.append(f"{name} ({k} recorded updates)")
+                elif not k:
+                    unexpected.append(name)
+                else:
+                    why = _adam_entry_problem(s, param, k, need)
+                    if why:
+                        malformed.append(f"{name}: {why}")
+        if missing:
+            p.append(f"optimizer: no Adam state for {len(missing)} parameters with recorded updates, e.g. {missing[:3]}")
+        if unexpected:
+            p.append(f"optimizer: Adam state for {len(unexpected)} parameters without recorded updates, "
+                     f"e.g. {unexpected[:3]}")
+        if malformed:
+            p.append(f"optimizer: {len(malformed)} invalid Adam state entries, e.g. {malformed[:3]}")
+        return p
+
+    def _scaler_problems(self, sc) -> List[str]:
+        ref = self.scaler.state_dict()  # {} when the grad scaler is disabled (CPU)
+        if not isinstance(sc, dict):
+            return ["grad-scaler state is not a dictionary"]
+        if not sc:
+            return ["grad-scaler state is empty, but this run's grad scaler is enabled"] if ref else []
+        keys = {"scale", "growth_factor", "backoff_factor", "growth_interval", "_growth_tracker"}
+        if set(sc) != keys:
+            return [f"grad-scaler state keys {sorted(sc)} != {sorted(keys)}"]
+        p = []
+        scale, gf, bf, gi, tr = (sc[k] for k in ("scale", "growth_factor", "backoff_factor", "growth_interval",
+                                                 "_growth_tracker"))
+        if not (_is_real(scale) and math.isfinite(scale) and scale > 0):
             p.append(f"grad-scaler scale {scale!r} is not a positive finite number")
-        if not {"python", "numpy", "torch"} <= set(st["rng"]):
-            p.append("checkpoint RNG state incomplete")
+        if not (_is_real(gf) and math.isfinite(gf) and gf > 1 and _is_real(bf) and 0 < bf < 1
+                and type(gi) is int and gi >= 1 and type(tr) is int and 0 <= tr < gi):
+            p.append(f"grad-scaler settings out of range (growth_factor={gf!r}, backoff_factor={bf!r}, "
+                     f"growth_interval={gi!r}, _growth_tracker={tr!r})")
+        elif ref and (gf, bf, gi) != (ref["growth_factor"], ref["backoff_factor"], ref["growth_interval"]):
+            p.append("grad-scaler growth/backoff settings differ from this run's")
         return p
 
     def load_full(self, path: str) -> None:
-        st = torch.load(path, map_location="cpu", weights_only=False)
+        """Validate the whole checkpoint, then apply it; if applying fails the previous runtime state is restored."""
+        try:
+            st = torch.load(path, map_location="cpu", weights_only=False)
+        except Exception as e:  # noqa: BLE001
+            raise CheckpointError(f"{path}: cannot be read ({type(e).__name__}: {e})") from e
         problems = self.checkpoint_problems(st)
         if problems:
             raise CheckpointError(f"{path}: " + "; ".join(problems))
+        before = self._runtime_state()
+        try:
+            self._apply_checkpoint(st)
+        except Exception as e:  # noqa: BLE001
+            try:
+                self._restore_runtime_state(before)
+            except Exception as r:  # noqa: BLE001
+                self.unusable = (f"{path}: could not be applied ({type(e).__name__}: {e}) and the previous state "
+                                 f"could not be restored ({type(r).__name__}: {r})")
+                raise CheckpointError(self.unusable) from e
+            raise CheckpointError(f"{path}: could not be applied ({type(e).__name__}: {e}); "
+                                  "previous state restored") from e
+
+    _RUNTIME_ATTRS = ("update", "micro", "attempted_updates", "skipped_updates", "epoch", "batch_in_epoch",
+                      "param_steps", "_resume_rng")
+
+    def _runtime_state(self) -> Dict:
+        return {"model": {k: v.detach().clone() for k, v in self.model.state_dict().items()},
+                "ema": {k: v.detach().clone() for k, v in self.ema.ema.items()},
+                "optimizer": copy.deepcopy(self.optimizer.state_dict()),
+                "scheduler": copy.deepcopy(self.scheduler.state_dict()),
+                "scaler": copy.deepcopy(self.scaler.state_dict()),
+                "attrs": {k: copy.deepcopy(getattr(self, k, None)) for k in self._RUNTIME_ATTRS}}
+
+    def _restore_runtime_state(self, s: Dict) -> None:
+        self.model.load_state_dict(s["model"])
+        self.ema.load_state_dict(s["ema"])
+        self.optimizer.load_state_dict(s["optimizer"])
+        self.scheduler.load_state_dict(s["scheduler"])
+        self.scaler.load_state_dict(s["scaler"])
+        for k, v in s["attrs"].items():
+            setattr(self, k, v)
+
+    def _apply_checkpoint(self, st: Dict) -> None:
         self.model.load_state_dict(st["model"])
         self.ema.load_state_dict({k: v.to(self.device) for k, v in st["ema"].items()})  # exact key set checked
         self.optimizer.load_state_dict(st["optimizer"])
@@ -361,6 +522,7 @@ class Trainer:
         self.update, self.micro = st["update"], st["micro_batches"]
         self.attempted_updates, self.skipped_updates = st["attempted_updates"], st["skipped_updates"]
         self.epoch, self.batch_in_epoch = st["data_position"]["epoch"], st["data_position"]["batch"]
+        self.param_steps = [list(g) for g in self._expected_param_steps(st.get("optimizer_history"), st["update"])[0]]
         self._resume_rng = st["rng"]
 
     # ---- training ----
@@ -372,13 +534,20 @@ class Trainer:
         """Count calls that reach optimizer.step(). GradScaler.step() skips the call when gradients are
         non-finite; its return value cannot tell (AdamW.step() returns None either way). Installed as an
         instance attribute, so it counts each executed step exactly once, also for subclasses."""
+        if self.param_steps is None:  # a Trainer assembled without __init__ (diagnostic drivers)
+            self.param_steps = [[0] * len(g["params"]) for g in self.optimizer.param_groups]
         if getattr(self.optimizer.step, "_r2r2r_counter", False):
             return
         inner = self.optimizer.step
 
         def step(*args, **kwargs):
+            # AdamW steps exactly the parameters that have a gradient: that is the optimizer history
+            stepped = [[q.grad is not None for q in g["params"]] for g in self.optimizer.param_groups]
             out = inner(*args, **kwargs)
             self.optimizer_calls += 1
+            for counts, flags in zip(self.param_steps, stepped):
+                for j, f in enumerate(flags):
+                    counts[j] += f
             return out
         step._r2r2r_counter = True
         if hasattr(inner, "_wrapped_by_lr_sched"):  # keep the LR scheduler's step-order bookkeeping intact
@@ -386,6 +555,8 @@ class Trainer:
         self.optimizer.step = step
 
     def train(self, stop_after: Optional[int] = None) -> Dict:
+        if self.unusable:
+            raise CheckpointError(f"trainer state is inconsistent, refusing to train: {self.unusable}")
         s = self.sched
         total, accum = s["total_updates"], s["accum_micro_batches"]
         stop = total if stop_after is None else min(total, stop_after)
@@ -471,6 +642,62 @@ class Trainer:
                 "data_wait_s": round(t_data, 2), "skipped_updates_this_session": n_skipped,
                 "attempted_updates_total": self.attempted_updates, "skipped_updates_total": self.skipped_updates,
                 "finished": self.update == total}
+
+
+def _is_real(x) -> bool:
+    return isinstance(x, (int, float)) and not isinstance(x, bool)
+
+
+def _same_lr(x, expected: float) -> bool:
+    return _is_real(x) and math.isfinite(x) and math.isclose(x, expected, rel_tol=1e-12, abs_tol=1e-30)
+
+
+def _adam_entry_problem(s, param, k: int, need) -> Optional[str]:
+    """Why the AdamW state s cannot be the state of `param` after k steps, or None."""
+    if not isinstance(s, dict) or set(s) != need:
+        return f"keys {sorted(s) if isinstance(s, dict) else type(s).__name__} != {sorted(need)}"
+    step = s["step"]
+    if torch.is_tensor(step):
+        step = float(step) if step.numel() == 1 and not step.is_complex() else None
+    if not (_is_real(step) and math.isfinite(step) and step == k):
+        return f"step {s['step']!r} != {k} recorded updates"
+    for m in sorted(need - {"step"}):
+        t = s[m]
+        if not torch.is_tensor(t) or t.shape != param.shape or t.dtype != param.dtype:
+            return (f"{m}: expected {param.dtype} {tuple(param.shape)}, got "
+                    f"{(t.dtype, tuple(t.shape)) if torch.is_tensor(t) else type(t).__name__}")
+        if not torch.isfinite(t).all():
+            return f"{m}: non-finite values"
+        if m != "exp_avg" and (t < 0).any():
+            return f"{m}: negative second-moment values"
+    return None
+
+
+def _check_byte_state(s, ref: torch.Tensor, gen: torch.Generator) -> None:
+    if not torch.is_tensor(s) or s.dtype != torch.uint8 or s.shape != ref.shape:
+        raise ValueError(f"expected uint8 {tuple(ref.shape)}, got "
+                         f"{(s.dtype, tuple(s.shape)) if torch.is_tensor(s) else type(s).__name__}")
+    gen.set_state(s)
+
+
+def _rng_problems(rng, device) -> List[str]:
+    """Each saved RNG payload must be accepted by a scratch generator of its kind; global RNG is untouched."""
+    need = {"python", "numpy", "torch"} | ({"cuda"} if device.type == "cuda" else set())
+    if not isinstance(rng, dict) or not need <= set(rng) or set(rng) - need - {"cuda"}:
+        return [f"checkpoint RNG state incomplete or unexpected "
+                f"({sorted(rng) if isinstance(rng, dict) else type(rng).__name__}; needs {sorted(need)})"]
+    checks = {"python": lambda s: random.Random().setstate(s),
+              "numpy": lambda s: np.random.RandomState().set_state(s),
+              "torch": lambda s: _check_byte_state(s, torch.get_rng_state(), torch.Generator())}
+    if device.type == "cuda":
+        checks["cuda"] = lambda s: _check_byte_state(s, torch.cuda.get_rng_state(device), torch.Generator(device=device))
+    p = []
+    for k, check in checks.items():
+        try:
+            check(rng[k])
+        except Exception as e:  # noqa: BLE001
+            p.append(f"rng.{k} is not a valid state ({type(e).__name__}: {e})")
+    return p
 
 
 def _tensor_dict_problems(name: str, got: Dict, ref: Dict) -> List[str]:

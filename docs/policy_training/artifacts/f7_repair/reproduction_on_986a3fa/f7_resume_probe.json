@@ -1,0 +1,150 @@
+{
+ "torch": "2.5.1+cu121",
+ "cases": {
+  "valid": {
+   "resume": "completed",
+   "summary": {
+    "final_update": 4,
+    "updates_this_session": 1,
+    "finished": true
+   },
+   "ckpt_added": [
+    "ckpt_full_u0000004.pt"
+   ],
+   "ckpt_removed": [
+    "ckpt_full_u0000002.pt"
+   ],
+   "u2_valid_ckpt_unchanged": false,
+   "metrics_unchanged": false,
+   "session_summaries_written": true,
+   "u4_ckpt_problems": [],
+   "u4_max_abs_model_diff_vs_intact": 0.0
+  },
+  "missing_adam_state": {
+   "resume": "completed",
+   "summary": {
+    "final_update": 4,
+    "updates_this_session": 1,
+    "finished": true
+   },
+   "ckpt_added": [
+    "ckpt_full_u0000004.pt"
+   ],
+   "ckpt_removed": [
+    "ckpt_full_u0000002.pt"
+   ],
+   "u2_valid_ckpt_unchanged": false,
+   "metrics_unchanged": false,
+   "session_summaries_written": true,
+   "u4_ckpt_problems": [
+    "optimizer step counts [1, 4] != update 4"
+   ],
+   "u4_max_abs_model_diff_vs_intact": 4.839897155761719e-05
+  },
+  "missing_all_adam_state": {
+   "resume": "rejected: CheckpointError",
+   "error": "optimizer step counts [] != update 3",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  },
+  "missing_exp_avg": {
+   "resume": "failed: KeyError",
+   "error": "'exp_avg'",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  },
+  "missing_exp_avg_sq": {
+   "resume": "failed: KeyError",
+   "error": "'exp_avg_sq'",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  },
+  "missing_step": {
+   "resume": "failed: KeyError",
+   "error": "'step'",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  },
+  "bad_moment_shape": {
+   "resume": "failed: RuntimeError",
+   "error": "The size of tensor a (3) must match the size of tensor b (64) at non-singleton dimension 1",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  },
+  "nan_moment": {
+   "resume": "rejected: CheckpointError",
+   "error": "optimizer state 0 is not finite",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  },
+  "optimizer_nan_lr": {
+   "resume": "failed: ValueError",
+   "error": "Out of range float values are not JSON compliant",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  },
+  "scheduler_nan_lr": {
+   "resume": "completed",
+   "summary": {
+    "final_update": 4,
+    "updates_this_session": 1,
+    "finished": true
+   },
+   "ckpt_added": [
+    "ckpt_full_u0000004.pt"
+   ],
+   "ckpt_removed": [
+    "ckpt_full_u0000002.pt"
+   ],
+   "u2_valid_ckpt_unchanged": false,
+   "metrics_unchanged": false,
+   "session_summaries_written": true,
+   "u4_ckpt_problems": [],
+   "u4_max_abs_model_diff_vs_intact": 0.0
+  },
+  "invalid_rng": {
+   "resume": "failed: RuntimeError",
+   "error": "Expected either a CPUGeneratorImplStateLegacy of size 5048 or a CPUGeneratorImplState of size 5056 but found the input RNG state size to be 1",
+   "ckpt_added": [],
+   "ckpt_removed": [],
+   "u2_valid_ckpt_unchanged": true,
+   "metrics_unchanged": true,
+   "session_summaries_written": false
+  }
+ },
+ "checks": {
+  "valid": true,
+  "missing_adam_state": false,
+  "missing_all_adam_state": true,
+  "missing_exp_avg": false,
+  "missing_exp_avg_sq": false,
+  "missing_step": false,
+  "bad_moment_shape": false,
+  "nan_moment": true,
+  "optimizer_nan_lr": false,
+  "scheduler_nan_lr": false,
+  "invalid_rng": false
+ },
+ "all_ok": false
+}

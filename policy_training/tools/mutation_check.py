@@ -1,4 +1,4 @@
-"""Re-introduce each audited defect (M1-M5 and Codex final F1-F8) into a scratch copy of policy_training
+"""Re-introduce each audited defect (M1-M5, Codex final F1-F8 and re-audit N1) into a scratch copy of policy_training
 and confirm its regression test fails.  Usage: .venv-tinydp/bin/python policy_training/tools/mutation_check.py OUT.json
 
 Works on a copy (never edits the repository). Each mutation is a single exact string replacement.
@@ -150,6 +150,41 @@ MUTATIONS = [
     ("F7 counters/data position not checked", "r2r2r_dp/driver.py",
      "        if mb != accum * att:\n", "        if False:\n",
      "tests/test_codex_final_training.py::test_corrupt_checkpoint_rejected_before_any_state_changes"),
+    # Codex re-audit N1 (F7 PARTIAL at 986a3fa): each targets the single test node that names the defect
+    ("F7/N1 missing Adam state accepted", "r2r2r_dp/driver.py",
+     "                    if k:\n", "                    if False:\n",
+     "tests/test_f7_checkpoint_state.py::test_corrupt_optimizer_state_rejected_before_resume[missing_one_adam_state]"),
+    ("F7/N1 Adam entry keys/step/moments not checked", "r2r2r_dp/driver.py",
+     "                    why = _adam_entry_problem(s, param, k, need)\n", "                    why = None\n",
+     "tests/test_f7_checkpoint_state.py::test_corrupt_optimizer_state_rejected_before_resume[exp_avg_shape]"),
+    ("F7/N1 negative second moment accepted", "r2r2r_dp/driver.py",
+     "        if m != \"exp_avg\" and (t < 0).any():\n", "        if False:\n",
+     "tests/test_f7_checkpoint_state.py::test_corrupt_optimizer_state_rejected_before_resume[exp_avg_sq_negative]"),
+    ("F7/N1 optimizer lr not checked against the schedule", "r2r2r_dp/driver.py",
+     "            if not _same_lr(g[\"lr\"], lr):\n", "            if False:\n",
+     "tests/test_f7_checkpoint_state.py::test_corrupt_optimizer_state_rejected_before_resume[group_lr_nan]"),
+    ("F7/N1 scheduler last lr not checked", "r2r2r_dp/driver.py",
+     "        if not (isinstance(last, list) and len(last) == len(lrs) and all(map(_same_lr, last, lrs))):\n",
+     "        if False:\n",
+     "tests/test_f7_checkpoint_state.py::test_corrupt_optimizer_state_rejected_before_resume[scheduler_last_lr_nan]"),
+    ("F7/N1 grad-scaler settings not checked", "r2r2r_dp/driver.py",
+     "        if not (_is_real(gf) and math.isfinite(gf)", "        if False and (_is_real(gf) and math.isfinite(gf)",
+     "tests/test_f7_checkpoint_state.py::test_corrupt_optimizer_state_rejected_before_resume[scaler_tracker_range]"),
+    ("F7/N1 RNG payloads not validated", "r2r2r_dp/driver.py",
+     "            check(rng[k])\n", "            pass\n",
+     "tests/test_f7_checkpoint_state.py::test_corrupt_optimizer_state_rejected_before_resume[rng_torch_length]"),
+    ("F7/N1 optimizer history counts parameters without a gradient", "r2r2r_dp/driver.py",
+     "                    counts[j] += f\n", "                    counts[j] += 1\n",
+     "tests/test_f7_checkpoint_state.py::test_nonuniform_parameter_histories_are_validated_per_parameter"),
+    ("F7/N1 failed load not rolled back", "r2r2r_dp/driver.py",
+     "                self._restore_runtime_state(before)\n", "                pass\n",
+     "tests/test_f7_checkpoint_state.py::test_failure_while_applying_restores_previous_state"),
+    ("F7/N1 inconsistent checkpoint published", "r2r2r_dp/driver.py",
+     "        if problems:  # never publish", "        if False:  # never publish",
+     "tests/test_f7_checkpoint_state.py::test_inconsistent_live_state_is_never_published"),
+    ("F7/N1 trainer trains after a failed rollback", "r2r2r_dp/driver.py",
+     "        if self.unusable:\n", "        if False:\n",
+     "tests/test_f7_checkpoint_state.py::test_failed_rollback_makes_the_trainer_refuse_to_train"),
     ("F8 non-finite inference inputs accepted", "r2r2r_dp/inference.py",
      "            if not x.is_floating_point() or not torch.isfinite(x).all():\n", "            if False:\n",
      "tests/test_codex_final_inputs.py::test_inference_rejects_invalid_inputs"),
@@ -207,8 +242,10 @@ def main():
                                 "summary": "timeout after 900 s"})
             else:
                 tail = [l for l in r.stdout.splitlines() if "passed" in l or "failed" in l or "error" in l.lower()][-1:]
+                first_e = [l for l in r.stdout.splitlines() if l.startswith("E ")][:2]  # what made the test fail
                 results.append({"mutation": name, "test": test, "pytest_exit": r.returncode,
-                                "detected": r.returncode != 0, "summary": tail[0] if tail else ""})
+                                "detected": r.returncode != 0, "summary": tail[0] if tail else "",
+                                "first_error": [l[:300] for l in first_e]})
         print(json.dumps(results[-1]), flush=True)
     json.dump({"control": ctl, "mutations": results}, open(sys.argv[1], "w"), indent=1)
     print("all detected:", all(x.get("detected") for x in results))

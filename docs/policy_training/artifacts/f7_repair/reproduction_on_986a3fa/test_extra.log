@@ -1,0 +1,182 @@
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+optimizer_nan_lr preflight_problems= []
+Fusing numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+optimizer_missing_moment preflight_problems= []
+Fusing numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+optimizer_bad_moment_shape preflight_problems= []
+Fusing numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+scheduler_nan_lr preflight_problems= []
+Fusing numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+using numeric brightness and contrast augmentation
+contrast range:  [0.8, 1.2]
+brightness range:  [-0.1, 0.1]
+pred_left_only or pred_right_only is enabled, changed action dim to  10
+using unet for diffusion
+number of parameters: 1.391874e+06
+invalid_rng_payload preflight_problems= []
+F
+=================================== FAILURES ===================================
+______________ test_corrupt_checkpoint_rejected[optimizer_nan_lr] ______________
+
+trained = ({'format': 'r2r2r-dp-ckpt-v3', 'update': 3, 'micro_batches': 12, 'attempted_updates': 3, ...}, <function trained.<loc...p/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/f7repro/extra/independent-v30'))
+case = 'optimizer_nan_lr'
+
+    @pytest.mark.parametrize('case',['optimizer_nan_lr','optimizer_missing_moment','optimizer_bad_moment_shape','scheduler_nan_lr','invalid_rng_payload'])
+    def test_corrupt_checkpoint_rejected(trained,case):
+     cp,new,p=trained;st=copy.deepcopy(cp);t=new(p/case)
+     if case=='optimizer_nan_lr': st['optimizer']['param_groups'][0]['lr']=float('nan')
+     elif case=='optimizer_missing_moment':del next(iter(st['optimizer']['state'].values()))['exp_avg']
+     elif case=='optimizer_bad_moment_shape':next(iter(st['optimizer']['state'].values()))['exp_avg']=torch.zeros(2,3)
+     elif case=='scheduler_nan_lr':st['scheduler']['_last_lr']=[float('nan')]*len(st['scheduler']['_last_lr'])
+     else:st['rng']['torch']=torch.zeros(1,dtype=torch.uint8)
+     path=p/(case+'.pt');torch.save(st,path)
+     problems=t.checkpoint_problems(st)
+     print(case,'preflight_problems=',problems)
+>    with pytest.raises((driver.CheckpointError,ValueError,RuntimeError,KeyError)):
+E    Failed: DID NOT RAISE any of (CheckpointError, ValueError, RuntimeError, KeyError)
+
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py:27: Failed
+__________ test_corrupt_checkpoint_rejected[optimizer_missing_moment] __________
+
+trained = ({'format': 'r2r2r-dp-ckpt-v3', 'update': 3, 'micro_batches': 12, 'attempted_updates': 3, ...}, <function trained.<loc...p/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/f7repro/extra/independent-v30'))
+case = 'optimizer_missing_moment'
+
+    @pytest.mark.parametrize('case',['optimizer_nan_lr','optimizer_missing_moment','optimizer_bad_moment_shape','scheduler_nan_lr','invalid_rng_payload'])
+    def test_corrupt_checkpoint_rejected(trained,case):
+     cp,new,p=trained;st=copy.deepcopy(cp);t=new(p/case)
+     if case=='optimizer_nan_lr': st['optimizer']['param_groups'][0]['lr']=float('nan')
+     elif case=='optimizer_missing_moment':del next(iter(st['optimizer']['state'].values()))['exp_avg']
+     elif case=='optimizer_bad_moment_shape':next(iter(st['optimizer']['state'].values()))['exp_avg']=torch.zeros(2,3)
+     elif case=='scheduler_nan_lr':st['scheduler']['_last_lr']=[float('nan')]*len(st['scheduler']['_last_lr'])
+     else:st['rng']['torch']=torch.zeros(1,dtype=torch.uint8)
+     path=p/(case+'.pt');torch.save(st,path)
+     problems=t.checkpoint_problems(st)
+     print(case,'preflight_problems=',problems)
+>    with pytest.raises((driver.CheckpointError,ValueError,RuntimeError,KeyError)):
+E    Failed: DID NOT RAISE any of (CheckpointError, ValueError, RuntimeError, KeyError)
+
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py:27: Failed
+_________ test_corrupt_checkpoint_rejected[optimizer_bad_moment_shape] _________
+
+trained = ({'format': 'r2r2r-dp-ckpt-v3', 'update': 3, 'micro_batches': 12, 'attempted_updates': 3, ...}, <function trained.<loc...p/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/f7repro/extra/independent-v30'))
+case = 'optimizer_bad_moment_shape'
+
+    @pytest.mark.parametrize('case',['optimizer_nan_lr','optimizer_missing_moment','optimizer_bad_moment_shape','scheduler_nan_lr','invalid_rng_payload'])
+    def test_corrupt_checkpoint_rejected(trained,case):
+     cp,new,p=trained;st=copy.deepcopy(cp);t=new(p/case)
+     if case=='optimizer_nan_lr': st['optimizer']['param_groups'][0]['lr']=float('nan')
+     elif case=='optimizer_missing_moment':del next(iter(st['optimizer']['state'].values()))['exp_avg']
+     elif case=='optimizer_bad_moment_shape':next(iter(st['optimizer']['state'].values()))['exp_avg']=torch.zeros(2,3)
+     elif case=='scheduler_nan_lr':st['scheduler']['_last_lr']=[float('nan')]*len(st['scheduler']['_last_lr'])
+     else:st['rng']['torch']=torch.zeros(1,dtype=torch.uint8)
+     path=p/(case+'.pt');torch.save(st,path)
+     problems=t.checkpoint_problems(st)
+     print(case,'preflight_problems=',problems)
+>    with pytest.raises((driver.CheckpointError,ValueError,RuntimeError,KeyError)):
+E    Failed: DID NOT RAISE any of (CheckpointError, ValueError, RuntimeError, KeyError)
+
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py:27: Failed
+______________ test_corrupt_checkpoint_rejected[scheduler_nan_lr] ______________
+
+trained = ({'format': 'r2r2r-dp-ckpt-v3', 'update': 3, 'micro_batches': 12, 'attempted_updates': 3, ...}, <function trained.<loc...p/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/f7repro/extra/independent-v30'))
+case = 'scheduler_nan_lr'
+
+    @pytest.mark.parametrize('case',['optimizer_nan_lr','optimizer_missing_moment','optimizer_bad_moment_shape','scheduler_nan_lr','invalid_rng_payload'])
+    def test_corrupt_checkpoint_rejected(trained,case):
+     cp,new,p=trained;st=copy.deepcopy(cp);t=new(p/case)
+     if case=='optimizer_nan_lr': st['optimizer']['param_groups'][0]['lr']=float('nan')
+     elif case=='optimizer_missing_moment':del next(iter(st['optimizer']['state'].values()))['exp_avg']
+     elif case=='optimizer_bad_moment_shape':next(iter(st['optimizer']['state'].values()))['exp_avg']=torch.zeros(2,3)
+     elif case=='scheduler_nan_lr':st['scheduler']['_last_lr']=[float('nan')]*len(st['scheduler']['_last_lr'])
+     else:st['rng']['torch']=torch.zeros(1,dtype=torch.uint8)
+     path=p/(case+'.pt');torch.save(st,path)
+     problems=t.checkpoint_problems(st)
+     print(case,'preflight_problems=',problems)
+>    with pytest.raises((driver.CheckpointError,ValueError,RuntimeError,KeyError)):
+E    Failed: DID NOT RAISE any of (CheckpointError, ValueError, RuntimeError, KeyError)
+
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py:27: Failed
+____________ test_corrupt_checkpoint_rejected[invalid_rng_payload] _____________
+
+trained = ({'format': 'r2r2r-dp-ckpt-v3', 'update': 3, 'micro_batches': 12, 'attempted_updates': 3, ...}, <function trained.<loc...p/claude-1000/-home-stanley-Stanley-ws/5c357d3f-2c66-4c78-8e00-451320f12344/scratchpad/f7repro/extra/independent-v30'))
+case = 'invalid_rng_payload'
+
+    @pytest.mark.parametrize('case',['optimizer_nan_lr','optimizer_missing_moment','optimizer_bad_moment_shape','scheduler_nan_lr','invalid_rng_payload'])
+    def test_corrupt_checkpoint_rejected(trained,case):
+     cp,new,p=trained;st=copy.deepcopy(cp);t=new(p/case)
+     if case=='optimizer_nan_lr': st['optimizer']['param_groups'][0]['lr']=float('nan')
+     elif case=='optimizer_missing_moment':del next(iter(st['optimizer']['state'].values()))['exp_avg']
+     elif case=='optimizer_bad_moment_shape':next(iter(st['optimizer']['state'].values()))['exp_avg']=torch.zeros(2,3)
+     elif case=='scheduler_nan_lr':st['scheduler']['_last_lr']=[float('nan')]*len(st['scheduler']['_last_lr'])
+     else:st['rng']['torch']=torch.zeros(1,dtype=torch.uint8)
+     path=p/(case+'.pt');torch.save(st,path)
+     problems=t.checkpoint_problems(st)
+     print(case,'preflight_problems=',problems)
+>    with pytest.raises((driver.CheckpointError,ValueError,RuntimeError,KeyError)):
+E    Failed: DID NOT RAISE any of (CheckpointError, ValueError, RuntimeError, KeyError)
+
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py:27: Failed
+=============================== warnings summary ===============================
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py: 78 warnings
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/zarr/util.py:137: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.
+    return guess_chunks(shape, typesize)
+
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_nan_lr]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_missing_moment]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_bad_moment_shape]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[scheduler_nan_lr]
+policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[invalid_rng_payload]
+  /home/stanley/Stanley_ws/real2render2real/.venv-tinydp/lib/python3.10/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_nan_lr]
+FAILED policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_missing_moment]
+FAILED policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[optimizer_bad_moment_shape]
+FAILED policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[scheduler_nan_lr]
+FAILED policy_training/audit/codex_reaudit_986a3fa/test_extra.py::test_corrupt_checkpoint_rejected[invalid_rng_payload]
+5 failed, 83 warnings in 5.20s
